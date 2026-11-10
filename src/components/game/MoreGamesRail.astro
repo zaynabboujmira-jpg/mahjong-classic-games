@@ -1,0 +1,36 @@
+---
+import { GAMES } from '@/data/games.registry';
+import { LAYOUTS } from '@/engines/mahjong/layouts';
+interface Props {
+  currentLayout?: string;
+}
+const { currentLayout } = Astro.props;
+const layouts = Object.entries(LAYOUTS).filter(([slug]) => slug !== currentLayout);
+---
+<aside aria-labelledby="more-heading" class="mt-8">
+  <h2 id="more-heading" class="text-lg font-bold">More to play</h2>
+  <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    {layouts.map(([slug, m]) => (
+      <li>
+        <a href={`/mahjong/${slug}/`} class="flex min-h-14 items-center gap-3 rounded-lg border border-border bg-bg-elev p-3 hover:shadow">
+          <span class="text-2xl" aria-hidden="true">中</span>
+          <span>
+            <span class="block font-semibold">Mahjong: {m.layout.name}</span>
+            <span class="block text-xs text-muted">{m.layout.slots.length} tiles · {m.difficulty}</span>
+          </span>
+        </a>
+      </li>
+    ))}
+    {GAMES.filter((g) => g.status === 'planned').map((g) => (
+      <li>
+        <span class="flex min-h-14 items-center gap-3 rounded-lg border border-dashed border-border p-3 text-muted">
+          <span class="text-2xl" aria-hidden="true">{g.icon}</span>
+          <span>
+            <span class="block font-semibold">{g.name}</span>
+            <span class="block text-xs">Coming soon</span>
+          </span>
+        </span>
+      </li>
+    ))}
+  </ul>
+</aside>

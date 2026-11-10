@@ -1,0 +1,36 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import GameLayout from '@/layouts/GameLayout.astro';
+import { liveGames, getGame } from '@/data/games.registry';
+import { DEFAULT_LAYOUT } from '@/engines/mahjong/layouts';
+
+export async function getStaticPaths() {
+  // Only live games get a page; planned games must not ship as thin "coming soon" URLs.
+  const entries = await getCollection('games');
+  return liveGames()
+    .filter((g) => entries.some((e) => e.id === g.slug))
+    .map((g) => ({ params: { slug: g.slug } }));
+}
+
+const { slug } = Astro.params;
+const game = getGame(slug!)!;
+const entry = (await getEntry('games', slug!))!;
+const d = entry.data;
+---
+<GameLayout
+  title={d.title}
+  description={d.description}
+  path={game.path}
+  h1={d.h1}
+  intro={d.intro}
+  genre={game.genre}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Games', path: '/games/' },
+    { name: game.name, path: game.path },
+  ]}
+  steps={d.howTo}
+  faq={d.faq}
+  layoutSlug={DEFAULT_LAYOUT}
+  updated={d.updated}
+/>

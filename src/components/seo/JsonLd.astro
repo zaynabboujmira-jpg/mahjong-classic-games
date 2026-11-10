@@ -1,0 +1,11 @@
+---
+import { graph } from '@/lib/seo/schema';
+
+interface Props {
+  nodes: Record<string, unknown>[];
+}
+const { nodes } = Astro.props;
+// Escape "</script" so user content can never break out of the tag.
+const json = JSON.stringify(graph(nodes)).replace(/<\/script/gi, '<\\/script');
+---
+<script type="application/ld+json" set:html={json} />

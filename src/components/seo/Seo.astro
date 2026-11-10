@@ -1,0 +1,41 @@
+---
+import { SITE } from '@/data/site';
+import { buildTitle, buildDescription } from '@/lib/seo/meta';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path of this page, with trailing slash. Defaults to the current URL. */
+  path?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  withBrand?: boolean;
+}
+
+const { title, description, image, type = 'website', noindex = false, withBrand = true } = Astro.props;
+const site = Astro.site ?? new URL('https://example.com');
+const path = Astro.props.path ?? Astro.url.pathname;
+const canonical = new URL(path, site).toString();
+const fullTitle = buildTitle(title, withBrand);
+const desc = buildDescription(description);
+const ogImage = image ? new URL(image, site).toString() : undefined;
+---
+<title>{fullTitle}</title>
+<meta name="description" content={desc} />
+<link rel="canonical" href={canonical} />
+{noindex ? <meta name="robots" content="noindex,follow" /> : <meta name="robots" content="index,follow,max-image-preview:large" />}
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={desc} />
+<meta property="og:url" content={canonical} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={desc} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+{SITE.twitter && <meta name="twitter:site" content={SITE.twitter} />}

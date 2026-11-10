@@ -1,0 +1,12 @@
+{
+  "name": "Mahjong & Classic Puzzle Games",
+  "short_name": "Mahjong",
+  "description": "Free Mahjong Solitaire and classic puzzle games. Fast, ad-light, accessible.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f766e",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

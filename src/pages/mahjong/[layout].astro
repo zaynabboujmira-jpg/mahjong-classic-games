@@ -1,0 +1,38 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import GameLayout from '@/layouts/GameLayout.astro';
+import { LAYOUTS } from '@/engines/mahjong/layouts';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('layouts');
+  // A layout ships only when both the engine definition and its content page exist.
+  return Object.keys(LAYOUTS)
+    .filter((slug) => entries.some((e) => e.id === slug))
+    .map((slug) => ({ params: { layout: slug } }));
+}
+
+const { layout } = Astro.params;
+const meta = LAYOUTS[layout!];
+const entry = (await getEntry('layouts', layout!))!;
+const d = entry.data;
+const path = `/mahjong/${layout}/`;
+---
+<GameLayout
+  title={d.title}
+  description={d.description}
+  path={path}
+  h1={d.h1}
+  intro={d.intro}
+  genre="Tile matching puzzle"
+  gameplayVariant={`${meta.layout.name} layout, ${meta.layout.slots.length} tiles, ${meta.difficulty}`}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Mahjong layouts', path: '/mahjong/' },
+    { name: meta.layout.name, path },
+  ]}
+  steps={d.tips}
+  stepsTitle={`Tips for the ${meta.layout.name}`}
+  faq={d.faq}
+  layoutSlug={layout!}
+  updated={d.updated}
+/>

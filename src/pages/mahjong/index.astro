@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/seo/Breadcrumbs.astro';
+import LayoutCard from '@/components/content/LayoutCard.astro';
+import { LAYOUTS } from '@/engines/mahjong/layouts';
+import { breadcrumbs } from '@/lib/seo/schema';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Mahjong layouts', path: '/mahjong/' },
+];
+const siteUrl = (Astro.site ?? new URL('https://example.com')).toString();
+const entries = Object.entries(LAYOUTS);
+---
+<BaseLayout
+  title="Mahjong Solitaire Layouts: Turtle, Pyramid, Fortress"
+  description="Choose a Mahjong Solitaire layout and play free online. Classic Turtle, beginner-friendly Pyramid and the hard Fortress, each with solvable deals, hints, timer and daily challenge."
+  path="/mahjong/"
+  schema={[
+    breadcrumbs(siteUrl, crumbs),
+    {
+      '@type': 'ItemList',
+      name: 'Mahjong Solitaire layouts',
+      itemListElement: entries.map(([slug, m], i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${m.layout.name} layout`,
+        url: new URL(`/mahjong/${slug}/`, siteUrl).toString(),
+      })),
+    },
+  ]}
+>
+  <div class="mx-auto max-w-6xl px-4 pt-6">
+    <Breadcrumbs {crumbs} />
+    <h1 class="mt-2 text-3xl font-bold">Mahjong Solitaire layouts</h1>
+    <p class="mt-2 max-w-2xl text-muted">
+      Every layout uses the same rules and the same solvable-deal generator. Pick by difficulty or by the board you remember.
+    </p>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {entries.map(([slug, m]) => (
+        <LayoutCard slug={slug} layout={m.layout} difficulty={m.difficulty} blurb={m.blurb} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

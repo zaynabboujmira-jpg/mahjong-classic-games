@@ -1,0 +1,99 @@
+---
+import '@/styles/global.css';
+import Seo from '@/components/seo/Seo.astro';
+import JsonLd from '@/components/seo/JsonLd.astro';
+import { SITE } from '@/data/site';
+import { liveGames, plannedGames } from '@/data/games.registry';
+import { organization, website } from '@/lib/seo/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  withBrand?: boolean;
+  /** Extra JSON-LD nodes appended to the site graph. */
+  schema?: Record<string, unknown>[];
+  /** Full-bleed game pages use a tighter chrome. */
+  compact?: boolean;
+}
+
+const { title, description, path, image, type, noindex, withBrand, schema = [], compact = false } = Astro.props;
+const siteUrl = (Astro.site ?? new URL('https://example.com')).toString();
+const nodes = [organization(siteUrl), website(siteUrl), ...schema];
+const live = liveGames();
+const planned = plannedGames();
+const year = new Date().getFullYear();
+---
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content={SITE.themeColor} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Seo {title} {description} {path} {image} {type} {noindex} {withBrand} />
+    <JsonLd nodes={nodes} />
+    <script is:inline>
+      // Apply saved theme/contrast before paint to avoid a flash.
+      try {
+        var s = JSON.parse(localStorage.getItem('og:settings') || '{}');
+        if (s.theme === 'dark' || s.theme === 'light') document.documentElement.dataset.theme = s.theme;
+        if (s.highContrast) document.documentElement.dataset.contrast = 'high';
+      } catch (e) {}
+    </script>
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a href="#main" class="skip-link">Skip to game</a>
+    <header class="border-b border-border bg-bg-elev">
+      <div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2">
+        <a href="/" class="flex items-center gap-2 text-lg font-bold" aria-label={`${SITE.name} home`}>
+          <span class="inline-grid size-8 place-items-center rounded-md bg-accent text-accent-fg">中</span>
+          <span class={compact ? 'hidden sm:inline' : ''}>{SITE.shortName}</span>
+        </a>
+        <nav aria-label="Games" class="ml-auto flex items-center gap-1 overflow-x-auto text-sm">
+          {live.map((g) => (
+            <a href={g.path} class="rounded-md px-3 py-2 font-medium hover:bg-bg whitespace-nowrap">{g.icon} {g.shortName}</a>
+          ))}
+          <a href="/mahjong/" class="rounded-md px-3 py-2 font-medium hover:bg-bg whitespace-nowrap">Layouts</a>
+          <a href="/games/" class="rounded-md px-3 py-2 font-medium hover:bg-bg whitespace-nowrap">All games</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="mt-12 border-t border-border bg-bg-elev text-sm text-muted">
+      <div class="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-3">
+        <div>
+          <p class="font-semibold text-fg">{SITE.name}</p>
+          <p class="mt-1">Free, fast and accessible classic games. No download, no registration.</p>
+        </div>
+        <div>
+          <p class="font-semibold text-fg">Play</p>
+          <ul class="mt-1 space-y-1">
+            {live.map((g) => <li><a href={g.path} class="hover:underline">{g.name}</a></li>)}
+            <li><a href="/mahjong/" class="hover:underline">Mahjong layouts</a></li>
+            {planned.map((g) => <li><span>{g.name}</span> <span class="text-xs">(coming soon)</span></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="font-semibold text-fg">Site</p>
+          <ul class="mt-1 space-y-1">
+            <li><a href="/about/" class="hover:underline">About</a></li>
+            <li><a href="/privacy/" class="hover:underline">Privacy</a></li>
+            <li><a href="/contact/" class="hover:underline">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="pb-6 text-center text-xs">© {year} {SITE.name}</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+---
+interface Props {
+  steps: string[];
+  title?: string;
+}
+const { steps, title = 'How to play' } = Astro.props;
+---
+<section aria-labelledby="howto-heading" class="prose-game">
+  <h2 id="howto-heading">{title}</h2>
+  <ol>
+    {steps.map((s) => <li>{s}</li>)}
+  </ol>
+</section>

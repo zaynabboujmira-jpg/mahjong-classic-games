@@ -1,0 +1,22 @@
+---
+import type { FaqItem } from '@/lib/seo/schema';
+interface Props {
+  items: FaqItem[];
+  title?: string;
+}
+const { items, title = 'Frequently asked questions' } = Astro.props;
+---
+<section aria-labelledby="faq-heading" class="prose-game">
+  <h2 id="faq-heading">{title}</h2>
+  <div class="divide-y divide-border rounded-xl border border-border bg-bg-elev">
+    {items.map((it) => (
+      <details class="group p-4">
+        <summary class="cursor-pointer list-none font-semibold [&::-webkit-details-marker]:hidden">
+          <span class="mr-2 inline-block transition-transform group-open:rotate-90" aria-hidden="true">▸</span>
+          <h3 class="inline text-base font-semibold">{it.q}</h3>
+        </summary>
+        <p class="mt-2 text-muted">{it.a}</p>
+      </details>
+    ))}
+  </div>
+</section>

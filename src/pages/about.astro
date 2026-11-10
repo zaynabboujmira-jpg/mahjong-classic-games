@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/data/site';
+---
+<BaseLayout
+  title="About"
+  description={`About ${SITE.name}: who builds it, why every game is free, and how we keep the site fast, accessible and light on ads. No accounts, no tracking cookies, no downloads.`}
+  path="/about/"
+>
+  <article class="prose-game mx-auto max-w-3xl px-4 pt-8">
+    <h1 class="text-3xl font-bold">About {SITE.name}</h1>
+    <p class="mt-4">
+      We build classic games the way they should work on the web in {new Date().getFullYear()}: instant to load, playable on any screen, readable by anyone, and free of pop-ups over the board.
+    </p>
+    <h2>What makes it different</h2>
+    <ul>
+      <li>Every deal is generated to be solvable.</li>
+      <li>Boards scale to the device and keep tiles at a comfortable touch size, with a large-tile mode for extra readability.</li>
+      <li>Full keyboard play and screen-reader announcements.</li>
+      <li>No account, no tracking cookies; your settings and best times stay on your device.</li>
+    </ul>
+    <h2>Contact</h2>
+    <p>See the <a href="/contact/">contact page</a>.</p>
+  </article>
+</BaseLayout>
