@@ -30,13 +30,16 @@ const layouts = defineCollection({
 const solitaire = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/solitaire' }),
   schema: z.object({
-    /** Engine variant; only Klondike exists today. */
-    engine: z.enum(['klondike']),
+    engine: z.enum(['klondike', 'spider', 'freecell']),
+    order: z.number().int(),
     title: z.string().min(10).max(48),
     h1: z.string().min(10).max(70),
     description: z.string().min(110).max(160),
     summary: z.string().min(20).max(140),
-    defaultDraw: z.union([z.literal(1), z.literal(3)]),
+    /** Klondike only. */
+    defaultDraw: z.union([z.literal(1), z.literal(3)]).optional(),
+    /** Spider only. */
+    defaultSuits: z.union([z.literal(1), z.literal(2), z.literal(4)]).optional(),
     keywords: z.array(z.string()).min(2),
     updated: z.coerce.date(),
     howTo: z.array(z.object({ name: z.string().min(3), text: z.string().min(20) })).min(3),

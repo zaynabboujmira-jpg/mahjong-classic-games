@@ -1,13 +1,10 @@
 import type { Rng } from '../core/rng';
-import { isRed, shuffledDeck, type Card } from './cards';
+import { cardLabel, isRed, shuffledDeck, type Card } from './cards';
+import { STOCK, WASTE, foundation, samePile, tableau, type Hint, type PileRef, type SolitaireEngine, type TableSpec } from './table';
+
+export { STOCK, WASTE, foundation, samePile, tableau, type Hint, type PileRef } from './table';
 
 export type DrawMode = 1 | 3;
-
-export type PileRef =
-  | { readonly kind: 'stock' }
-  | { readonly kind: 'waste' }
-  | { readonly kind: 'foundation'; readonly index: number }
-  | { readonly kind: 'tableau'; readonly index: number };
 
 export interface TableauPile {
   readonly cards: readonly Card[];
@@ -23,14 +20,16 @@ export interface KlondikeState {
   readonly moves: number;
 }
 
-export type Hint = { kind: 'draw' } | { kind: 'move'; from: PileRef; index: number; to: PileRef };
-
-export const STOCK: PileRef = { kind: 'stock' };
-export const WASTE: PileRef = { kind: 'waste' };
-export const foundation = (index: number): PileRef => ({ kind: 'foundation', index });
-export const tableau = (index: number): PileRef => ({ kind: 'tableau', index });
-export const samePile = (a: PileRef, b: PileRef) =>
-  a.kind === b.kind && ('index' in a ? a.index : -1) === ('index' in b ? b.index : -1);
+/** Klondike table: stock, waste, gap, four foundations; seven columns below. */
+export const klondikeSpec = (drawMode: DrawMode): TableSpec => ({
+  columns: 7,
+  tableau: 7,
+  top: [
+    { pile: STOCK, col: 0, stack: true, label: '↻' },
+    { pile: WASTE, col: 1, fan: drawMode === 3 ? 3 : 1 },
+    ...[0, 1, 2, 3].map((f) => ({ pile: foundation(f), col: 3 + f, label: 'A' })),
+  ],
+});
 
 interface MutState {
   stock: Card[];
@@ -56,7 +55,7 @@ const HISTORY_LIMIT = 1000;
  * from Ace, unlimited passes through the stock in Draw 1 or Draw 3.
  * Every move is undoable (the state is small, so history stores snapshots).
  */
-export class Klondike {
+export class Klondike implements SolitaireEngine {
   private s: MutState;
   private readonly history: MutState[] = [];
 
@@ -82,6 +81,37 @@ export class Klondike {
   get state(): KlondikeState {
     return this.s;
   }
+  get moves(): number {
+    return this.s.moves;
+  }
+  get status(): string {
+    return `Draw ${this.drawMode}`;
+  }
+  /** Truly stuck: stock and waste are empty and no card can legally move anywhere. */
+  get isStuck(): boolean {
+    if (this.isWon || this.s.stock.length || this.s.waste.length) return false;
+    const targets = [0, 1, 2, 3].map(foundation).concat([0, 1, 2, 3, 4, 5, 6].map(tableau));
+    for (let i = 0; i < 7; i++) {
+      const t = this.s.tableau[i]!;
+      for (let index = t.faceDown; index < t.cards.length; index++) {
+        if (targets.some((to) => this.canMove(tableau(i), index, to))) return false;
+      }
+    }
+    for (let f = 0; f < 4; f++) {
+      const n = this.s.foundations[f]!.length;
+      if (n && targets.some((to) => this.canMove(foundation(f), n - 1, to))) return false;
+    }
+    return true;
+  }
+  cardsIn(p: PileRef): readonly Card[] {
+    return pileCards(this.s, p);
+  }
+  faceDownIn(p: PileRef): number {
+    return p.kind === 'tableau' ? this.s.tableau[p.index]!.faceDown : 0;
+  }
+  drawBlockedReason(): string | null {
+    return this.s.stock.length || this.s.waste.length ? null : 'The stock and waste are empty.';
+  }
   get canUndo(): boolean {
     return this.history.length > 0;
   }
@@ -104,16 +134,19 @@ export class Klondike {
   }
 
   /** Turn cards from stock to waste, or turn the waste back over when the stock is empty. */
-  draw(): boolean {
+  draw(): string | null {
     const n = clone(this.s);
     if (n.stock.length > 0) {
       for (let k = 0; k < this.drawMode && n.stock.length > 0; k++) n.waste.push(n.stock.pop()!);
     } else if (n.waste.length > 0) {
       n.stock = n.waste.reverse();
       n.waste = [];
-    } else return false;
+      this.commit(n);
+      return 'Waste turned over.';
+    } else return null;
     this.commit(n);
-    return true;
+    const top = cardLabel(n.waste[n.waste.length - 1]!);
+    return this.drawMode === 3 ? `Turned up to 3 cards; ${top} is on top.` : `Drew ${top}.`;
   }
 
   /** Cards that would move when picking up `index` of a pile, or null if that card cannot be picked up. */
@@ -121,6 +154,7 @@ export class Klondike {
     const s = this.s;
     switch (from.kind) {
       case 'stock':
+      case 'cell':
         return null;
       case 'waste':
         return index === s.waste.length - 1 && index >= 0 ? [s.waste[index]!] : null;
@@ -264,5 +298,7 @@ function pileCards(s: MutState, p: PileRef): Card[] {
       return s.foundations[p.index]!;
     case 'tableau':
       return s.tableau[p.index]!.cards;
+    case 'cell':
+      return [];
   }
 }

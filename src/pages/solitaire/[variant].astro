@@ -3,6 +3,9 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import KlondikeGame from '../../components/game/KlondikeGame';
+import SpiderGame from '../../components/game/SpiderGame';
+import FreeCellGame from '../../components/game/FreeCellGame';
+import { FAMOUS_DEALS } from '../../data/freecell';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import Faq from '../../components/content/Faq.astro';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
@@ -20,6 +23,7 @@ interface Props {
 const { entry } = Astro.props;
 const { data } = entry;
 const { Content } = await render(entry);
+const other = { name: 'Play Mahjong', href: '/mahjong/' };
 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
@@ -55,7 +59,9 @@ const jsonLd = graph(
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">{data.h1}</h1>
     </div>
-    <KlondikeGame client:load defaultMode={data.defaultDraw} otherGame={{ name: 'Play Mahjong', href: '/mahjong/' }} />
+    {data.engine === 'klondike' && <KlondikeGame client:load defaultDraw={data.defaultDraw ?? 1} otherGame={other} />}
+    {data.engine === 'spider' && <SpiderGame client:load defaultSuits={data.defaultSuits ?? 1} otherGame={other} />}
+    {data.engine === 'freecell' && <FreeCellGame client:load otherGame={other} />}
   </div>
 
   <div class="container-page mt-8">
@@ -79,6 +85,26 @@ const jsonLd = graph(
         }
       </ol>
     </section>
+
+    {
+      data.engine === 'freecell' && (
+        <section aria-labelledby="deals-heading" class="mt-10">
+          <h2 id="deals-heading" class="text-2xl font-bold mb-2">Play a numbered deal</h2>
+          <p class="text-muted mb-4">
+            Every deal has a number, the same as in the classic Windows game. Share a deal by its link, or start from one of these:
+          </p>
+          <ul class="flex flex-wrap gap-2">
+            {FAMOUS_DEALS.map((d) => (
+              <li>
+                <a class="btn" href={`/solitaire/freecell/deal/${d.deal}/`}>
+                  #{d.deal}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     <Faq items={data.faq} />
 

@@ -19,8 +19,16 @@ export const getStaticPaths = (async () => {
         art: layoutArt(getLayout(p.id)!.slots),
       },
     })),
-    { params: { key: 'solitaire' }, props: { title: 'Free Solitaire Games', subtitle: 'Klondike · Draw 1 or Draw 3', art: cardFanArt() } },
+    { params: { key: 'solitaire' }, props: { title: 'Free Solitaire Games', subtitle: 'Klondike · Spider · FreeCell', art: cardFanArt() } },
     { params: { key: 'solitaire-klondike' }, props: { title: 'Klondike Solitaire', subtitle: 'Draw 1 or Draw 3 · Play free', art: cardFanArt() } },
+    {
+      params: { key: 'solitaire-spider' },
+      props: { title: 'Spider Solitaire', subtitle: '1, 2 or 4 suits · Play free', art: cardFanArt([['K', 's'], ['Q', 's'], ['J', 's'], ['10', 's'], ['9', 's']]) },
+    },
+    {
+      params: { key: 'solitaire-freecell' },
+      props: { title: 'FreeCell', subtitle: 'Classic numbered deals · Play free', art: cardFanArt([['A', 'c'], ['A', 'd'], ['A', 'h'], ['A', 's'], ['K', 'h']]) },
+    },
   ];
 }) satisfies GetStaticPaths;
 

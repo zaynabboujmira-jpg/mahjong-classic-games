@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { FAMOUS_DEALS } from '../data/freecell';
 
 export type SitemapSection = 'pages' | 'mahjong' | 'solitaire';
 export interface SitemapEntry {
@@ -36,6 +37,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.9,
       lastmod: v.data.updated,
     })),
+    ...FAMOUS_DEALS.map((d) => ({ path: `/solitaire/freecell/deal/${d.deal}/`, section: 'solitaire' as const, priority: 0.5 })),
   ];
 }
 

@@ -5,6 +5,7 @@ h1: Klondike Solitaire – free, Draw 1 or Draw 3
 description: Play Klondike Solitaire free online in Draw 1 or Draw 3. Drag or tap to move, unlimited undo, hints and auto-finish. No download and no sign-up needed.
 summary: The classic patience game. Build four foundations from Ace to King, in Draw 1 or Draw 3.
 defaultDraw: 1
+order: 1
 keywords: [klondike solitaire, solitaire, free solitaire, solitaire draw 3, solitaire draw 1]
 updated: 2026-11-11
 howTo:

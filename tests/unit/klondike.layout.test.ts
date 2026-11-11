@@ -1,19 +1,28 @@
 import { describe, expect, it } from 'vitest';
 import { createRng } from '../../src/engines/core/rng';
 import { FULL_DECK } from '../../src/engines/solitaire/cards';
-import { Klondike, foundation, tableau, type KlondikeState } from '../../src/engines/solitaire/klondike';
-import { MAX_CARD_W, dropTarget, hitTest, layoutScene, metricsFor } from '../../src/engines/solitaire/layout';
+import { Klondike, foundation, klondikeSpec, tableau, type KlondikeState } from '../../src/engines/solitaire/klondike';
+import { MAX_CARD_W, dropTarget, hitTest, layoutTable, metricsFor } from '../../src/engines/solitaire/layout';
+
+const layoutScene = (state: KlondikeState, w: number, h: number, mode: 1 | 3) =>
+  layoutTable(klondikeSpec(mode), Klondike.fromState(state, mode), w, h);
 
 const dealt = new Klondike(createRng('layout')).state;
 
 describe('metricsFor', () => {
-  for (const [w, h] of [[320, 480], [375, 600], [393, 700], [412, 760], [768, 900], [1440, 800]] as const) {
-    it(`fits seven columns in ${w}px without horizontal overflow`, () => {
-      const m = metricsFor(w, h);
-      expect(m.colX[6]! + m.cardW + m.gap).toBeLessThanOrEqual(w + 0.01);
-      expect(m.colX[0]! - m.gap).toBeGreaterThanOrEqual(-0.01);
-    });
+  for (const cols of [7, 8, 10]) {
+    for (const [w, h] of [[320, 480], [375, 600], [393, 700], [412, 760], [768, 900], [1440, 800]] as const) {
+      it(`fits ${cols} columns in ${w}px without horizontal overflow`, () => {
+        const m = metricsFor(w, h, cols);
+        expect(m.colX[cols - 1]! + m.cardW + m.gap).toBeLessThanOrEqual(w + 0.01);
+        expect(m.colX[0]! - m.gap).toBeGreaterThanOrEqual(-0.01);
+      });
+    }
   }
+  it('keeps 10-column (Spider) cards at least 34px and 8-column (FreeCell) at least 41px on a 375px phone', () => {
+    expect(metricsFor(375, 600, 10).cardW).toBeGreaterThanOrEqual(34);
+    expect(metricsFor(375, 600, 8).cardW).toBeGreaterThanOrEqual(41);
+  });
   it('keeps cards at least 44px wide on a 375px phone', () => {
     expect(metricsFor(375, 600).cardW).toBeGreaterThanOrEqual(44);
   });

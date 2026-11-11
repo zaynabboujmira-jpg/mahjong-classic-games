@@ -26,8 +26,20 @@ export const GAMES: readonly GameEntry[] = [
     href: '/solitaire/klondike/',
     blurb: 'The classic card patience. Build the foundations from Ace to King in Draw 1 or Draw 3.',
   },
-  { slug: 'spider-solitaire', name: 'Spider Solitaire', status: 'planned', blurb: 'Build suits from King to Ace with one, two or four suits.' },
-  { slug: 'freecell', name: 'FreeCell', status: 'planned', blurb: 'Four free cells, every deal winnable with careful play.' },
+  {
+    slug: 'spider-solitaire',
+    name: 'Spider Solitaire',
+    status: 'live',
+    href: '/solitaire/spider/',
+    blurb: 'Build full runs from King to Ace across ten columns, with one, two or four suits.',
+  },
+  {
+    slug: 'freecell',
+    name: 'FreeCell',
+    status: 'live',
+    href: '/solitaire/freecell/',
+    blurb: 'Four free cells and every card face up. Play the classic numbered deals.',
+  },
   { slug: 'sudoku', name: 'Sudoku', status: 'planned', blurb: 'Logic number puzzles from easy to expert.' },
   { slug: 'minesweeper', name: 'Minesweeper', status: 'planned', blurb: 'Clear the field without hitting a mine.' },
 ];

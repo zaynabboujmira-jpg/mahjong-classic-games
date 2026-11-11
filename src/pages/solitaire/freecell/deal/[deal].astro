@@ -1,0 +1,111 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import FreeCellGame from '../../../../components/game/FreeCellGame';
+import Breadcrumbs from '../../../../components/seo/Breadcrumbs.astro';
+import { FAMOUS_DEALS } from '../../../../data/freecell';
+import { RANK_LABELS, SUIT_SYMBOLS, SUIT_NAMES, isRed } from '../../../../engines/solitaire/cards';
+import { msDeal } from '../../../../engines/solitaire/freecell';
+import { canonicalUrl, ogImagePath } from '../../../../lib/seo/meta';
+import { breadcrumbs, graph, organization, videoGame, webPage, website } from '../../../../lib/seo/schema';
+
+/** One page per curated deal; its starting layout is unique content generated from the deal number. */
+export const getStaticPaths = (() => FAMOUS_DEALS.map((d) => ({ params: { deal: String(d.deal) }, props: d }))) satisfies GetStaticPaths;
+
+interface Props {
+  deal: number;
+  note: string;
+}
+const { deal, note } = Astro.props;
+const cascades = msDeal(deal);
+const rows = Math.max(...cascades.map((c) => c.length));
+const aces = cascades.flatMap((col, i) => col.map((c, r) => ({ c, col: i + 1, depth: col.length - r - 1 }))).filter((x) => x.c.rank === 1);
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = `FreeCell Deal #${deal}`;
+const description = `Play FreeCell deal #${deal} free online, the same cards as in classic Windows FreeCell. ${note}`;
+const image = ogImagePath('solitaire-freecell');
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Solitaire', href: '/solitaire/' },
+  { name: 'FreeCell', href: '/solitaire/freecell/' },
+  { name: `Deal #${deal}`, href: `/solitaire/freecell/deal/${deal}/` },
+];
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  videoGame(origin, {
+    url,
+    name: `FreeCell – deal #${deal}`,
+    description,
+    image: new URL(image, site).href,
+    genre: ['Card game', 'Solitaire', 'FreeCell'],
+    keywords: [`freecell ${deal}`, `freecell deal ${deal}`, 'freecell'],
+  }),
+);
+const others = FAMOUS_DEALS.filter((d) => d.deal !== deal);
+const short = (rank: number) => RANK_LABELS[rank];
+---
+
+<BaseLayout title={title} description={description} image={image} imageAlt="FreeCell cards on a green table" jsonLd={jsonLd}>
+  <div class="game-shell">
+    <div class="container-page pt-2 pb-1">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">FreeCell deal #{deal}</h1>
+    </div>
+    <FreeCellGame client:load deal={deal} otherGame={{ name: 'More FreeCell', href: '/solitaire/freecell/' }} />
+  </div>
+
+  <div class="container-page mt-8 max-w-4xl">
+    <section class="prose-copy">
+      <h2>About deal #{deal}</h2>
+      <p>{note}</p>
+      <p>
+        FreeCell deals are numbered: the number fixes exactly which card goes where, so deal #{deal} here is the same game as deal #{deal}
+        in classic Windows FreeCell. The four Aces start in {aces.map((a) => `column ${a.col} (${a.depth === 0 ? 'on top' : `${a.depth} card${a.depth > 1 ? 's' : ''} down`})`).join(', ')}.
+      </p>
+    </section>
+
+    <section aria-labelledby="layout-heading" class="mt-6">
+      <h2 id="layout-heading" class="text-2xl font-bold mb-3">Starting layout</h2>
+      <div class="overflow-x-auto rounded-xl border border-border bg-card">
+        <table class="w-full text-center text-sm tabular-nums">
+          <caption class="sr-only">Cards in each of the eight columns of deal {deal}, from the back of the column to the front</caption>
+          <thead>
+            <tr>{cascades.map((_, i) => <th scope="col" class="px-2 py-2 text-muted font-semibold">Col {i + 1}</th>)}</tr>
+          </thead>
+          <tbody>
+            {
+              Array.from({ length: rows }, (_, r) => (
+                <tr class="border-t border-border">
+                  {cascades.map((col) => {
+                    const c = col[r];
+                    return (
+                      <td class="px-2 py-1.5 font-semibold" style={c && isRed(c) ? 'color:#c2272d' : ''}>
+                        {c ? <abbr title={`${short(c.rank)} of ${SUIT_NAMES[c.suit]}`} class="no-underline">{short(c.rank)}{SUIT_SYMBOLS[c.suit]}</abbr> : ''}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="other-deals" class="mt-10">
+      <h2 id="other-deals" class="text-2xl font-bold mb-3">Other numbered deals</h2>
+      <ul class="flex flex-wrap gap-2">
+        {others.map((d) => <li><a class="btn" href={`/solitaire/freecell/deal/${d.deal}/`}>#{d.deal}</a></li>)}
+      </ul>
+      <p class="text-muted mt-4">
+        Or <a class="text-brand font-semibold hover:underline" href="/solitaire/freecell/">play a random deal</a> and read the full rules and strategy guide.
+      </p>
+    </section>
+  </div>
+</BaseLayout>

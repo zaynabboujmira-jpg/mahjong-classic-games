@@ -1,5 +1,5 @@
 import { RANK_LABELS, SUIT_SYMBOLS, isRed, type Card } from './cards';
-import { samePile, type PileRef } from './klondike';
+import { samePile, type PileRef } from './table';
 import type { Rect, Scene } from './layout';
 
 export interface CardRef {
@@ -84,7 +84,7 @@ export class CardRenderer {
       g.lineWidth = 1.5;
       roundRect(g, s.rect, radius);
       g.stroke();
-      const label = s.pile.kind === 'foundation' ? 'A' : s.pile.kind === 'stock' ? '↻' : '';
+      const label = s.label;
       if (label) {
         g.fillStyle = C.slotText;
         g.font = `700 ${w * 0.4}px ${FONT}`;

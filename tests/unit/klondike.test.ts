@@ -70,7 +70,7 @@ describe('stock and waste', () => {
     expect(g.state.waste.map((x) => x.id)).toEqual(firstPass.slice(0, 3));
   });
   it('cannot draw from an empty stock and waste', () => {
-    expect(Klondike.fromState(emptyState()).draw()).toBe(false);
+    expect(Klondike.fromState(emptyState()).draw()).toBeNull();
   });
   it('only the top waste card can be picked up', () => {
     const g = Klondike.fromState(emptyState({ waste: [c(5, 's'), c(9, 'h')] }));

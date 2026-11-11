@@ -58,19 +58,16 @@ const SUIT_PATHS: Record<'s' | 'h' | 'd' | 'c', string> = {
   c: '<circle cx="50" cy="26" r="23"/><circle cx="24" cy="58" r="23"/><circle cx="76" cy="58" r="23"/><path d="M44 58 L56 58 L63 100 L37 100 Z"/>',
 };
 
-/** A fan of five playing cards (A K Q J 10 of alternating suits) for card-game pages. */
-export function cardFanArt(): OgArt {
-  const cards = [
-    ['A', 's', '#1b2823'],
-    ['K', 'h', '#c2272d'],
-    ['Q', 'c', '#1b2823'],
-    ['J', 'd', '#c2272d'],
-    ['10', 's', '#1b2823'],
-  ] as const;
+type FanCard = readonly [rank: string, suit: 's' | 'h' | 'd' | 'c'];
+const KLONDIKE_FAN: FanCard[] = [['A', 's'], ['K', 'h'], ['Q', 'c'], ['J', 'd'], ['10', 's']];
+
+/** A fan of five playing cards for card-game pages. */
+export function cardFanArt(cards: readonly FanCard[] = KLONDIKE_FAN): OgArt {
   const w = 170;
   const h = 238;
   const svg = cards
-    .map(([rank, suit, ink], i) => {
+    .map(([rank, suit], i) => {
+      const ink = suit === 'h' || suit === 'd' ? '#c2272d' : '#1b2823';
       const angle = (i - 2) * 11;
       const x = 150 + i * 62;
       return `<g transform="translate(${x} 300) rotate(${angle}) translate(${-w / 2} ${-h})">
