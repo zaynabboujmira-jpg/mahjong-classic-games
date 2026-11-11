@@ -32,17 +32,24 @@ src/
 │       ├── fit.ts           Tile sizing, portrait rotation, >=36px tiles, no h-overflow
 │       ├── layouts/         define.ts DSL + Turtle, Dragon, Pyramid, Fortress, Butterfly, Fish
 │       └── render/          canvas.ts (renderer + hit testing), faces.ts (tile art)
+│   └── solitaire/
+│       ├── cards.ts         Shared 52-card model (for Klondike now, Spider/FreeCell later)
+│       ├── klondike.ts      Rules: Draw 1/3, unlimited passes, undo, bestTarget, hint, auto-finish
+│       ├── layout.ts        Card sizing, fan compression, hit testing and drop targets
+│       └── render.ts        Canvas renderer (cached faces/back, selection, hint, drag)
 ├── components/
-│   ├── game/                MahjongGame.tsx (Preact island), GameShell.astro
+│   ├── game/                MahjongGame.tsx, KlondikeGame.tsx (Preact islands), GameShell.astro
 │   ├── seo/                 Seo.astro (meta/OG/Twitter/canonical/JSON-LD), Breadcrumbs.astro
 │   └── content/             Faq.astro, HowToPlay.astro, LayoutCard.astro
 ├── content/layouts/*.md     SEO copy per layout (validated by src/content.config.ts)
+├── content/solitaire/*.md   SEO copy, how-to steps and FAQ per solitaire variant
 ├── data/                    site.ts, games.ts (catalogue), mahjong.ts (how-to + FAQ copy)
 ├── lib/                     seo/ (meta, JSON-LD builders), routes.ts (sitemaps), og.ts, layout-preview.ts
 ├── layouts/BaseLayout.astro
 └── pages/
     ├── index.astro          Plays Turtle immediately
     ├── mahjong/             index.astro (gallery), [layout].astro (one page per layout)
+    ├── solitaire/           index.astro (hub), [variant].astro (/solitaire/klondike/)
     ├── games/index.astro    All games (planned ones listed, no pages yet)
     ├── og/[key].png.ts      Build-time OpenGraph PNGs
     ├── sitemap-index.xml.ts, sitemap-[section].xml.ts, robots.txt.ts, llms.txt.ts

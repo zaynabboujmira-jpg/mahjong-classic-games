@@ -26,4 +26,22 @@ const layouts = defineCollection({
   }),
 });
 
-export const collections = { layouts };
+/** One Markdown file per solitaire variant page (/solitaire/[variant]/). */
+const solitaire = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/solitaire' }),
+  schema: z.object({
+    /** Engine variant; only Klondike exists today. */
+    engine: z.enum(['klondike']),
+    title: z.string().min(10).max(48),
+    h1: z.string().min(10).max(70),
+    description: z.string().min(110).max(160),
+    summary: z.string().min(20).max(140),
+    defaultDraw: z.union([z.literal(1), z.literal(3)]),
+    keywords: z.array(z.string()).min(2),
+    updated: z.coerce.date(),
+    howTo: z.array(z.object({ name: z.string().min(3), text: z.string().min(20) })).min(3),
+    faq: z.array(z.object({ q: z.string().min(8), a: z.string().min(30) })).min(3),
+  }),
+});
+
+export const collections = { layouts, solitaire };

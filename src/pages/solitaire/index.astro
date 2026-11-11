@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import { GAMES } from '../../data/games';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, graph, organization, webPage, website } from '../../lib/seo/schema';
+
+const variants = await getCollection('solitaire');
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Free Solitaire Card Games';
+const description =
+  'Play free solitaire card games online. Klondike in Draw 1 or Draw 3 today, with Spider Solitaire and FreeCell coming soon. No download needed.';
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Solitaire', href: '/solitaire/' },
+];
+const comingSoon = GAMES.filter((g) => g.status === 'planned' && /solitaire|freecell/i.test(g.name));
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  {
+    '@type': 'ItemList',
+    '@id': `${url}#games`,
+    name: title,
+    itemListElement: variants.map((v, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: new URL(`/solitaire/${v.id}/`, site).href,
+      name: v.data.title,
+    })),
+  },
+);
+---
+
+<BaseLayout title={title} description={description} image={ogImagePath('solitaire')} imageAlt="Playing cards on a green table" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Solitaire card games</h1>
+    <p class="text-muted mt-2 max-w-2xl">Classic patience games with unlimited undo, hints and large, readable cards on any screen.</p>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+      {
+        variants.map((v) => (
+          <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
+            <h2 class="font-bold text-lg">
+              <a class="hover:text-brand" href={`/solitaire/${v.id}/`}>
+                {v.data.title}
+              </a>
+            </h2>
+            <p class="text-sm text-muted mt-2 flex-1">{v.data.summary}</p>
+            <a class="btn btn-primary mt-4 self-start" href={`/solitaire/${v.id}/`}>
+              Play now
+            </a>
+          </li>
+        ))
+      }
+      {
+        comingSoon.map((g) => (
+          <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
+            <div class="flex items-center justify-between gap-2">
+              <h2 class="font-bold text-lg">{g.name}</h2>
+              <span class="text-xs font-semibold rounded-full px-2 py-0.5 border border-border text-muted">Coming soon</span>
+            </div>
+            <p class="text-sm text-muted mt-2">{g.blurb}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

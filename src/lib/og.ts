@@ -36,13 +36,56 @@ function wrap(text: string, maxChars: number): string[] {
   return lines;
 }
 
-/** 1200x630 social card: title on the left, the layout's silhouette on the right. */
-export function ogCardSvg(opts: { title: string; subtitle: string; slots: readonly Slot[] }): string {
+export interface OgArt {
+  svg: string;
+  width: number;
+  height: number;
+}
+
+/** A Mahjong layout's silhouette, 540px wide. */
+export function layoutArt(slots: readonly Slot[]): OgArt {
+  const b = boundsOf(slots);
+  const width = 540;
+  const height = (width * ((b.h / 2) * 1.22 + (b.maxZ + 1) * 0.14)) / (b.w / 2 + (b.maxZ + 1) * 0.14);
+  return { svg: layoutPreviewSvg(slots, { tile: 10, width }), width, height };
+}
+
+/** Suit shapes as paths in a 100x100 box (the OG font has no suit glyphs). */
+const SUIT_PATHS: Record<'s' | 'h' | 'd' | 'c', string> = {
+  d: '<path d="M50 0 L88 50 L50 100 L12 50 Z"/>',
+  h: '<path d="M50 92 C20 66 0 47 0 29 C0 12 12 0 27 0 C38 0 46 7 50 16 C54 7 62 0 73 0 C88 0 100 12 100 29 C100 47 80 66 50 92 Z"/>',
+  s: '<path d="M50 0 C80 30 100 45 100 62 C100 77 88 88 74 88 C64 88 57 83 53 77 C54 88 58 95 66 100 L34 100 C42 95 46 88 47 77 C43 83 36 88 26 88 C12 88 0 77 0 62 C0 45 20 30 50 0 Z"/>',
+  c: '<circle cx="50" cy="26" r="23"/><circle cx="24" cy="58" r="23"/><circle cx="76" cy="58" r="23"/><path d="M44 58 L56 58 L63 100 L37 100 Z"/>',
+};
+
+/** A fan of five playing cards (A K Q J 10 of alternating suits) for card-game pages. */
+export function cardFanArt(): OgArt {
+  const cards = [
+    ['A', 's', '#1b2823'],
+    ['K', 'h', '#c2272d'],
+    ['Q', 'c', '#1b2823'],
+    ['J', 'd', '#c2272d'],
+    ['10', 's', '#1b2823'],
+  ] as const;
+  const w = 170;
+  const h = 238;
+  const svg = cards
+    .map(([rank, suit, ink], i) => {
+      const angle = (i - 2) * 11;
+      const x = 150 + i * 62;
+      return `<g transform="translate(${x} 300) rotate(${angle}) translate(${-w / 2} ${-h})">
+  <rect width="${w}" height="${h}" rx="14" fill="#fffdf8" stroke="#bfb6a3" stroke-width="2"/>
+  <text x="16" y="50" font-size="44" font-weight="700" fill="${ink}">${rank}</text>
+  <g transform="translate(${w / 2 - 40} ${h * 0.4}) scale(0.8)" fill="${ink}">${SUIT_PATHS[suit]}</g>
+</g>`;
+    })
+    .join('');
+  return { svg, width: 540, height: 340 };
+}
+
+/** 1200x630 social card: title on the left, artwork on the right. */
+export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt }): string {
   const titleLines = wrap(opts.title, 16).slice(0, 3);
-  const b = boundsOf(opts.slots);
-  const previewW = 540;
-  const previewH = (previewW * ((b.h / 2) * 1.22 + (b.maxZ + 1) * 0.14)) / (b.w / 2 + (b.maxZ + 1) * 0.14);
-  const preview = layoutPreviewSvg(opts.slots, { tile: 10, width: previewW });
   const titleSvg = titleLines
     .map((l, i) => `<text x="72" y="${200 + i * 84}" font-size="76" font-weight="700" fill="#ffffff">${esc(l)}</text>`)
     .join('');
@@ -53,7 +96,7 @@ export function ogCardSvg(opts: { title: string; subtitle: string; slots: readon
   ${titleSvg}
   <text x="72" y="${subY}" font-size="34" fill="#d7efe6">${esc(opts.subtitle)}</text>
   <text x="72" y="566" font-size="30" font-weight="700" fill="#f5d37a">${esc(SITE.name)}</text>
-  <g transform="translate(620 ${Math.round((630 - previewH) / 2)})">${preview}</g>
+  <g transform="translate(620 ${Math.round((630 - opts.art.height) / 2)})">${opts.art.svg}</g>
 </svg>`;
 }
 

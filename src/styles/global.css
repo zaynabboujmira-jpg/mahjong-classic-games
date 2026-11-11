@@ -207,6 +207,29 @@
     overflow: hidden;
     background: radial-gradient(ellipse at 50% 35%, var(--felt-1), var(--felt-2));
   }
+  /* Card games deal from the top of the table rather than the centre. */
+  .board-area-top {
+    align-items: flex-start;
+  }
+  .segmented {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    overflow: hidden;
+    background: var(--card);
+  }
+  .seg {
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .seg[aria-checked='true'] {
+    background: var(--brand);
+    color: var(--brand-fg);
+  }
   .board {
     display: block;
     touch-action: manipulation;

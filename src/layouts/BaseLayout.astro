@@ -16,9 +16,9 @@ interface Props {
 const props = Astro.props;
 const path = Astro.url.pathname;
 const nav = [
-  { href: '/mahjong/', label: 'Layouts' },
+  { href: '/mahjong/', label: 'Mahjong' },
+  { href: '/solitaire/', label: 'Solitaire' },
   { href: '/games/', label: 'All games' },
-  { href: '/about/', label: 'About' },
 ];
 const year = new Date().getFullYear();
 ---
@@ -79,6 +79,7 @@ const year = new Date().getFullYear();
         <p>© {year} {SITE.name}. Free to play, no sign-up.</p>
         <ul class="flex gap-4">
           <li><a class="hover:text-brand" href="/mahjong/">Mahjong layouts</a></li>
+          <li><a class="hover:text-brand" href="/solitaire/klondike/">Klondike Solitaire</a></li>
           <li><a class="hover:text-brand" href="/about/">About</a></li>
           <li><a class="hover:text-brand" href="/privacy/">Privacy</a></li>
         </ul>

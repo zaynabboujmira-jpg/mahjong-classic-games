@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 
-export type SitemapSection = 'pages' | 'mahjong';
+export type SitemapSection = 'pages' | 'mahjong' | 'solitaire';
 export interface SitemapEntry {
   path: string;
   section: SitemapSection;
@@ -11,6 +11,8 @@ export interface SitemapEntry {
 /** Every indexable URL, grouped into the split sitemaps. noindex pages are left out. */
 export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const layouts = (await getCollection('layouts')).sort((a, b) => a.data.order - b.data.order);
+  const variants = await getCollection('solitaire');
+  const newestVariant = variants.reduce<Date | undefined>((d, v) => (!d || v.data.updated > d ? v.data.updated : d), undefined);
   const newest = layouts.reduce<Date | undefined>(
     (d, l) => (!d || l.data.updated > d ? l.data.updated : d),
     undefined,
@@ -27,10 +29,17 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.8,
       lastmod: l.data.updated,
     })),
+    { path: '/solitaire/', section: 'solitaire', priority: 0.8, ...(newestVariant ? { lastmod: newestVariant } : {}) },
+    ...variants.map((v) => ({
+      path: `/solitaire/${v.id}/`,
+      section: 'solitaire' as const,
+      priority: 0.9,
+      lastmod: v.data.updated,
+    })),
   ];
 }
 
-export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong'];
+export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong', 'solitaire'];
 
 export function sitemapXml(entries: readonly SitemapEntry[], site: URL): string {
   const urls = entries
