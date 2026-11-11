@@ -1,169 +1,86 @@
-import type { Rng } from '../core/rng';
-import { isFree, overlaps, supportsOf } from './board';
-import { fullPairSet } from './tiles';
-import type { Layout, Slot, Tile, TileFace } from './types';
+import { freeSlots } from './board';
+import { randomInt, shuffleInPlace, type Rng } from '../core/rng';
+import { standardPairs } from './tiles';
+import type { Face, Topology } from './types';
+
+export interface Deal {
+  /** Face per slot index; null for slots that are not part of this deal. */
+  readonly faces: (Face | null)[];
+  /** One known winning sequence of pair removals, first move first. */
+  readonly solution: readonly (readonly [number, number])[];
+}
+
+export class GenerationError extends Error {}
 
 /**
- * Generates a guaranteed-solvable deal by simulating the game in reverse.
+ * Builds a deal that is guaranteed to be solvable.
  *
- * Forward play removes free pairs until the board is empty. Reversing that
- * sequence means: start empty, repeatedly place a pair of tiles so that
- *   - each tile's supports (layer below) are already placed, and
- *   - both tiles are free (removable) in the resulting board.
- * Assign the pair a matching face. Replaying the placement order backwards
- * is then a valid solution, which we return for hints and testing.
+ * It plays a game before any faces exist: starting from the full board it
+ * repeatedly removes two tiles that are free at that moment, then gives each
+ * removed pair a matching pair of faces. That removal order is a valid
+ * winning line, so every deal has at least one solution. If the random removal order paints
+ * itself into a corner (fewer than two free tiles while tiles remain) it
+ * retries with a fresh order.
  *
- * Placed tiles are never taken back, so a placement that leaves a run of empty
- * slots walled in on both sides (by placed tiles) can never be completed. Such
- * placements are rejected up front, which makes dead ends rare. Any remaining
- * dead end restarts with the same RNG stream, so output stays deterministic per seed.
+ * @param pairs Faces to place, one entry per pair. Defaults to a random
+ *   selection from the standard 144-tile set.
+ * @param present Which slots take part (used by shuffle to re-deal only the
+ *   tiles still on the board). Defaults to every slot.
  */
-export interface Deal {
-  tiles: Tile[];
-  /** Pairs in the order they can be removed. */
-  solution: [number, number][];
-}
+export function generateDeal(
+  topo: Topology,
+  rng: Rng,
+  options: { pairs?: [Face, Face][]; present?: readonly boolean[]; maxAttempts?: number } = {},
+): Deal {
+  const n = topo.slots.length;
+  const startPresent = options.present ?? new Array<boolean>(n).fill(true);
+  const count = startPresent.reduce((c, p) => c + (p ? 1 : 0), 0);
+  if (count % 2 !== 0) throw new GenerationError(`cannot deal an odd number of tiles (${count})`);
 
-export function generateDeal(layout: Layout, rng: Rng, faces?: [TileFace, TileFace][]): Deal {
-  const pairPool = faces ?? rng.shuffle(fullPairSet());
-  const needed = layout.slots.length / 2;
-  if (pairPool.length < needed) throw new Error('Not enough tile pairs for this layout');
-
-  for (let attempt = 0; attempt < 200; attempt++) {
-    const result = tryFill(layout.slots, rng);
-    if (result) {
-      const tiles: Tile[] = layout.slots.map((s, i) => ({ id: i, x: s.x, y: s.y, z: s.z, removed: false, face: pairPool[0][0] }));
-      const solution: [number, number][] = [];
-      result.forEach(([ia, ib], p) => {
-        const [fa, fb] = pairPool[p];
-        tiles[ia].face = fa;
-        tiles[ib].face = fb;
-      });
-      // Reverse of fill order is the forward solution.
-      for (let i = result.length - 1; i >= 0; i--) solution.push(result[i]);
-      return { tiles, solution };
-    }
+  const pairs = options.pairs ?? shuffleInPlace(standardPairs(), rng).slice(0, count / 2);
+  if (pairs.length !== count / 2) {
+    throw new GenerationError(`need ${count / 2} pairs, got ${pairs.length}`);
   }
-  throw new Error(`Could not generate a solvable deal for layout "${layout.slug}"`);
+
+  const maxAttempts = options.maxAttempts ?? 400;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const order = removalOrder(topo, startPresent, count, rng);
+    if (!order) continue;
+
+    const faces: (Face | null)[] = new Array<Face | null>(n).fill(null);
+    const shuffledPairs = shuffleInPlace(pairs.slice(), rng);
+    order.forEach(([a, b], k) => {
+      const [fa, fb] = shuffledPairs[k]!;
+      faces[a] = fa;
+      faces[b] = fb;
+    });
+    // Each pair was free on the board as it stood when it was taken, starting
+    // from the full board, so the removal order is already a forward solution.
+    return { faces, solution: order };
+  }
+  throw new GenerationError(`no solvable deal found after ${maxAttempts} attempts`);
 }
 
-function tryFill(slots: readonly Slot[], rng: Rng): [number, number][] | null {
-  const n = slots.length;
-  const filled: boolean[] = new Array(n).fill(false);
-  const present: Slot[] = [];
+/**
+ * Random sequence of pairs that empties the board, each pair free at the
+ * moment it is taken. Returns null on a dead end.
+ */
+function removalOrder(
+  topo: Topology,
+  startPresent: readonly boolean[],
+  count: number,
+  rng: Rng,
+): [number, number][] | null {
+  const present = startPresent.slice();
   const order: [number, number][] = [];
-  const supports = slots.map((s) => supportsOf(s, slots).map((sup) => slots.indexOf(sup)));
-
-  // Horizontal neighbours on the same layer (half-offsets included), precomputed.
-  const leftOf: number[][] = slots.map(() => []);
-  const rightOf: number[][] = slots.map(() => []);
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
-      if (i === j || slots[i].z !== slots[j].z || Math.abs(slots[i].y - slots[j].y) >= 2) continue;
-      if (slots[j].x === slots[i].x - 2) leftOf[i].push(j);
-      else if (slots[j].x === slots[i].x + 2) rightOf[i].push(j);
-    }
-  }
-
-  const canPlace = (i: number): boolean => {
-    if (filled[i]) return false;
-    for (const sup of supports[i]) if (!filled[sup]) return false;
-    for (const p of present) if (p.z > slots[i].z && overlaps(slots[i], p)) return false;
-    return isFree(slots[i], [...present, slots[i]]);
-  };
-
-  /** Can empty slot e still reach an open edge walking through empty slots in one direction? */
-  const openToward = (e: number, dir: number[][], visited: Set<number>): boolean => {
-    if (visited.has(e)) return false;
-    visited.add(e);
-    const nb = dir[e];
-    if (nb.length === 0) return true; // layout edge
-    for (const j of nb) if (!filled[j] && openToward(j, dir, visited)) return true;
-    return false;
-  };
-
-  /** Placing i must not strand any adjacent empty run between placed tiles. */
-  const strandsNeighbours = (i: number): boolean => {
-    filled[i] = true;
-    let stranded = false;
-    for (const e of [...leftOf[i], ...rightOf[i]]) {
-      if (filled[e]) continue;
-      if (!openToward(e, leftOf, new Set()) && !openToward(e, rightOf, new Set())) {
-        stranded = true;
-        break;
-      }
-    }
-    filled[i] = false;
-    return stranded;
-  };
-
-  const place = (i: number) => {
-    filled[i] = true;
-    present.push(slots[i]);
-  };
-  const unplace = (i: number) => {
-    filled[i] = false;
-    present.splice(present.indexOf(slots[i]), 1);
-  };
-
-  while (order.length * 2 < n) {
-    const candidates: number[] = [];
-    for (let i = 0; i < n; i++) if (canPlace(i) && !strandsNeighbours(i)) candidates.push(i);
-    if (candidates.length < 2) return null;
-    rng.shuffle(candidates);
-
-    let placed = false;
-    for (const a of candidates) {
-      place(a);
-      const seconds: number[] = [];
-      for (let b = 0; b < n; b++) if (b !== a && canPlace(b) && !strandsNeighbours(b)) seconds.push(b);
-      rng.shuffle(seconds);
-      for (const b of seconds) {
-        place(b);
-        if (isFree(slots[a], present) && isFree(slots[b], present)) {
-          order.push([a, b]);
-          placed = true;
-          break;
-        }
-        unplace(b);
-      }
-      if (placed) break;
-      unplace(a);
-    }
-    if (!placed) return null;
+  for (let left = count; left > 0; left -= 2) {
+    const free = freeSlots(topo, present);
+    if (free.length < 2) return null;
+    const a = free.splice(randomInt(rng, free.length), 1)[0]!;
+    const b = free[randomInt(rng, free.length)]!;
+    present[a] = false;
+    present[b] = false;
+    order.push([a, b]);
   }
   return order;
-}
-
-/**
- * Reshuffles the faces of the remaining tiles into a new solvable arrangement.
- * Positions stay fixed; only faces move. Returns null if fewer than 2 tiles remain.
- */
-export function reshuffleRemaining(tiles: Tile[], rng: Rng): Deal | null {
-  const remaining = tiles.filter((t) => !t.removed);
-  if (remaining.length < 2) return null;
-  const byKey = new Map<string, TileFace[]>();
-  for (const t of remaining) {
-    const list = byKey.get(t.face.matchKey) ?? [];
-    list.push(t.face);
-    byKey.set(t.face.matchKey, list);
-  }
-  const pairs: [TileFace, TileFace][] = [];
-  for (const list of byKey.values()) for (let i = 0; i + 1 < list.length; i += 2) pairs.push([list[i], list[i + 1]]);
-  rng.shuffle(pairs);
-
-  const subLayout: Layout = {
-    slug: 'sub',
-    name: 'sub',
-    slots: remaining.map((t) => ({ x: t.x, y: t.y, z: t.z })),
-    width: 0,
-    height: 0,
-    layers: 0,
-  };
-  const deal = generateDeal(subLayout, rng, pairs);
-  deal.tiles.forEach((nt, i) => {
-    remaining[i].face = nt.face;
-  });
-  const idMap = remaining.map((t) => t.id);
-  return { tiles, solution: deal.solution.map(([a, b]) => [idMap[a], idMap[b]]) };
 }

@@ -1,30 +1,30 @@
-import { SITE } from '@/data/site';
+import { SITE } from '../../data/site';
 
-const TITLE_MAX = 60;
-const DESC_MIN = 120;
-const DESC_MAX = 158;
+export const TITLE_MAX = 60;
+export const DESCRIPTION_MAX = 160;
 
-/**
- * Builds a page title. The brand suffix is dropped automatically when it would
- * push the title past the SERP truncation limit.
- */
-export function buildTitle(title: string, withBrand = true): string {
-  const suffix = ` | ${SITE.shortName}`;
-  if (!withBrand) return title;
-  return title.length + suffix.length <= TITLE_MAX ? title + suffix : title;
+/** "Page | Brand" when it fits in 60 characters, otherwise just the page title. */
+export function pageTitle(title: string): string {
+  const full = `${title} | ${SITE.name}`;
+  return full.length <= TITLE_MAX ? full : title;
 }
 
-/** Validates description length in dev so thin or overlong snippets never ship. */
-export function buildDescription(desc: string): string {
-  const trimmed = desc.trim();
-  if (import.meta.env?.DEV) {
-    if (trimmed.length < DESC_MIN) console.warn(`[seo] description short (${trimmed.length}): ${trimmed}`);
-    if (trimmed.length > DESC_MAX) console.warn(`[seo] description long (${trimmed.length}): ${trimmed}`);
-  }
-  return trimmed;
+/** Trims a description to 160 characters on a word boundary. */
+export function clampDescription(text: string): string {
+  const t = text.replace(/\s+/g, ' ').trim();
+  if (t.length <= DESCRIPTION_MAX) return t;
+  const cut = t.slice(0, DESCRIPTION_MAX - 1);
+  return `${cut.slice(0, cut.lastIndexOf(' '))}…`;
 }
 
-export function absoluteUrl(path: string, site: URL | string | undefined): string {
-  const base = typeof site === 'string' ? site : site?.toString() ?? 'https://example.com';
-  return new URL(path, base).toString();
+/** Absolute, self-referencing canonical: no query or hash, always a trailing slash for pages. */
+export function canonicalUrl(pathname: string, site: URL | string): string {
+  const url = new URL(pathname, site);
+  url.search = '';
+  url.hash = '';
+  if (!url.pathname.endsWith('/') && !/\.[a-z0-9]+$/i.test(url.pathname)) url.pathname += '/';
+  return url.href;
 }
+
+/** OG image path for a page key (rendered at build time by /og/[key].png). */
+export const ogImagePath = (key: string) => `/og/${key}.png`;

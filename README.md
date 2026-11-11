@@ -1,42 +1,57 @@
 # Mahjong & Classic Games
 
-Fast, accessible Mahjong Solitaire (and, soon, Klondike, Spider, FreeCell, Sudoku and Minesweeper) built with Astro, TypeScript, Tailwind and HTML5 Canvas, deployed on Cloudflare Pages.
-
-Blueprint and strategy: [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md).
+Fast, accessible Mahjong Solitaire built with Astro, TypeScript, Tailwind CSS v4, Preact islands and HTML5 Canvas, deployed as a static site on Cloudflare Pages. See [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md) for the strategy behind it.
 
 ## Commands
 
-```bash
-npm install
-npm run dev        # http://localhost:4321
-npm test           # engine + SEO unit tests (vitest)
-npm run check      # astro type check
-npm run build      # static output in dist/
+| Command | What it does |
+|---|---|
+| `npm run dev` | Dev server on http://localhost:4321 |
+| `npm run check` | `astro check` + `tsc --noEmit` |
+| `npm test` | Unit tests (Vitest) |
+| `npm run build` | Static build to `dist/` (pages, sitemaps, OG images) |
+| `npm run budget` | Fails if any page ships more than 60 KB gzipped JS |
+| `npm run verify` | All of the above, as run in CI |
+
+## Deploying to Cloudflare Pages
+
+Build command `npm run build`, output directory `dist`, environment variable `SITE_URL=https://your-domain` (used for canonicals, sitemaps and OpenGraph URLs; defaults to `https://example.com`).
+
+## Structure
+
+```
+src/
+├── engines/                 Framework-free game logic (unit tested)
+│   ├── core/                rng.ts (seeded PRNG), storage.ts (safe localStorage)
+│   └── mahjong/
+│       ├── types.ts         Slot (x, y in half-tile units, z layer), Face, Topology
+│       ├── tiles.ts         144-tile set, match rules (flowers/seasons match in group)
+│       ├── board.ts         Topology, free-tile rule, layout validation
+│       ├── generator.ts     Solvable deal generator (plays the board out first)
+│       ├── game.ts          State machine: select, match, undo, hint, shuffle, win/stuck
+│       ├── fit.ts           Tile sizing, portrait rotation, >=36px tiles, no h-overflow
+│       ├── layouts/         define.ts DSL + Turtle, Dragon, Pyramid, Fortress, Butterfly, Fish
+│       └── render/          canvas.ts (renderer + hit testing), faces.ts (tile art)
+├── components/
+│   ├── game/                MahjongGame.tsx (Preact island), GameShell.astro
+│   ├── seo/                 Seo.astro (meta/OG/Twitter/canonical/JSON-LD), Breadcrumbs.astro
+│   └── content/             Faq.astro, HowToPlay.astro, LayoutCard.astro
+├── content/layouts/*.md     SEO copy per layout (validated by src/content.config.ts)
+├── data/                    site.ts, games.ts (catalogue), mahjong.ts (how-to + FAQ copy)
+├── lib/                     seo/ (meta, JSON-LD builders), routes.ts (sitemaps), og.ts, layout-preview.ts
+├── layouts/BaseLayout.astro
+└── pages/
+    ├── index.astro          Plays Turtle immediately
+    ├── mahjong/             index.astro (gallery), [layout].astro (one page per layout)
+    ├── games/index.astro    All games (planned ones listed, no pages yet)
+    ├── og/[key].png.ts      Build-time OpenGraph PNGs
+    ├── sitemap-index.xml.ts, sitemap-[section].xml.ts, robots.txt.ts, llms.txt.ts
+    └── about, privacy, 404, [icon].png.ts
 ```
 
-Set `SITE_URL` (see `.env.example`) so canonical URLs, sitemap and OpenGraph use the real domain.
+### Adding a layout
 
-## Architecture
+1. Add a `defineLayout(...)` to `src/engines/mahjong/layouts/index.ts` and list it in `LAYOUTS`.
+2. Add `src/content/layouts/<id>.md` with the frontmatter fields from `src/content.config.ts`.
 
-| Folder | Purpose |
-|---|---|
-| `src/engines/` | DOM-free TypeScript game logic. `mahjong/` holds tile definitions, layouts, free-tile rules, the reverse-play solvable generator, the game state machine and the Canvas renderer. |
-| `src/components/game/` | Preact island: toolbar, settings, win dialog, keyboard and screen-reader support. |
-| `src/components/seo/` | `<Seo>` (title/meta/canonical/OG), `<JsonLd>`, `<Breadcrumbs>`. |
-| `src/lib/seo/` | Typed JSON-LD builders and title/description helpers. |
-| `src/data/games.registry.ts` | Single source of truth for games, routes and nav. |
-| `src/content/` | Markdown content collections (per-game and per-layout copy, how-to, FAQ). |
-| `src/pages/` | Routes: `/`, `/games/`, `/games/[slug]/`, `/mahjong/`, `/mahjong/[layout]/`, trust pages, `llms.txt`. |
-
-### Adding a Mahjong layout
-
-1. Create `src/engines/mahjong/layouts/<slug>.ts` with `defineLayout(...)` (half-tile units, 2x2 per tile, even tile count, no floating tiles).
-2. Register it in `src/engines/mahjong/layouts/index.ts` with a difficulty and blurb.
-3. Add `src/content/layouts/<slug>.md` with title, description, intro, tips and at least three FAQs.
-4. `npm test` verifies the layout is well-formed and that deals generate and replay to a win.
-
-The page `/mahjong/<slug>/`, its sitemap entry, breadcrumbs, JSON-LD and gallery card are generated automatically.
-
-## Deploy (Cloudflare Pages)
-
-Build command `npm run build`, output directory `dist`, environment variable `SITE_URL`. `public/_headers` sets caching and security headers. Update `public/robots.txt` with the real sitemap URL.
+The tests check every layout for an even tile count, no overlaps, solvable deals across 50 seeds, and >=36px tiles on common phones. The page, sitemap entry, OG image and llms.txt line are generated automatically.

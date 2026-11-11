@@ -1,21 +1,26 @@
 ---
-import type { Crumb } from '@/lib/seo/schema';
+/** Visible breadcrumb trail. The matching BreadcrumbList JSON-LD is built by the page. */
 interface Props {
-  crumbs: Crumb[];
+  items: readonly { name: string; href: string }[];
 }
-const { crumbs } = Astro.props;
+const { items } = Astro.props;
 ---
+
 <nav aria-label="Breadcrumb" class="text-sm text-muted">
   <ol class="flex flex-wrap items-center gap-1">
-    {crumbs.map((c, i) => (
-      <li class="flex items-center gap-1">
-        {i < crumbs.length - 1 ? (
-          <a href={c.path} class="hover:underline">{c.name}</a>
-        ) : (
-          <span aria-current="page" class="font-medium text-fg">{c.name}</span>
-        )}
-        {i < crumbs.length - 1 && <span aria-hidden="true">/</span>}
-      </li>
-    ))}
+    {
+      items.map((item, i) => (
+        <li class="flex items-center gap-1">
+          {i > 0 && <span aria-hidden="true">›</span>}
+          {i === items.length - 1 ? (
+            <span aria-current="page" class="text-fg">{item.name}</span>
+          ) : (
+            <a href={item.href} class="hover:text-brand underline-offset-2 hover:underline">
+              {item.name}
+            </a>
+          )}
+        </li>
+      ))
+    }
   </ol>
 </nav>

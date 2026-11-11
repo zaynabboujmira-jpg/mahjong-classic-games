@@ -1,16 +1,21 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { liveGames } from '@/data/games.registry';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ogImagePath } from '../lib/seo/meta';
 ---
-<BaseLayout title="Page not found" description="That page does not exist. Jump straight into a free game of Mahjong Solitaire or browse all layouts and games on the site." path="/404/" noindex>
-  <div class="mx-auto max-w-3xl px-4 pt-16 text-center">
-    <h1 class="text-4xl font-bold">Page not found</h1>
-    <p class="mt-3 text-muted">The tile you were looking for has already been matched.</p>
+
+<BaseLayout
+  title="Page not found"
+  description="This page does not exist. Pick a Mahjong layout or go back to the home page to keep playing free Mahjong Solitaire."
+  image={ogImagePath('home')}
+  imageAlt="Mahjong & Classic Games"
+  noindex
+>
+  <div class="container-page pt-12 text-center">
+    <h1 class="text-4xl font-extrabold">Page not found</h1>
+    <p class="text-muted mt-3">That tile seems to have been matched already.</p>
     <div class="mt-6 flex justify-center gap-3">
-      {liveGames().map((g) => (
-        <a href={g.path} class="inline-flex min-h-12 items-center rounded-lg bg-accent px-5 font-semibold text-accent-fg">Play {g.name}</a>
-      ))}
-      <a href="/" class="inline-flex min-h-12 items-center rounded-lg border border-border px-5 font-semibold">Home</a>
+      <a class="btn btn-primary" href="/">Play Mahjong</a>
+      <a class="btn" href="/mahjong/">All layouts</a>
     </div>
   </div>
 </BaseLayout>

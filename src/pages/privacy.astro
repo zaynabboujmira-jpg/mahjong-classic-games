@@ -1,23 +1,27 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { SITE } from '@/data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+import { ogImagePath } from '../lib/seo/meta';
 ---
+
 <BaseLayout
-  title="Privacy Policy"
-  description={`Privacy policy for ${SITE.name}. We set no tracking cookies, store game settings and best times only in your browser, and use cookieless, aggregate analytics.`}
-  path="/privacy/"
-  noindex
+  title="Privacy"
+  description={`How ${SITE.name} handles your data: no accounts, no tracking cookies, game settings and best times stored only in your own browser.`}
+  image={ogImagePath('home')}
+  imageAlt={SITE.name}
 >
-  <article class="prose-game mx-auto max-w-3xl px-4 pt-8">
-    <h1 class="text-3xl font-bold">Privacy policy</h1>
-    <p class="mt-4">Last updated 2026-11-10.</p>
-    <h2>What we store on your device</h2>
-    <p>Game settings (theme, large tiles, contrast) and your best times are saved in your browser's local storage. They never leave your device and you can clear them at any time through your browser settings.</p>
-    <h2>Cookies</h2>
-    <p>We do not set tracking cookies. If advertising is introduced it will be contextual and limited to pages outside the game board, and this policy will be updated first.</p>
-    <h2>Analytics</h2>
-    <p>We may use cookieless, aggregate analytics (such as Cloudflare Web Analytics) to count page views and measure performance. No personal profiles are built.</p>
-    <h2>Contact</h2>
-    <p>Questions about this policy can be sent through the <a href="/contact/">contact page</a>.</p>
-  </article>
+  <div class="container-page pt-6 prose-copy max-w-3xl">
+    <h1 class="text-3xl font-extrabold mb-4">Privacy</h1>
+    <p>
+      {SITE.name} does not ask for an account and does not set tracking cookies. Your game settings and best times are saved in your
+      browser's local storage on your own device and are never sent to us. Clearing your browser data removes them.
+    </p>
+    <h2>Hosting</h2>
+    <p>
+      The site is served by Cloudflare. Like any web host, Cloudflare processes technical data such as IP addresses to deliver pages and
+      protect the service.
+    </p>
+    <h2>Changes</h2>
+    <p>If we add analytics or advertising in the future, this page will be updated before that happens.</p>
+  </div>
 </BaseLayout>

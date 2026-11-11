@@ -1,131 +1,131 @@
+import { SITE } from '../../data/site';
+
 /**
- * Typed JSON-LD builders. Every route composes its graph from these so the
- * structured data stays consistent and unit-testable.
+ * Typed JSON-LD builders. Every page emits one @graph so entities can
+ * reference each other by @id (the game's publisher is the Organization, the
+ * WebPage is part of the WebSite, and so on).
  */
-import { SITE } from '@/data/site';
+export type JsonLd = Record<string, unknown>;
 
-type JsonLd = Record<string, unknown>;
+const id = (base: string, frag: string) => `${base}#${frag}`;
 
-export interface Crumb {
-  name: string;
-  path: string;
-}
-
-export function organization(siteUrl: string): JsonLd {
+export function organization(origin: string): JsonLd {
   return {
     '@type': 'Organization',
-    '@id': `${siteUrl}#organization`,
+    '@id': id(origin, 'organization'),
     name: SITE.name,
-    url: siteUrl,
-    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', siteUrl).toString() },
+    url: origin,
+    logo: `${origin}icon-512.png`,
     ...(SITE.sameAs.length ? { sameAs: SITE.sameAs } : {}),
   };
 }
 
-export function website(siteUrl: string): JsonLd {
+export function website(origin: string): JsonLd {
   return {
     '@type': 'WebSite',
-    '@id': `${siteUrl}#website`,
+    '@id': id(origin, 'website'),
     name: SITE.name,
-    url: siteUrl,
+    url: origin,
     inLanguage: SITE.lang,
-    publisher: { '@id': `${siteUrl}#organization` },
+    publisher: { '@id': id(origin, 'organization') },
   };
 }
 
-export function breadcrumbs(siteUrl: string, crumbs: Crumb[]): JsonLd {
+export function webPage(origin: string, url: string, name: string, description: string): JsonLd {
+  return {
+    '@type': 'WebPage',
+    '@id': id(url, 'webpage'),
+    url,
+    name,
+    description,
+    inLanguage: SITE.lang,
+    isPartOf: { '@id': id(origin, 'website') },
+  };
+}
+
+export function breadcrumbs(url: string, items: readonly { name: string; url: string }[]): JsonLd {
   return {
     '@type': 'BreadcrumbList',
-    itemListElement: crumbs.map((c, i) => ({
+    '@id': id(url, 'breadcrumbs'),
+    itemListElement: items.map((item, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      name: c.name,
-      item: new URL(c.path, siteUrl).toString(),
+      name: item.name,
+      item: item.url,
     })),
   };
 }
 
-export interface GameSchemaInput {
+export interface GameInfo {
+  url: string;
   name: string;
   description: string;
-  path: string;
-  genre: string;
-  image?: string;
-  /** e.g. "Turtle layout, 144 tiles" */
-  gameplayVariant?: string;
-  datePublished?: string;
-  dateModified?: string;
+  image: string;
+  /** e.g. ["Puzzle", "Tile-matching"] */
+  genre: readonly string[];
+  keywords?: readonly string[];
 }
 
 /**
- * Google reads `VideoGame` (a subtype of schema.org Game) for game rich results,
- * and `SoftwareApplication` for the free web-app signal. Emitting both is the
- * accepted pattern for browser games.
+ * The playable game as both VideoGame (schema.org's Game subtype) and
+ * SoftwareApplication, which is what Google's software rich results read.
  */
-export function game(siteUrl: string, input: GameSchemaInput): JsonLd[] {
-  const url = new URL(input.path, siteUrl).toString();
-  const common = {
-    name: input.name,
-    description: input.description,
-    url,
+export function videoGame(origin: string, g: GameInfo): JsonLd {
+  return {
+    '@type': ['VideoGame', 'SoftwareApplication'],
+    '@id': id(g.url, 'game'),
+    name: g.name,
+    url: g.url,
+    description: g.description,
+    image: g.image,
+    genre: g.genre,
+    ...(g.keywords?.length ? { keywords: g.keywords.join(', ') } : {}),
     inLanguage: SITE.lang,
+    gamePlatform: 'Web browser',
+    playMode: 'SinglePlayer',
+    numberOfPlayers: { '@type': 'QuantitativeValue', value: 1 },
+    applicationCategory: 'GameApplication',
+    applicationSubCategory: 'Puzzle game',
+    operatingSystem: 'Any (web browser)',
+    browserRequirements: 'Requires JavaScript and HTML5 Canvas.',
     isAccessibleForFree: true,
-    publisher: { '@id': `${siteUrl}#organization` },
-    ...(input.image ? { image: new URL(input.image, siteUrl).toString() } : {}),
-    ...(input.datePublished ? { datePublished: input.datePublished } : {}),
-    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD', availability: 'https://schema.org/InStock' },
+    publisher: { '@id': id(origin, 'organization') },
+    mainEntityOfPage: { '@id': id(g.url, 'webpage') },
   };
-  return [
-    {
-      '@type': 'VideoGame',
-      '@id': `${url}#game`,
-      ...common,
-      genre: input.genre,
-      gamePlatform: 'Web browser',
-      playMode: 'SinglePlayer',
-      numberOfPlayers: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 1 },
-      applicationCategory: 'GameApplication',
-      operatingSystem: 'Any',
-      ...(input.gameplayVariant ? { gameEdition: input.gameplayVariant } : {}),
-    },
-    {
-      '@type': 'SoftwareApplication',
-      '@id': `${url}#app`,
-      ...common,
-      applicationCategory: 'GameApplication',
-      applicationSubCategory: input.genre,
-      operatingSystem: 'Any',
-      browserRequirements: 'Requires JavaScript and HTML5 Canvas',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    },
-  ];
 }
 
-export interface FaqItem {
-  q: string;
-  a: string;
-}
-
-export function faqPage(items: FaqItem[]): JsonLd {
+export function faqPage(url: string, faq: readonly { q: string; a: string }[]): JsonLd {
   return {
     '@type': 'FAQPage',
-    mainEntity: items.map((it) => ({
+    '@id': id(url, 'faq'),
+    mainEntity: faq.map(({ q, a }) => ({
       '@type': 'Question',
-      name: it.q,
-      acceptedAnswer: { '@type': 'Answer', text: it.a },
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
     })),
   };
 }
 
-export function howTo(name: string, steps: string[]): JsonLd {
+export function howTo(url: string, name: string, steps: readonly { name: string; text: string }[]): JsonLd {
   return {
     '@type': 'HowTo',
+    '@id': id(url, 'howto'),
     name,
-    step: steps.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
+    totalTime: 'PT1M',
+    step: steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+      url: `${url}#how-to-play`,
+    })),
   };
 }
 
-/** Wraps nodes into a single @graph document. */
-export function graph(nodes: JsonLd[]): JsonLd {
-  return { '@context': 'https://schema.org', '@graph': nodes };
+export function graph(...nodes: (JsonLd | null | undefined | false)[]): JsonLd {
+  return { '@context': 'https://schema.org', '@graph': nodes.filter(Boolean) };
 }
+
+/** Serialises JSON-LD for a <script> tag, escaping "<" so content can never close the tag. */
+export const serializeJsonLd = (data: JsonLd) => JSON.stringify(data).replace(/</g, '\\u003c');

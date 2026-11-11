@@ -1,20 +1,8 @@
-/**
- * Deterministic PRNG (mulberry32) seeded from a number or string.
- * Used for shareable seeds and daily challenges: same seed, same board, on any device.
- */
-export interface Rng {
-  /** Float in [0, 1). */
-  next(): number;
-  /** Integer in [0, n). */
-  int(n: number): number;
-  /** In-place Fisher-Yates shuffle. */
-  shuffle<T>(arr: T[]): T[];
-  readonly seed: number;
-}
+/** Deterministic pseudo-random numbers so a deal can be reproduced from its seed. */
+export type Rng = () => number;
 
-export function hashSeed(input: string | number): number {
-  if (typeof input === 'number') return input >>> 0;
-  // FNV-1a 32-bit
+/** FNV-1a 32-bit hash: turns any string seed into a 32-bit integer. */
+export function hashSeed(input: string): number {
   let h = 0x811c9dc5;
   for (let i = 0; i < input.length; i++) {
     h ^= input.charCodeAt(i);
@@ -23,40 +11,40 @@ export function hashSeed(input: string | number): number {
   return h >>> 0;
 }
 
-export function createRng(seedInput: string | number): Rng {
-  const seed = hashSeed(seedInput);
-  let a = seed || 0x9e3779b9;
-  const next = () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+/** mulberry32: tiny, fast, good enough statistical quality for shuffling tiles. */
+export function mulberry32(seed: number): Rng {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-  return {
-    seed,
-    next,
-    int: (n) => Math.floor(next() * n),
-    shuffle: (arr) => {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(next() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    },
-  };
 }
 
-/** Human-shareable random seed, e.g. "K7M2Q9". */
-export function randomSeedString(len = 6): string {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let out = '';
-  for (let i = 0; i < len; i++) out += alphabet[Math.floor(Math.random() * alphabet.length)];
-  return out;
+export function createRng(seed: string | number): Rng {
+  return mulberry32(typeof seed === 'number' ? seed : hashSeed(seed));
 }
 
-/** Daily seed: identical for everyone on the same UTC date. */
-export function dailySeed(game: string, date = new Date()): string {
-  const d = date.toISOString().slice(0, 10);
-  return `${game}:${d}`;
+export function randomInt(rng: Rng, maxExclusive: number): number {
+  return Math.floor(rng() * maxExclusive);
+}
+
+/** In-place Fisher-Yates shuffle. Returns the same array for chaining. */
+export function shuffleInPlace<T>(items: T[], rng: Rng): T[] {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = randomInt(rng, i + 1);
+    const tmp = items[i]!;
+    items[i] = items[j]!;
+    items[j] = tmp;
+  }
+  return items;
+}
+
+/** A short, URL-safe random seed for a new deal. */
+export function randomSeed(): string {
+  const bytes = new Uint32Array(2);
+  globalThis.crypto.getRandomValues(bytes);
+  return (bytes[0]!.toString(36) + bytes[1]!.toString(36)).slice(0, 10);
 }

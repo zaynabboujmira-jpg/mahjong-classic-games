@@ -1,67 +1,71 @@
 ---
-import '@/styles/global.css';
-import Seo from '@/components/seo/Seo.astro';
-import JsonLd from '@/components/seo/JsonLd.astro';
-import { SITE } from '@/data/site';
-import { liveGames, plannedGames } from '@/data/games.registry';
-import { organization, website } from '@/lib/seo/schema';
+import Seo from '../components/seo/Seo.astro';
+import { SITE } from '../data/site';
+import type { JsonLd } from '../lib/seo/schema';
+import '../styles/global.css';
 
 interface Props {
   title: string;
   description: string;
-  path?: string;
-  image?: string;
-  type?: 'website' | 'article';
+  image: string;
+  imageAlt: string;
   noindex?: boolean;
-  withBrand?: boolean;
-  /** Extra JSON-LD nodes appended to the site graph. */
-  schema?: Record<string, unknown>[];
-  /** Full-bleed game pages use a tighter chrome. */
-  compact?: boolean;
+  jsonLd?: JsonLd;
 }
 
-const { title, description, path, image, type, noindex, withBrand, schema = [], compact = false } = Astro.props;
-const siteUrl = (Astro.site ?? new URL('https://example.com')).toString();
-const nodes = [organization(siteUrl), website(siteUrl), ...schema];
-const live = liveGames();
-const planned = plannedGames();
+const props = Astro.props;
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/mahjong/', label: 'Layouts' },
+  { href: '/games/', label: 'All games' },
+  { href: '/about/', label: 'About' },
+];
 const year = new Date().getFullYear();
 ---
+
 <!doctype html>
 <html lang={SITE.lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <Seo {...props} />
     <meta name="theme-color" content={SITE.themeColor} />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-    <Seo {title} {description} {path} {image} {type} {noindex} {withBrand} />
-    <JsonLd nodes={nodes} />
-    <script is:inline>
-      // Apply saved theme/contrast before paint to avoid a flash.
-      try {
-        var s = JSON.parse(localStorage.getItem('og:settings') || '{}');
-        if (s.theme === 'dark' || s.theme === 'light') document.documentElement.dataset.theme = s.theme;
-        if (s.highContrast) document.documentElement.dataset.contrast = 'high';
-      } catch (e) {}
-    </script>
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
   </head>
-  <body class="flex min-h-dvh flex-col">
-    <a href="#main" class="skip-link">Skip to game</a>
-    <header class="border-b border-border bg-bg-elev">
-      <div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2">
-        <a href="/" class="flex items-center gap-2 text-lg font-bold" aria-label={`${SITE.name} home`}>
-          <span class="inline-grid size-8 place-items-center rounded-md bg-accent text-accent-fg">中</span>
-          <span class={compact ? 'hidden sm:inline' : ''}>{SITE.shortName}</span>
+  <body class="min-h-screen flex flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-card focus:px-3 focus:py-2 focus:rounded-md">
+      Skip to content
+    </a>
+    <header class="h-(--header-h) border-b border-border bg-card">
+      <div class="container-page h-full flex items-center justify-between gap-4">
+        <a href="/" class="flex items-center gap-2 font-extrabold text-lg tracking-tight no-underline text-fg">
+          <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="3" y="6" width="20" height="24" rx="4" fill="#b3a27c" />
+            <rect x="7" y="2" width="20" height="24" rx="4" fill="#fbf6e9" stroke="#0f5c4a" stroke-width="2" />
+            <text x="17" y="19.5" text-anchor="middle" font-size="13" font-weight="700" fill="#c2272d" font-family="serif">中</text>
+          </svg>
+          <span>{SITE.shortName}<span class="text-muted font-semibold hidden sm:inline"> &amp; Classic Games</span></span>
         </a>
-        <nav aria-label="Games" class="ml-auto flex items-center gap-1 overflow-x-auto text-sm">
-          {live.map((g) => (
-            <a href={g.path} class="rounded-md px-3 py-2 font-medium hover:bg-bg whitespace-nowrap">{g.icon} {g.shortName}</a>
-          ))}
-          <a href="/mahjong/" class="rounded-md px-3 py-2 font-medium hover:bg-bg whitespace-nowrap">Layouts</a>
-          <a href="/games/" class="rounded-md px-3 py-2 font-medium hover:bg-bg whitespace-nowrap">All games</a>
+        <nav aria-label="Main">
+          <ul class="flex items-center gap-1 sm:gap-3 text-sm sm:text-base">
+            {
+              nav.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="px-2 py-2 rounded-md hover:text-brand"
+                    aria-current={path.startsWith(item.href) ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
         </nav>
       </div>
     </header>
@@ -70,30 +74,15 @@ const year = new Date().getFullYear();
       <slot />
     </main>
 
-    <footer class="mt-12 border-t border-border bg-bg-elev text-sm text-muted">
-      <div class="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-3">
-        <div>
-          <p class="font-semibold text-fg">{SITE.name}</p>
-          <p class="mt-1">Free, fast and accessible classic games. No download, no registration.</p>
-        </div>
-        <div>
-          <p class="font-semibold text-fg">Play</p>
-          <ul class="mt-1 space-y-1">
-            {live.map((g) => <li><a href={g.path} class="hover:underline">{g.name}</a></li>)}
-            <li><a href="/mahjong/" class="hover:underline">Mahjong layouts</a></li>
-            {planned.map((g) => <li><span>{g.name}</span> <span class="text-xs">(coming soon)</span></li>)}
-          </ul>
-        </div>
-        <div>
-          <p class="font-semibold text-fg">Site</p>
-          <ul class="mt-1 space-y-1">
-            <li><a href="/about/" class="hover:underline">About</a></li>
-            <li><a href="/privacy/" class="hover:underline">Privacy</a></li>
-            <li><a href="/contact/" class="hover:underline">Contact</a></li>
-          </ul>
-        </div>
+    <footer class="border-t border-border bg-card mt-12">
+      <div class="container-page py-8 text-sm text-muted flex flex-col sm:flex-row gap-4 justify-between">
+        <p>© {year} {SITE.name}. Free to play, no sign-up.</p>
+        <ul class="flex gap-4">
+          <li><a class="hover:text-brand" href="/mahjong/">Mahjong layouts</a></li>
+          <li><a class="hover:text-brand" href="/about/">About</a></li>
+          <li><a class="hover:text-brand" href="/privacy/">Privacy</a></li>
+        </ul>
       </div>
-      <p class="pb-6 text-center text-xs">© {year} {SITE.name}</p>
     </footer>
   </body>
 </html>

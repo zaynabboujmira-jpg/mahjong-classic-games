@@ -1,45 +1,71 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Breadcrumbs from '@/components/seo/Breadcrumbs.astro';
-import LayoutCard from '@/components/content/LayoutCard.astro';
-import { LAYOUTS } from '@/engines/mahjong/layouts';
-import { breadcrumbs } from '@/lib/seo/schema';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import HowToPlay from '../../components/content/HowToPlay.astro';
+import Faq from '../../components/content/Faq.astro';
+import LayoutCard from '../../components/content/LayoutCard.astro';
+import { layoutPages } from '../../lib/mahjong-pages';
+import { GENERAL_FAQ, HOW_TO_STEPS } from '../../data/mahjong';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, webPage, website } from '../../lib/seo/schema';
 
+const pages = await layoutPages();
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Mahjong Solitaire Layouts';
+const description =
+  'Choose from six free Mahjong Solitaire layouts: Turtle, Dragon, Pyramid, Fortress, Butterfly and Fish. Every deal is solvable. Play instantly, no download.';
 const crumbs = [
-  { name: 'Home', path: '/' },
-  { name: 'Mahjong layouts', path: '/mahjong/' },
+  { name: 'Home', href: '/' },
+  { name: 'Mahjong', href: '/mahjong/' },
 ];
-const siteUrl = (Astro.site ?? new URL('https://example.com')).toString();
-const entries = Object.entries(LAYOUTS);
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  {
+    '@type': 'ItemList',
+    '@id': `${url}#layouts`,
+    name: title,
+    itemListElement: pages.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: new URL(`/mahjong/${p.id}/`, site).href,
+      name: p.entry.data.title,
+    })),
+  },
+  howTo(url, 'How to play Mahjong Solitaire', HOW_TO_STEPS),
+  faqPage(url, GENERAL_FAQ),
+);
 ---
-<BaseLayout
-  title="Mahjong Solitaire Layouts: Turtle, Pyramid, Fortress"
-  description="Choose a Mahjong Solitaire layout and play free online. Classic Turtle, beginner-friendly Pyramid and the hard Fortress, each with solvable deals, hints, timer and daily challenge."
-  path="/mahjong/"
-  schema={[
-    breadcrumbs(siteUrl, crumbs),
-    {
-      '@type': 'ItemList',
-      name: 'Mahjong Solitaire layouts',
-      itemListElement: entries.map(([slug, m], i) => ({
-        '@type': 'ListItem',
-        position: i + 1,
-        name: `${m.layout.name} layout`,
-        url: new URL(`/mahjong/${slug}/`, siteUrl).toString(),
-      })),
-    },
-  ]}
->
-  <div class="mx-auto max-w-6xl px-4 pt-6">
-    <Breadcrumbs {crumbs} />
-    <h1 class="mt-2 text-3xl font-bold">Mahjong Solitaire layouts</h1>
-    <p class="mt-2 max-w-2xl text-muted">
-      Every layout uses the same rules and the same solvable-deal generator. Pick by difficulty or by the board you remember.
+
+<BaseLayout title={title} description={description} image={ogImagePath('mahjong')} imageAlt="Six Mahjong Solitaire layouts" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Mahjong Solitaire layouts</h1>
+    <p class="text-muted mt-2 max-w-2xl">
+      Pick a layout and start playing straight away. Every deal is generated with a guaranteed solution, tiles stay large on phones,
+      and your best time for each layout is saved on your device.
     </p>
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {entries.map(([slug, m]) => (
-        <LayoutCard slug={slug} layout={m.layout} difficulty={m.difficulty} blurb={m.blurb} />
-      ))}
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+      {
+        pages.map((p) => (
+          <LayoutCard
+            engineId={p.id}
+            title={p.entry.data.title}
+            summary={p.entry.data.summary}
+            difficulty={p.entry.data.difficulty}
+            tiles={p.tiles}
+          />
+        ))
+      }
     </div>
+
+    <HowToPlay />
+    <Faq items={GENERAL_FAQ} />
   </div>
 </BaseLayout>

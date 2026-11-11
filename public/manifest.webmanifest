@@ -1,12 +1,27 @@
 {
-  "name": "Mahjong & Classic Puzzle Games",
+  "name": "Mahjong & Classic Games",
   "short_name": "Mahjong",
-  "description": "Free Mahjong Solitaire and classic puzzle games. Fast, ad-light, accessible.",
+  "description": "Free Mahjong Solitaire with six layouts. No download, no sign-up.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f766e",
+  "background_color": "#f6f1e6",
+  "theme_color": "#0f5c4a",
   "icons": [
-    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
   ]
 }

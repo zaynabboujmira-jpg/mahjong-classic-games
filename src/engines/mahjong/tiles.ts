@@ -1,61 +1,53 @@
-import type { TileFace } from './types';
+import type { Face, Suit } from './types';
 
-const CN_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
-const WINDS = [
-  { glyph: '東', label: 'East wind' },
-  { glyph: '南', label: 'South wind' },
-  { glyph: '西', label: 'West wind' },
-  { glyph: '北', label: 'North wind' },
-];
-const DRAGONS = [
-  { glyph: '中', label: 'Red dragon' },
-  { glyph: '發', label: 'Green dragon' },
-  { glyph: '', label: 'White dragon' },
-];
-const FLOWERS = [
-  { glyph: '梅', label: 'Plum flower' },
-  { glyph: '蘭', label: 'Orchid flower' },
-  { glyph: '菊', label: 'Chrysanthemum flower' },
-  { glyph: '竹', label: 'Bamboo flower' },
-];
-const SEASONS = [
-  { glyph: '春', label: 'Spring season' },
-  { glyph: '夏', label: 'Summer season' },
-  { glyph: '秋', label: 'Autumn season' },
-  { glyph: '冬', label: 'Winter season' },
+const SUIT_NAMES: Record<'dots' | 'bamboo' | 'characters', string> = {
+  dots: 'Dots',
+  bamboo: 'Bamboo',
+  characters: 'Characters',
+};
+const WINDS = ['East', 'South', 'West', 'North'] as const;
+const DRAGONS = ['Red', 'Green', 'White'] as const;
+const FLOWERS = ['Plum', 'Orchid', 'Chrysanthemum', 'Bamboo'] as const;
+const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter'] as const;
+
+function face(suit: Suit, rank: number, label: string, matchKey?: string): Face {
+  const id = `${suit}-${rank}`;
+  return { id, suit, rank, label, matchKey: matchKey ?? id };
+}
+
+/** The 42 distinct face designs of a standard 144-tile set. */
+export const FACES: readonly Face[] = [
+  ...(['dots', 'bamboo', 'characters'] as const).flatMap((suit) =>
+    Array.from({ length: 9 }, (_, i) => face(suit, i + 1, `${i + 1} of ${SUIT_NAMES[suit]}`)),
+  ),
+  ...WINDS.map((w, i) => face('wind', i + 1, `${w} Wind`)),
+  ...DRAGONS.map((d, i) => face('dragon', i + 1, `${d} Dragon`)),
+  ...FLOWERS.map((f, i) => face('flower', i + 1, `${f} flower`, 'flower')),
+  ...SEASONS.map((s, i) => face('season', i + 1, `${s} season`, 'season')),
 ];
 
-/** The 42 distinct faces of a standard set. */
-export const FACES: TileFace[] = (() => {
-  const out: TileFace[] = [];
-  for (let r = 1; r <= 9; r++) {
-    out.push({ id: `bamboo-${r}`, suit: 'bamboo', rank: r, matchKey: `bamboo-${r}`, glyph: String(r), label: `Bamboo ${r}` });
-    out.push({ id: `character-${r}`, suit: 'character', rank: r, matchKey: `character-${r}`, glyph: CN_NUM[r - 1], label: `Character ${r}` });
-    out.push({ id: `circle-${r}`, suit: 'circle', rank: r, matchKey: `circle-${r}`, glyph: String(r), label: `Circle ${r}` });
-  }
-  WINDS.forEach((w, i) => out.push({ id: `wind-${i + 1}`, suit: 'wind', rank: i + 1, matchKey: `wind-${i + 1}`, glyph: w.glyph, label: w.label }));
-  DRAGONS.forEach((d, i) => out.push({ id: `dragon-${i + 1}`, suit: 'dragon', rank: i + 1, matchKey: `dragon-${i + 1}`, glyph: d.glyph, label: d.label }));
-  FLOWERS.forEach((f, i) => out.push({ id: `flower-${i + 1}`, suit: 'flower', rank: i + 1, matchKey: 'flower', glyph: f.glyph, label: f.label }));
-  SEASONS.forEach((s, i) => out.push({ id: `season-${i + 1}`, suit: 'season', rank: i + 1, matchKey: 'season', glyph: s.glyph, label: s.label }));
-  return out;
-})();
-
-export const FACE_BY_ID = new Map(FACES.map((f) => [f.id, f]));
+const byId = new Map(FACES.map((f) => [f.id, f]));
+export function faceById(id: string): Face {
+  const f = byId.get(id);
+  if (!f) throw new Error(`Unknown tile face ${id}`);
+  return f;
+}
 
 /**
- * The full 144-tile set as an ordered list of matching pairs (72 pairs).
- * Suits, winds and dragons: 4 copies each = 2 pairs. Flowers and seasons: 4 unique tiles = 2 pairs each.
+ * The full set as 72 matching pairs: every suit/honour face appears 4 times
+ * (two pairs); the four flowers form two pairs, as do the four seasons.
  */
-export function fullPairSet(): [TileFace, TileFace][] {
-  const pairs: [TileFace, TileFace][] = [];
+export function standardPairs(): [Face, Face][] {
+  const pairs: [Face, Face][] = [];
   for (const f of FACES) {
     if (f.suit === 'flower' || f.suit === 'season') continue;
     pairs.push([f, f], [f, f]);
   }
-  const fl = FACES.filter((f) => f.suit === 'flower');
-  const se = FACES.filter((f) => f.suit === 'season');
-  pairs.push([fl[0], fl[1]], [fl[2], fl[3]], [se[0], se[1]], [se[2], se[3]]);
+  for (const suit of ['flower', 'season'] as const) {
+    const group = FACES.filter((f) => f.suit === suit);
+    pairs.push([group[0]!, group[1]!], [group[2]!, group[3]!]);
+  }
   return pairs;
 }
 
-export const matches = (a: TileFace, b: TileFace): boolean => a.matchKey === b.matchKey;
+export const canMatch = (a: Face, b: Face): boolean => a.matchKey === b.matchKey;

@@ -1,38 +1,110 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
-import GameLayout from '@/layouts/GameLayout.astro';
-import { LAYOUTS } from '@/engines/mahjong/layouts';
+import { render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameShell from '../../components/game/GameShell.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import HowToPlay from '../../components/content/HowToPlay.astro';
+import Faq from '../../components/content/Faq.astro';
+import LayoutCard from '../../components/content/LayoutCard.astro';
+import { layoutPages, type LayoutPage } from '../../lib/mahjong-pages';
+import { HOW_TO_STEPS } from '../../data/mahjong';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
 
-export async function getStaticPaths() {
-  const entries = await getCollection('layouts');
-  // A layout ships only when both the engine definition and its content page exist.
-  return Object.keys(LAYOUTS)
-    .filter((slug) => entries.some((e) => e.id === slug))
-    .map((slug) => ({ params: { layout: slug } }));
+export const getStaticPaths = (async () => {
+  const pages = await layoutPages();
+  return pages.map((page) => ({ params: { layout: page.id }, props: { page, all: pages } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: LayoutPage;
+  all: LayoutPage[];
 }
+const { page, all } = Astro.props;
+const { data } = page.entry;
+const { Content } = await render(page.entry);
 
-const { layout } = Astro.params;
-const meta = LAYOUTS[layout!];
-const entry = (await getEntry('layouts', layout!))!;
-const d = entry.data;
-const path = `/mahjong/${layout}/`;
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const image = ogImagePath(`mahjong-${page.id}`);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Mahjong', href: '/mahjong/' },
+  { name: page.name, href: `/mahjong/${page.id}/` },
+];
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, data.title, data.description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  videoGame(origin, {
+    url,
+    name: data.title,
+    description: data.description,
+    image: new URL(image, site).href,
+    genre: ['Puzzle', 'Tile-matching', 'Mahjong Solitaire'],
+    keywords: data.keywords,
+  }),
+  howTo(url, `How to play ${data.title}`, HOW_TO_STEPS),
+  faqPage(url, page.faq),
+);
 ---
-<GameLayout
-  title={d.title}
-  description={d.description}
-  path={path}
-  h1={d.h1}
-  intro={d.intro}
-  genre="Tile matching puzzle"
-  gameplayVariant={`${meta.layout.name} layout, ${meta.layout.slots.length} tiles, ${meta.difficulty}`}
-  crumbs={[
-    { name: 'Home', path: '/' },
-    { name: 'Mahjong layouts', path: '/mahjong/' },
-    { name: meta.layout.name, path },
-  ]}
-  steps={d.tips}
-  stepsTitle={`Tips for the ${meta.layout.name}`}
-  faq={d.faq}
-  layoutSlug={layout!}
-  updated={d.updated}
-/>
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  image={image}
+  imageAlt={`The ${page.name} Mahjong layout seen from above`}
+  jsonLd={jsonLd}
+>
+  <GameShell engineId={page.id} layoutName={page.name} next={page.next}>
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">{data.h1}</h1>
+  </GameShell>
+
+  <div class="container-page mt-8">
+    <dl class="grid grid-cols-3 gap-3 max-w-xl">
+      <div class="rounded-xl border border-border bg-card p-3 text-center">
+        <dt class="text-xs uppercase tracking-wide text-muted">Tiles</dt>
+        <dd class="text-2xl font-extrabold">{page.tiles}</dd>
+      </div>
+      <div class="rounded-xl border border-border bg-card p-3 text-center">
+        <dt class="text-xs uppercase tracking-wide text-muted">Layers</dt>
+        <dd class="text-2xl font-extrabold">{page.layers}</dd>
+      </div>
+      <div class="rounded-xl border border-border bg-card p-3 text-center">
+        <dt class="text-xs uppercase tracking-wide text-muted">Difficulty</dt>
+        <dd class="text-2xl font-extrabold">{data.difficulty}</dd>
+      </div>
+    </dl>
+
+    <article class="prose-copy max-w-3xl mt-6">
+      <Content />
+    </article>
+
+    <HowToPlay heading={`How to play ${page.name} Mahjong`} />
+    <Faq items={page.faq} />
+
+    <section aria-labelledby="more-layouts" class="mt-12">
+      <h2 id="more-layouts" class="text-2xl font-bold mb-4">More Mahjong layouts</h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          all
+            .filter((p) => p.id !== page.id)
+            .map((p) => (
+              <LayoutCard
+                engineId={p.id}
+                title={p.entry.data.title}
+                summary={p.entry.data.summary}
+                difficulty={p.entry.data.difficulty}
+                tiles={p.tiles}
+              />
+            ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>

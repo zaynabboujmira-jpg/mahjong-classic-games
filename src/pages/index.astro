@@ -1,54 +1,88 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import LayoutCard from '@/components/content/LayoutCard.astro';
-import { SITE } from '@/data/site';
-import { liveGames, plannedGames } from '@/data/games.registry';
-import { LAYOUTS } from '@/engines/mahjong/layouts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GameShell from '../components/game/GameShell.astro';
+import HowToPlay from '../components/content/HowToPlay.astro';
+import Faq from '../components/content/Faq.astro';
+import LayoutCard from '../components/content/LayoutCard.astro';
+import { layoutPages } from '../lib/mahjong-pages';
+import { GAMES } from '../data/games';
+import { GENERAL_FAQ, HOW_TO_STEPS } from '../data/mahjong';
+import { SITE } from '../data/site';
+import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
+import { faqPage, graph, howTo, organization, videoGame, webPage, website } from '../lib/seo/schema';
 
-const live = liveGames();
-const planned = plannedGames();
+const pages = await layoutPages();
+const turtle = pages.find((p) => p.id === 'turtle')!;
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl('/', site);
+const title = 'Free Mahjong Solitaire Online – No Download';
+const description = SITE.description;
+const image = ogImagePath('home');
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  videoGame(origin, {
+    url,
+    name: 'Mahjong Solitaire',
+    description,
+    image: new URL(image, site).href,
+    genre: ['Puzzle', 'Tile-matching', 'Mahjong Solitaire'],
+    keywords: ['mahjong', 'mahjong solitaire', 'free mahjong', 'mahjong online'],
+  }),
+  howTo(url, 'How to play Mahjong Solitaire', HOW_TO_STEPS),
+  faqPage(url, GENERAL_FAQ),
+);
 ---
-<BaseLayout
-  title="Free Mahjong Solitaire & Classic Games Online"
-  description={SITE.description}
-  path="/"
-  withBrand={false}
->
-  <section class="mx-auto max-w-6xl px-4 pt-10 pb-6">
-    <h1 class="text-3xl font-bold sm:text-4xl">Free Mahjong Solitaire and classic puzzle games</h1>
-    <p class="mt-3 max-w-2xl text-lg text-muted">
-      Instant play, no download, no sign-up. Every deal is solvable, every board works on a phone, and a large-tile mode keeps it readable for everyone.
-    </p>
-    <div class="mt-6 flex flex-wrap gap-3">
-      {live.map((g) => (
-        <a href={g.path} class="inline-flex min-h-12 items-center gap-2 rounded-lg bg-accent px-5 text-lg font-semibold text-accent-fg hover:opacity-90">
-          <span aria-hidden="true">{g.icon}</span> Play {g.name}
-        </a>
-      ))}
-      <a href="/mahjong/" class="inline-flex min-h-12 items-center rounded-lg border border-border bg-bg-elev px-5 text-lg font-semibold hover:bg-bg">
-        Browse layouts
-      </a>
-    </div>
-  </section>
 
-  <section class="mx-auto max-w-6xl px-4 py-6" aria-labelledby="layouts-heading">
-    <h2 id="layouts-heading" class="text-2xl font-bold">Mahjong layouts</h2>
-    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {Object.entries(LAYOUTS).map(([slug, m]) => (
-        <LayoutCard slug={slug} layout={m.layout} difficulty={m.difficulty} blurb={m.blurb} />
-      ))}
-    </div>
-  </section>
+<BaseLayout title={title} description={description} image={image} imageAlt="A Mahjong Solitaire board in the Turtle layout" jsonLd={jsonLd}>
+  <GameShell engineId="turtle" layoutName="Turtle" next={turtle.next}>
+    <h1 class="text-lg sm:text-xl font-extrabold leading-tight">Mahjong Solitaire – free, no download</h1>
+  </GameShell>
 
-  <section class="mx-auto max-w-6xl px-4 py-6" aria-labelledby="coming-heading">
-    <h2 id="coming-heading" class="text-2xl font-bold">Coming soon</h2>
-    <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {planned.map((g) => (
-        <li class="rounded-lg border border-dashed border-border p-4">
-          <p class="font-semibold"><span aria-hidden="true">{g.icon}</span> {g.name}</p>
-          <p class="mt-1 text-sm text-muted">{g.tagline}</p>
-        </li>
-      ))}
-    </ul>
-  </section>
+  <div class="container-page mt-8">
+    <section class="max-w-3xl prose-copy">
+      <h2>Play Mahjong Solitaire in your browser</h2>
+      <p>
+        Mahjong Solitaire is a single-player matching game played with the 144 tiles of a Mahjong set. Tiles are stacked into a
+        layout, and you remove them in matching pairs. You can only take a tile that is <strong>free</strong>: nothing on top of
+        it, and an open side on its left or right. Clear every tile to win.
+      </p>
+      <p>
+        The board above is the classic Turtle layout. Every deal is built with a guaranteed solution, the tiles stay large and readable
+        on phones, and you can play with a mouse, a touch screen or the keyboard.
+      </p>
+    </section>
+
+    <section aria-labelledby="layouts-heading" class="mt-10">
+      <div class="flex items-end justify-between gap-4 mb-4">
+        <h2 id="layouts-heading" class="text-2xl font-bold">Choose a layout</h2>
+        <a href="/mahjong/" class="text-brand font-semibold hover:underline">All layouts →</a>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          pages.map((p) => (
+            <LayoutCard
+              engineId={p.id}
+              title={p.entry.data.title}
+              summary={p.entry.data.summary}
+              difficulty={p.entry.data.difficulty}
+              tiles={p.tiles}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    <HowToPlay />
+    <Faq items={GENERAL_FAQ} />
+
+    <section aria-labelledby="more-games" class="mt-12">
+      <h2 id="more-games" class="text-2xl font-bold mb-2">More classic games are on the way</h2>
+      <p class="text-muted mb-4">{GAMES.filter((g) => g.status === 'planned').map((g) => g.name).join(', ')}.</p>
+      <a href="/games/" class="btn">See all games</a>
+    </section>
+  </div>
 </BaseLayout>

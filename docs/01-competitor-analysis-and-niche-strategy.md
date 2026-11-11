@@ -1,7 +1,7 @@
 # Step 1 Blueprint: Competitor Analysis & Niche Strategy
 
 **Project:** Mahjong & Casual Web Games platform (Astro + TypeScript + Tailwind + HTML5 Canvas on Cloudflare Pages)
-**Date:** 2026-11-10
+**Date:** 2026-11-11 (live audit of mahjon.gg performed 2026-11-10)
 **Primary benchmark:** https://mahjon.gg/ (live audit performed on desktop 1024px and mobile 375px viewports)
 
 > Data provenance. Everything in Section 1 was observed directly from mahjon.gg's HTML, response headers, loaded resources and rendered UI on 2026-11-10. Keyword volumes in Sections 2 and 3 are **indicative ranges** from public SEO tooling knowledge; the connected OpenSEO account has 2 credits remaining, so they could not be re-validated in this session. Re-run `research_keywords` / `get_ranked_keywords` against the seed lists in Appendix A once credits are topped up.
@@ -267,8 +267,8 @@ online-games/
 │   │   │   ├── Faq.astro              # Emits FAQPage schema
 │   │   │   └── LayoutCard.astro
 │   │   └── ui/                        # Button, Dialog, Toggle, Icon (Tailwind)
-│   ├── games/                         # Pure TypeScript engines, zero DOM deps
-│   │   ├── engine/
+│   ├── engines/                       # Pure TypeScript engines, zero DOM deps
+│   │   ├── core/
 │   │   │   ├── canvas/                # Renderer, sprite atlas, input (pointer/keyboard), a11y announcer
 │   │   │   ├── rng.ts                 # Seeded PRNG (daily challenges, shareable seeds)
 │   │   │   ├── timer.ts
@@ -291,7 +291,7 @@ online-games/
 │   │   └── minesweeper/
 │   │       └── board.ts
 │   ├── content/                       # Astro content collections (Markdown/MDX)
-│   │   ├── config.ts                  # Zod schemas
+│   │   ├── (Zod schemas live in src/content.config.ts, Astro 5)
 │   │   ├── games/                     # One .md per game: copy, FAQ, metadata
 │   │   ├── layouts/                   # One .md per Mahjong layout
 │   │   ├── variants/                  # Solitaire/Sudoku/Minesweeper variants
@@ -333,7 +333,7 @@ online-games/
 
 ### Key architectural decisions
 
-- **Engines are DOM-free TypeScript** under `src/games/`, unit-tested in isolation; the Canvas renderer is the only thing that touches the browser. This keeps the islands tiny and the logic portable (same code powers daily seeds in a Worker).
+- **Engines are DOM-free TypeScript** under `src/engines/`, unit-tested in isolation; the Canvas renderer is the only thing that touches the browser. This keeps the islands tiny and the logic portable (same code powers daily seeds in a Worker).
 - **`games.registry.ts` is the single source of truth** for routes, nav, sitemap, schema and OG images. Adding a layout is one `.ts` file plus one `.md` file.
 - **Content collections hold the SEO copy**, so writers can edit FAQ/how-to text without touching components; Zod schemas enforce required fields (title length, description length, at least 3 FAQs).
 - **Islands framework:** Preact (3 KB) or Solid for the game UI chrome; the board itself is plain Canvas with no framework in the render loop.

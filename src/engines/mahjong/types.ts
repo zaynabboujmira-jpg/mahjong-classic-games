@@ -1,48 +1,49 @@
 /**
- * Board geometry uses half-tile units: a tile occupies a 2 x 2 footprint,
- * so tiles can be offset by half a tile (the classic Turtle "ears" and crown).
- * z is the layer (0 = table).
+ * Coordinates are in HALF-tile units so layouts can offset tiles by half a tile
+ * (the Turtle's end caps, a pyramid's capstone). A tile at (x, y) covers
+ * x..x+2 horizontally and y..y+2 vertically. z is the layer, 0 = table.
  */
 export interface Slot {
-  x: number;
-  y: number;
-  z: number;
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
 }
 
-export type Suit = 'bamboo' | 'character' | 'circle' | 'wind' | 'dragon' | 'flower' | 'season';
-
-export interface TileFace {
-  /** Unique id, e.g. "bamboo-3", "flower-plum". */
-  id: string;
-  suit: Suit;
-  /** 1-9 for suits, 1-4 for winds/flowers/seasons, 1-3 for dragons. */
-  rank: number;
-  /** Tiles match when matchKey is equal. Flowers all share "flower"; seasons share "season". */
-  matchKey: string;
-  /** Glyph drawn on the tile face. */
-  glyph: string;
-  /** Screen-reader label. */
-  label: string;
+export interface LayoutDef {
+  readonly id: string;
+  readonly name: string;
+  readonly slots: readonly Slot[];
 }
 
-export interface Tile extends Slot {
-  /** Stable index within the deal. */
-  id: number;
-  face: TileFace;
-  removed: boolean;
+export type Suit = 'dots' | 'bamboo' | 'characters' | 'wind' | 'dragon' | 'flower' | 'season';
+
+export interface Face {
+  /** Unique per face design, e.g. "dots-3", "flower-plum". */
+  readonly id: string;
+  readonly suit: Suit;
+  /** 1-9 for suits; index within the honour/bonus group otherwise. */
+  readonly rank: number;
+  /** Tiles match when their matchKey is equal (all flowers match each other, as do all seasons). */
+  readonly matchKey: string;
+  /** Human-readable name used for screen-reader announcements. */
+  readonly label: string;
 }
 
-export interface Layout {
-  slug: string;
-  name: string;
-  slots: Slot[];
-  /** Bounding box in half-tile units, derived at definition time. */
-  width: number;
-  height: number;
-  layers: number;
+/** Pre-computed neighbourhood of every slot, so "is this tile free?" is a few array lookups. */
+export interface Topology {
+  readonly slots: readonly Slot[];
+  /** Slots on any higher layer that overlap this slot. */
+  readonly above: readonly (readonly number[])[];
+  /** Same-layer slots touching this slot's left edge. */
+  readonly left: readonly (readonly number[])[];
+  /** Same-layer slots touching this slot's right edge. */
+  readonly right: readonly (readonly number[])[];
 }
 
-export interface Move {
-  a: number;
-  b: number;
+export interface Bounds {
+  /** Width in half-tile units (rightmost x + 2). */
+  readonly w: number;
+  /** Height in half-tile units (bottom y + 2). */
+  readonly h: number;
+  readonly maxZ: number;
 }

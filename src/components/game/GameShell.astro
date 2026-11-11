@@ -1,0 +1,26 @@
+---
+import MahjongGame from './MahjongGame';
+import { getLayout } from '../../engines/mahjong/layouts';
+
+/**
+ * Board-first page header: a compact H1 above the playable game, both inside
+ * a block exactly one screen tall so the board is always above the fold and
+ * nothing below it moves when the game starts (CLS 0).
+ */
+interface Props {
+  engineId: string;
+  layoutName: string;
+  next: { name: string; href: string };
+}
+const { engineId, layoutName, next } = Astro.props;
+const layout = getLayout(engineId);
+if (!layout) throw new Error(`Unknown layout ${engineId}`);
+const slots = layout.slots.map((s) => ({ x: s.x, y: s.y, z: s.z }));
+---
+
+<div class="game-shell">
+  <div class="container-page pt-2 pb-1">
+    <slot />
+  </div>
+  <MahjongGame client:load layoutId={engineId} layoutName={layoutName} slots={slots} next={next} />
+</div>

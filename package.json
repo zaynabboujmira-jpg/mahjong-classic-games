@@ -1,34 +1,33 @@
 {
   "name": "online-games",
+  "type": "module",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
-  "description": "Fast, accessible Mahjong Solitaire and classic puzzle games. Astro + TypeScript + Tailwind + HTML5 Canvas on Cloudflare Pages.",
+  "engines": {
+    "node": ">=22.23.4"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check",
+    "check": "astro check && tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "deploy:pages": "npm run build && npx wrangler pages deploy dist --project-name online-games --branch main"
+    "budget": "node scripts/js-budget.mjs",
+    "verify": "npm run check && npm run test && npm run build && npm run budget"
   },
   "dependencies": {
-    "@astrojs/preact": "^4.0.0",
-    "@astrojs/sitemap": "^3.2.0",
-    "astro": "^5.0.0",
-    "preact": "^10.25.0"
+    "@astrojs/preact": "^6.1.4",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.10",
+    "preact": "^11.2.0",
+    "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
-    "@tailwindcss/vite": "^4.0.0",
-    "@types/node": "^22.0.0",
-    "tailwindcss": "^4.0.0",
-    "typescript": "^5.6.0",
-    "vitest": "^2.1.0"
-  },
-  "engines": {
-    "node": ">=20"
+    "@expo-google-fonts/inter": "^0.4.2",
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^26.6.6",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
   }
 }
