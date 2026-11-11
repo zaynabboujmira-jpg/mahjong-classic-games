@@ -1,0 +1,46 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import LevelPage from '../../components/content/LevelPage.astro';
+import MinesweeperGame from '../../components/game/MinesweeperGame';
+
+/** One playable page per level in src/content/minesweeper. */
+export const getStaticPaths = (async () => {
+  const entries = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry) => ({ params: { difficulty: entry.data.level }, props: { entry, entries } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entry: CollectionEntry<'minesweeper'>;
+  entries: CollectionEntry<'minesweeper'>[];
+}
+const { entry, entries } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
+---
+
+<LevelPage
+  game="Minesweeper"
+  base="/minesweeper/"
+  level={{ id: data.level, name: data.name, summary: data.summary }}
+  levels={levels}
+  data={data}
+  genre={['Puzzle', 'Logic puzzle', 'Minesweeper']}
+  imageAlt={`A Minesweeper ${data.name} field with numbers and flags`}
+  more={{
+    heading: 'Prefer a puzzle with no luck at all?',
+    text: 'Every Sudoku here has exactly one solution and can be solved by logic alone, from Easy to Expert.',
+    href: '/sudoku/',
+    label: 'Play Sudoku',
+  }}
+>
+  <MinesweeperGame
+    slot="game"
+    client:load
+    level={data.level}
+    levels={levels.map((l) => ({ id: l.id, name: l.name }))}
+    otherGame={{ name: 'Play Sudoku', href: '/sudoku/' }}
+  />
+  <Content />
+</LevelPage>

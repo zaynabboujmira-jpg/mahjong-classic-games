@@ -18,6 +18,8 @@ const path = Astro.url.pathname;
 const nav = [
   { href: '/mahjong/', label: 'Mahjong' },
   { href: '/solitaire/', label: 'Solitaire' },
+  { href: '/sudoku/', label: 'Sudoku' },
+  { href: '/minesweeper/', label: 'Minesweeper' },
   { href: '/games/', label: 'All games' },
 ];
 const year = new Date().getFullYear();
@@ -50,8 +52,22 @@ const year = new Date().getFullYear();
           </svg>
           <span>{SITE.shortName}<span class="text-muted font-semibold hidden sm:inline"> &amp; Classic Games</span></span>
         </a>
-        <nav aria-label="Main">
-          <ul class="flex items-center gap-1 sm:gap-3 text-sm sm:text-base">
+        <nav aria-label="Main" class="relative">
+          <details class="nav-menu md:hidden">
+            <summary class="btn">Games</summary>
+            <ul class="nav-menu-list">
+              {
+                nav.map((item) => (
+                  <li>
+                    <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </details>
+          <ul class="hidden md:flex items-center gap-1 lg:gap-3 text-base">
             {
               nav.map((item) => (
                 <li>
@@ -80,6 +96,8 @@ const year = new Date().getFullYear();
         <ul class="flex gap-4">
           <li><a class="hover:text-brand" href="/mahjong/">Mahjong layouts</a></li>
           <li><a class="hover:text-brand" href="/solitaire/klondike/">Klondike Solitaire</a></li>
+          <li><a class="hover:text-brand" href="/sudoku/">Sudoku</a></li>
+          <li><a class="hover:text-brand" href="/minesweeper/">Minesweeper</a></li>
           <li><a class="hover:text-brand" href="/about/">About</a></li>
           <li><a class="hover:text-brand" href="/privacy/">Privacy</a></li>
         </ul>

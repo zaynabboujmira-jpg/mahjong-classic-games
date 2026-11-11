@@ -2,6 +2,8 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { LAYOUTS } from './engines/mahjong/layouts';
+import { LEVEL_IDS } from './engines/minesweeper/game';
+import { DIFFICULTIES } from './engines/sudoku/generator';
 
 const layoutIds = LAYOUTS.map((l) => l.id) as [string, ...string[]];
 
@@ -47,4 +49,33 @@ const solitaire = defineCollection({
   }),
 });
 
-export const collections = { layouts, solitaire };
+/** Shared fields of a per-level game page (Sudoku difficulty, Minesweeper level). */
+const levelPage = <T extends readonly [string, ...string[]]>(levels: T) =>
+  z.object({
+    level: z.enum(levels),
+    order: z.number().int(),
+    /** Short label for toggles and breadcrumbs, e.g. "Expert". */
+    name: z.string().min(3).max(14),
+    title: z.string().min(10).max(48),
+    h1: z.string().min(10).max(70),
+    description: z.string().min(110).max(160),
+    summary: z.string().min(20).max(140),
+    keywords: z.array(z.string()).min(2),
+    updated: z.coerce.date(),
+    howTo: z.array(z.object({ name: z.string().min(3), text: z.string().min(20) })).min(3),
+    faq: z.array(z.object({ q: z.string().min(8), a: z.string().min(30) })).min(3),
+  });
+
+/** One Markdown file per Sudoku difficulty (/sudoku/[difficulty]/). */
+const sudoku = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/sudoku' }),
+  schema: levelPage(DIFFICULTIES),
+});
+
+/** One Markdown file per Minesweeper level (/minesweeper/[difficulty]/). */
+const minesweeper = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/minesweeper' }),
+  schema: levelPage(LEVEL_IDS),
+});
+
+export const collections = { layouts, solitaire, sudoku, minesweeper };

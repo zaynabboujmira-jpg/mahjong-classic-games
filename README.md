@@ -1,6 +1,6 @@
 # Mahjong & Classic Games
 
-Fast, accessible Mahjong Solitaire built with Astro, TypeScript, Tailwind CSS v4, Preact islands and HTML5 Canvas, deployed as a static site on Cloudflare Pages. See [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md) for the strategy behind it.
+Fast, accessible Mahjong Solitaire, solitaire card games, Sudoku and Minesweeper built with Astro, TypeScript, Tailwind CSS v4, Preact islands and HTML5 Canvas, deployed as a static site on Cloudflare Pages. See [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md) for the strategy behind it.
 
 ## Commands
 
@@ -32,7 +32,7 @@ src/
 │       ├── fit.ts           Tile sizing, portrait rotation, >=36px tiles, no h-overflow
 │       ├── layouts/         define.ts DSL + Turtle, Dragon, Pyramid, Fortress, Butterfly, Fish
 │       └── render/          canvas.ts (renderer + hit testing), faces.ts (tile art)
-│   └── solitaire/
+│   ├── solitaire/
 │       ├── cards.ts         Shared 52-card model
 │       ├── table.ts         PileRef, Hint, SolitaireEngine interface, TableSpec (per-game layout)
 │       ├── klondike.ts      Draw 1/3, unlimited passes, undo, bestTarget, hint, auto-finish
@@ -40,13 +40,27 @@ src/
 │       ├── freecell.ts      Microsoft deal numbers, supermove limit, safe auto-play, solver-backed hints
 │       ├── layout.ts        Generic table layout from a TableSpec, fan compression, hit/drop testing
 │       └── render.ts        Canvas renderer (cached faces/back, selection, hint, drag)
+│   ├── sudoku/
+│   │   ├── grid.ts          Units, peers, candidate masks
+│   │   ├── solver.ts        Bitmask backtracking: solution counting, random full grids
+│   │   ├── logic.ts         Human-technique solver: grades puzzles and explains hints
+│   │   ├── generator.ts     Seeded generator, 4 tiers set by the hardest technique needed
+│   │   ├── game.ts          Digits, notes, undo, mistakes, hints, save/restore
+│   │   ├── worker.ts        Generates off the main thread (source.ts caches and prefetches)
+│   │   └── render.ts        Canvas grid renderer
+│   └── minesweeper/
+│       ├── game.ts          Levels, safe first click (mines placed after it), flood fill, flags, chord
+│       └── render.ts        Canvas renderer, portrait rotation, minimum cell size
 ├── components/
 │   ├── game/                MahjongGame.tsx, CardTable.tsx (shared solitaire UI),
-│   │                        KlondikeGame/SpiderGame/FreeCellGame.tsx (thin islands), GameShell.astro
+│   │                        KlondikeGame/SpiderGame/FreeCellGame.tsx (thin islands), GameShell.astro,
+│   │                        SudokuGame.tsx, MinesweeperGame.tsx
 │   ├── seo/                 Seo.astro (meta/OG/Twitter/canonical/JSON-LD), Breadcrumbs.astro
-│   └── content/             Faq.astro, HowToPlay.astro, LayoutCard.astro
+│   └── content/             Faq.astro, HowToPlay.astro, LayoutCard.astro, LevelPage.astro (per-level game page)
 ├── content/layouts/*.md     SEO copy per layout (validated by src/content.config.ts)
 ├── content/solitaire/*.md   SEO copy, how-to steps and FAQ per solitaire variant
+├── content/sudoku/*.md      One page per difficulty (easy, medium, hard, expert)
+├── content/minesweeper/*.md One page per level (beginner, intermediate, expert)
 ├── data/                    site.ts, games.ts (catalogue), mahjong.ts (how-to + FAQ copy)
 ├── lib/                     seo/ (meta, JSON-LD builders), routes.ts (sitemaps), og.ts, layout-preview.ts
 ├── layouts/BaseLayout.astro
@@ -55,7 +69,9 @@ src/
     ├── mahjong/             index.astro (gallery), [layout].astro (one page per layout)
     ├── solitaire/           index.astro (hub), [variant].astro (klondike, spider, freecell),
     │                        freecell/deal/[deal].astro (curated numbered deals, see src/data/freecell.ts)
-    ├── games/index.astro    All games (planned ones listed, no pages yet)
+    ├── sudoku/              index.astro (hub), [difficulty].astro
+    ├── minesweeper/         index.astro (hub), [difficulty].astro
+    ├── games/index.astro    All games from src/data/games.ts
     ├── og/[key].png.ts      Build-time OpenGraph PNGs
     ├── sitemap-index.xml.ts, sitemap-[section].xml.ts, robots.txt.ts, llms.txt.ts
     └── about, privacy, 404, [icon].png.ts

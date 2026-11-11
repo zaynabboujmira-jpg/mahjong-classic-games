@@ -1,12 +1,16 @@
 import type { APIRoute } from 'astro';
 import { GAMES } from '../data/games';
 import { SITE } from '../data/site';
+import { getCollection } from 'astro:content';
+import { LEVELS } from '../engines/minesweeper/game';
 import { layoutPages } from '../lib/mahjong-pages';
 
 /** Plain-text site summary for AI answer engines (llmstxt.org convention). */
 export const GET: APIRoute = async ({ site }) => {
   const abs = (p: string) => new URL(p, site).href;
   const pages = await layoutPages();
+  const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+  const mines = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
   const body = [
     `# ${SITE.name}`,
     '',
@@ -19,6 +23,17 @@ export const GET: APIRoute = async ({ site }) => {
       (p) =>
         `- [${p.entry.data.title}](${abs(`/mahjong/${p.id}/`)}): ${p.tiles} tiles, ${p.layers} layers, ${p.entry.data.difficulty.toLowerCase()}. ${p.entry.data.summary}`,
     ),
+    '',
+    '## Sudoku',
+    'Every Sudoku puzzle has exactly one solution and is solved by a logic engine before it is shown, so it never needs guessing. The level is set by the hardest technique required.',
+    ...sudoku.map((e) => `- [${e.data.title}](${abs(`/sudoku/${e.data.level}/`)}): ${e.data.summary}`),
+    '',
+    '## Minesweeper',
+    'The first click is always safe: mines are placed afterwards, never on the clicked cell or its eight neighbours.',
+    ...mines.map((e) => {
+      const l = LEVELS[e.data.level];
+      return `- [${e.data.title}](${abs(`/minesweeper/${e.data.level}/`)}): ${l.width}×${l.height}, ${l.mines} mines. ${e.data.summary}`;
+    }),
     '',
     '## Games',
     ...GAMES.map((g) => `- ${g.name}${g.href ? ` (${abs(g.href)})` : ' (coming soon)'}: ${g.blurb}`),

@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../seo/Breadcrumbs.astro';
+import Faq from './Faq.astro';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
+
+/**
+ * A playable per-level page (Sudoku difficulty, Minesweeper level): compact
+ * H1 and the game above the fold, then the level's guide, how-to steps,
+ * links to the other levels, FAQ and a cross-link. Emits the full JSON-LD
+ * graph: WebPage, BreadcrumbList, VideoGame + SoftwareApplication, HowTo, FAQPage.
+ */
+interface Level {
+  id: string;
+  name: string;
+  summary: string;
+}
+interface Props {
+  /** "Sudoku" or "Minesweeper". */
+  game: string;
+  base: string;
+  level: Level;
+  levels: readonly Level[];
+  data: {
+    title: string;
+    h1: string;
+    description: string;
+    keywords: readonly string[];
+    howTo: readonly { name: string; text: string }[];
+    faq: readonly { q: string; a: string }[];
+  };
+  genre: readonly string[];
+  imageAlt: string;
+  more: { heading: string; text: string; href: string; label: string };
+}
+const { game, base, level, levels, data, genre, imageAlt, more } = Astro.props;
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const image = ogImagePath(`${game.toLowerCase()}-${level.id}`);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: game, href: base },
+  { name: level.name, href: `${base}${level.id}/` },
+];
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, data.title, data.description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  videoGame(origin, {
+    url,
+    name: data.title,
+    description: data.description,
+    image: new URL(image, site).href,
+    genre,
+    keywords: data.keywords,
+  }),
+  howTo(url, `How to play ${game} (${level.name})`, data.howTo),
+  faqPage(url, data.faq),
+);
+---
+
+<BaseLayout title={data.title} description={data.description} image={image} imageAlt={imageAlt} jsonLd={jsonLd}>
+  <div class="game-shell">
+    <div class="container-page pt-2 pb-1">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">{data.h1}</h1>
+    </div>
+    <slot name="game" />
+  </div>
+
+  <div class="container-page mt-8">
+    <article class="prose-copy max-w-3xl">
+      <slot />
+    </article>
+
+    <section id="how-to-play" aria-labelledby="how-heading" class="mt-10">
+      <h2 id="how-heading" class="text-2xl font-bold mb-4">How to play {game}</h2>
+      <ol class="grid gap-3 sm:grid-cols-2">
+        {
+          data.howTo.map((step, i) => (
+            <li class="rounded-xl border border-border bg-card p-4 flex gap-3">
+              <span class="shrink-0 grid place-items-center size-8 rounded-full bg-brand text-brand-fg font-bold">{i + 1}</span>
+              <div>
+                <h3 class="font-semibold">{step.name}</h3>
+                <p class="text-muted text-sm mt-1">{step.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section aria-labelledby="levels-heading" class="mt-10">
+      <h2 id="levels-heading" class="text-2xl font-bold mb-4">Other {game} levels</h2>
+      <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          levels
+            .filter((l) => l.id !== level.id)
+            .map((l) => (
+              <li class="rounded-xl border border-border bg-card p-4 flex flex-col">
+                <h3 class="font-bold">
+                  <a class="hover:text-brand" href={`${base}${l.id}/`}>
+                    {game} {l.name}
+                  </a>
+                </h3>
+                <p class="text-sm text-muted mt-1">{l.summary}</p>
+              </li>
+            ))
+        }
+      </ul>
+    </section>
+
+    <Faq items={data.faq} />
+
+    <section aria-labelledby="more-games" class="mt-12">
+      <h2 id="more-games" class="text-2xl font-bold mb-2">{more.heading}</h2>
+      <p class="text-muted mb-4">{more.text}</p>
+      <a class="btn btn-primary" href={more.href}>{more.label}</a>
+    </section>
+  </div>
+</BaseLayout>

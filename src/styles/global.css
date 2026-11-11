@@ -226,9 +226,225 @@
     color: var(--muted);
     cursor: pointer;
   }
-  .seg[aria-checked='true'] {
+  .seg[aria-checked='true'],
+  .seg[aria-current='page'] {
     background: var(--brand);
     color: var(--brand-fg);
+  }
+  a.seg {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  /* ---------- Compact header menu for phones (no JS: native <details>) ---------- */
+  .nav-menu > summary {
+    list-style: none;
+  }
+  .nav-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-menu-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.4rem);
+    z-index: 40;
+    min-width: 12rem;
+    padding: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--card);
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.18);
+  }
+  .nav-menu-list a {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--fg);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .nav-menu-list a:hover,
+  .nav-menu-list a[aria-current='page'] {
+    background: var(--bg);
+    color: var(--brand);
+  }
+
+  /* ---------- Sudoku: grid plus number pad (below on phones, beside on wide screens) ---------- */
+  .sudoku-area {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: radial-gradient(ellipse at 50% 35%, var(--felt-1), var(--felt-2));
+  }
+  .sudoku-fit {
+    position: relative;
+    flex: 1;
+    min-height: 12rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sudoku-board {
+    border-radius: 0.35rem;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
+  }
+  .sudoku-pad {
+    width: 100%;
+    max-width: 35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .pad-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+  }
+  .pad-actions .btn {
+    padding: 0 0.25rem;
+  }
+  .btn[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .pad-message {
+    min-height: 1.25rem;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.25rem;
+    color: #f2f7f4;
+    text-align: center;
+  }
+  .digits {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 0.3rem;
+  }
+  .digit {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    line-height: 1;
+  }
+  .digit:hover {
+    border-color: var(--brand);
+  }
+  .digit-num {
+    font-size: 1.45rem;
+    font-weight: 700;
+  }
+  .digit-left {
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+  .digit-same {
+    outline: 2px solid var(--brand);
+    outline-offset: -2px;
+  }
+  .digit-done {
+    opacity: 0.4;
+  }
+  .pad-extra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0 1rem;
+  }
+  .pad-extra .toggle,
+  .link-btn {
+    color: #e3efe9;
+  }
+  .link-btn {
+    min-height: 2.75rem;
+    padding: 0 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .link-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  @media (min-width: 760px) and (min-aspect-ratio: 5/4) {
+    .sudoku-area {
+      flex-direction: row;
+      justify-content: center;
+      padding: 1rem;
+      gap: 1.25rem;
+    }
+    .sudoku-fit {
+      flex: 0 1 auto;
+      width: min(100%, 35rem, calc(100svh - var(--header-h) - 9rem));
+      height: 100%;
+      min-height: 0;
+    }
+    .sudoku-pad {
+      width: 15rem;
+      flex: none;
+    }
+    .digits {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+    }
+    .digit {
+      min-height: 4.25rem;
+    }
+    .digit-num {
+      font-size: 1.9rem;
+    }
+    .pad-actions {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* ---------- Minesweeper ---------- */
+  .mines-area {
+    position: relative;
+    flex: 1;
+    min-height: 16rem;
+    display: flex;
+    background: radial-gradient(ellipse at 50% 35%, var(--felt-1), var(--felt-2));
+  }
+  .mines-scroll {
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    display: flex;
+    padding: 0.5rem;
+    overscroll-behavior: contain;
+  }
+  .mines-board {
+    margin: auto;
+    flex: none;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.25);
+  }
+  .mines-counter {
+    font-variant-numeric: tabular-nums;
   }
   .board {
     display: block;

@@ -1,0 +1,46 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import LevelPage from '../../components/content/LevelPage.astro';
+import SudokuGame from '../../components/game/SudokuGame';
+
+/** One playable page per difficulty in src/content/sudoku. */
+export const getStaticPaths = (async () => {
+  const entries = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry) => ({ params: { difficulty: entry.data.level }, props: { entry, entries } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entry: CollectionEntry<'sudoku'>;
+  entries: CollectionEntry<'sudoku'>[];
+}
+const { entry, entries } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
+---
+
+<LevelPage
+  game="Sudoku"
+  base="/sudoku/"
+  level={{ id: data.level, name: data.name, summary: data.summary }}
+  levels={levels}
+  data={data}
+  genre={['Puzzle', 'Logic puzzle', 'Sudoku']}
+  imageAlt={`A ${data.name.toLowerCase()} Sudoku grid`}
+  more={{
+    heading: 'Fancy a different puzzle?',
+    text: 'Minesweeper is logic of another kind: read the numbers and clear the field without opening a mine.',
+    href: '/minesweeper/',
+    label: 'Play Minesweeper',
+  }}
+>
+  <SudokuGame
+    slot="game"
+    client:load
+    difficulty={data.level}
+    levels={levels.map((l) => ({ id: l.id, name: l.name }))}
+    otherGame={{ name: 'Play Minesweeper', href: '/minesweeper/' }}
+  />
+  <Content />
+</LevelPage>

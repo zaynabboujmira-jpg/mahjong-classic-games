@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import { FAMOUS_DEALS } from '../data/freecell';
 
-export type SitemapSection = 'pages' | 'mahjong' | 'solitaire';
+export type SitemapSection = 'pages' | 'mahjong' | 'solitaire' | 'sudoku' | 'minesweeper';
 export interface SitemapEntry {
   path: string;
   section: SitemapSection;
@@ -13,6 +13,10 @@ export interface SitemapEntry {
 export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const layouts = (await getCollection('layouts')).sort((a, b) => a.data.order - b.data.order);
   const variants = await getCollection('solitaire');
+  const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+  const mines = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
+  const newestOf = (entries: { data: { updated: Date } }[]) =>
+    entries.reduce<Date | undefined>((d, e) => (!d || e.data.updated > d ? e.data.updated : d), undefined);
   const newestVariant = variants.reduce<Date | undefined>((d, v) => (!d || v.data.updated > d ? v.data.updated : d), undefined);
   const newest = layouts.reduce<Date | undefined>(
     (d, l) => (!d || l.data.updated > d ? l.data.updated : d),
@@ -38,10 +42,25 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       lastmod: v.data.updated,
     })),
     ...FAMOUS_DEALS.map((d) => ({ path: `/solitaire/freecell/deal/${d.deal}/`, section: 'solitaire' as const, priority: 0.5 })),
+    ...levelEntries('/sudoku/', 'sudoku', sudoku, newestOf(sudoku)),
+    ...levelEntries('/minesweeper/', 'minesweeper', mines, newestOf(mines)),
   ];
 }
 
-export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong', 'solitaire'];
+/** A game hub plus one page per level. */
+function levelEntries(
+  base: string,
+  section: SitemapSection,
+  entries: { data: { level: string; updated: Date } }[],
+  newest: Date | undefined,
+): SitemapEntry[] {
+  return [
+    { path: base, section, priority: 0.8, ...(newest ? { lastmod: newest } : {}) },
+    ...entries.map((e) => ({ path: `${base}${e.data.level}/`, section, priority: 0.9, lastmod: e.data.updated })),
+  ];
+}
+
+export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong', 'solitaire', 'sudoku', 'minesweeper'];
 
 export function sitemapXml(entries: readonly SitemapEntry[], site: URL): string {
   const urls = entries

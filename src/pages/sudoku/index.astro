@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import Faq from '../../components/content/Faq.astro';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
+
+const levels = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Free Sudoku Online – Easy to Expert';
+const description =
+  'Play free Sudoku online in four difficulties, from Easy to Expert. Every puzzle has one solution and is solvable by logic. Notes, hints, no download.';
+const image = ogImagePath('sudoku');
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Sudoku', href: '/sudoku/' },
+];
+const steps = [
+  { name: 'Know the rule', text: 'Each row, each column and each 3×3 box must contain the digits 1 to 9 exactly once.' },
+  { name: 'Pick a cell', text: 'Tap or click an empty cell, then choose a digit on the number pad or type it.' },
+  { name: 'Use notes', text: 'Turn on Notes to pencil in candidates, or press Fill notes to add every possible digit at once.' },
+  { name: 'Ask for a hint', text: 'Hint points to a cell you can fill next and names the technique. Press Fill to place it.' },
+];
+const faq = [
+  {
+    q: 'Which difficulty should I start with?',
+    a: 'Start with Easy if you are new to Sudoku: every step needs only the simplest technique. Move up a level when a puzzle no longer feels like a challenge.',
+  },
+  {
+    q: 'Do the puzzles have a single solution?',
+    a: 'Yes. Every puzzle is solved by a logic engine before you see it, using only named human techniques. That proves the solution is unique, and it means you never need to guess.',
+  },
+  {
+    q: 'How are the difficulty levels decided?',
+    a: 'By the hardest technique a puzzle needs. Easy needs naked singles, Medium hidden singles, Hard locked candidates or pairs, and Expert an X-Wing, XY-Wing or Swordfish.',
+  },
+  {
+    q: 'Is my progress saved?',
+    a: 'Yes. Each difficulty keeps your current puzzle and your best time in your browser, so you can come back to an unfinished game later.',
+  },
+];
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  videoGame(origin, {
+    url,
+    name: 'Sudoku',
+    description,
+    image: new URL(image, site).href,
+    genre: ['Puzzle', 'Logic puzzle', 'Sudoku'],
+    keywords: ['sudoku', 'free sudoku', 'sudoku online', 'sudoku puzzles'],
+  }),
+  {
+    '@type': 'ItemList',
+    '@id': `${url}#levels`,
+    name: 'Sudoku difficulty levels',
+    itemListElement: levels.map((l, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: new URL(`/sudoku/${l.data.level}/`, site).href,
+      name: l.data.title,
+    })),
+  },
+  howTo(url, 'How to play Sudoku', steps),
+  faqPage(url, faq),
+);
+---
+
+<BaseLayout title={title} description={description} image={image} imageAlt="A Sudoku grid with digits" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Free Sudoku puzzles</h1>
+    <p class="text-muted mt-2 max-w-2xl">
+      Four levels, from a gentle start to puzzles that need an X-Wing. Every puzzle has exactly one solution and can be finished by logic
+      alone, with notes, hints and mistake checking whenever you want them.
+    </p>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-6">
+      {
+        levels.map((l) => (
+          <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
+            <h2 class="font-bold text-lg">
+              <a class="hover:text-brand" href={`/sudoku/${l.data.level}/`}>
+                {l.data.name} Sudoku
+              </a>
+            </h2>
+            <p class="text-sm text-muted mt-2 flex-1">{l.data.summary}</p>
+            <a class="btn btn-primary mt-4 self-start" href={`/sudoku/${l.data.level}/`}>
+              Play {l.data.name.toLowerCase()}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <section id="how-to-play" aria-labelledby="how-heading" class="mt-10 max-w-3xl prose-copy">
+      <h2 id="how-heading">How to play Sudoku</h2>
+      <ol>
+        {
+          steps.map((s) => (
+            <li>
+              <strong>{s.name}.</strong> {s.text}
+            </li>
+          ))
+        }
+      </ol>
+      <p>
+        A Sudoku never needs arithmetic: the digits are just nine different symbols. What matters is where each one can and cannot go,
+        and every placed digit narrows the options for the cells that share its row, column and box.
+      </p>
+    </section>
+
+    <Faq items={faq} />
+  </div>
+</BaseLayout>

@@ -80,6 +80,51 @@ export function cardFanArt(cards: readonly FanCard[] = KLONDIKE_FAN): OgArt {
   return { svg, width: 540, height: 340 };
 }
 
+/** A 9x9 Sudoku grid with its clues, 340px square. */
+export function sudokuArt(givens: readonly number[]): OgArt {
+  const size = 340;
+  const cell = size / 9;
+  const lines: string[] = [];
+  for (let k = 0; k <= 9; k++) {
+    const p = k * cell;
+    const w = k % 3 === 0 ? 3 : 1;
+    const c = k % 3 === 0 ? '#1b2823' : '#c9bfa8';
+    lines.push(`<line x1="${p}" y1="0" x2="${p}" y2="${size}" stroke="${c}" stroke-width="${w}"/>`);
+    lines.push(`<line x1="0" y1="${p}" x2="${size}" y2="${p}" stroke="${c}" stroke-width="${w}"/>`);
+  }
+  const digits = givens
+    .map((v, i) =>
+      v
+        ? `<text x="${(i % 9) * cell + cell / 2}" y="${Math.floor(i / 9) * cell + cell * 0.72}" font-size="${Math.round(cell * 0.6)}" font-weight="700" text-anchor="middle" fill="#1b2823">${v}</text>`
+        : '',
+    )
+    .join('');
+  const svg = `<g transform="translate(100 0)"><rect width="${size}" height="${size}" rx="8" fill="#fffdf8"/>${lines.join('')}${digits}</g>`;
+  return { svg, width: 540, height: size };
+}
+
+/** A small Minesweeper field: opened cells with numbers, hidden tiles and flags. */
+export function minesArt(field: { width: number; height: number; cells: readonly ('hidden' | 'flag' | number)[] }): OgArt {
+  const cell = Math.floor(Math.min(500 / field.width, 380 / field.height));
+  const w = cell * field.width;
+  const h = cell * field.height;
+  const colors = ['', '#1d4ed8', '#15803d', '#c2272d', '#1e3a8a', '#7f1d1d', '#0f766e', '#1b2823', '#6b7280'];
+  const parts = field.cells.map((c, i) => {
+    const x = (i % field.width) * cell;
+    const y = Math.floor(i / field.width) * cell;
+    if (c === 'hidden' || c === 'flag') {
+      const b = Math.round(cell * 0.12);
+      const tile = `<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="#b9c8bd"/><path d="M${x} ${y}h${cell}l-${b} ${b}h-${cell - 2 * b}v${cell - 2 * b}l-${b} ${b}z" fill="#eef3ee"/><path d="M${x + cell} ${y + cell}h-${cell}l${b} -${b}h${cell - 2 * b}v-${cell - 2 * b}l${b} -${b}z" fill="#7d9186"/>`;
+      if (c === 'hidden') return tile;
+      return `${tile}<rect x="${x + cell * 0.48}" y="${y + cell * 0.22}" width="${cell * 0.07}" height="${cell * 0.5}" fill="#1b2823"/><rect x="${x + cell * 0.3}" y="${y + cell * 0.7}" width="${cell * 0.42}" height="${cell * 0.08}" fill="#1b2823"/><path d="M${x + cell * 0.55} ${y + cell * 0.2}V${y + cell * 0.5}L${x + cell * 0.24} ${y + cell * 0.35}z" fill="#c2272d"/>`;
+    }
+    const bg = `<rect x="${x + 0.5}" y="${y + 0.5}" width="${cell - 1}" height="${cell - 1}" fill="#f6f1e6"/>`;
+    return c ? `${bg}<text x="${x + cell / 2}" y="${y + cell * 0.72}" font-size="${Math.round(cell * 0.62)}" font-weight="700" text-anchor="middle" fill="${colors[c]}">${c}</text>` : bg;
+  });
+  const svg = `<g transform="translate(${Math.round((540 - w) / 2)} 0)"><rect width="${w}" height="${h}" fill="#d6ccb6"/>${parts.join('')}</g>`;
+  return { svg, width: 540, height: h };
+}
+
 /** 1200x630 social card: title on the left, artwork on the right. */
 export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt }): string {
   const titleLines = wrap(opts.title, 16).slice(0, 3);

@@ -40,6 +40,18 @@ export const GAMES: readonly GameEntry[] = [
     href: '/solitaire/freecell/',
     blurb: 'Four free cells and every card face up. Play the classic numbered deals.',
   },
-  { slug: 'sudoku', name: 'Sudoku', status: 'planned', blurb: 'Logic number puzzles from easy to expert.' },
-  { slug: 'minesweeper', name: 'Minesweeper', status: 'planned', blurb: 'Clear the field without hitting a mine.' },
+  {
+    slug: 'sudoku',
+    name: 'Sudoku',
+    status: 'live',
+    href: '/sudoku/',
+    blurb: 'Logic number puzzles from Easy to Expert. One solution each, never a guess, with notes and hints.',
+  },
+  {
+    slug: 'minesweeper',
+    name: 'Minesweeper',
+    status: 'live',
+    href: '/minesweeper/',
+    blurb: 'Clear the field without opening a mine. Beginner, Intermediate and Expert, with a safe first click.',
+  },
 ];

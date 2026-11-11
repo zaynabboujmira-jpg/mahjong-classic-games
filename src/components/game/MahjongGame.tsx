@@ -413,9 +413,8 @@ export default function MahjongGame({ layoutId, layoutName, slots, next }: Props
       <p class="sr-only" aria-live="polite">
         {announce}
       </p>
-      <noscript>
-        <p class="noscript">Mahjong needs JavaScript to run. Please enable it to play.</p>
-      </noscript>
+      {/* Raw HTML: browsers with JS never parse noscript children, so hydration must not diff them. */}
+      <noscript dangerouslySetInnerHTML={{ __html: '<p class="noscript">Mahjong needs JavaScript to run. Please enable it to play.</p>' }} />
     </section>
   );
 }

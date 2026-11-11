@@ -1,0 +1,127 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import Faq from '../../components/content/Faq.astro';
+import { LEVELS } from '../../engines/minesweeper/game';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
+
+const levels = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Free Minesweeper Online – 3 Classic Levels';
+const description =
+  'Play free Minesweeper online: Beginner 9×9, Intermediate 16×16 and Expert 30×16. The first click is always safe. Flags, chording, works on phones.';
+const image = ogImagePath('minesweeper');
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Minesweeper', href: '/minesweeper/' },
+];
+const steps = [
+  { name: 'Open a cell', text: 'Click or tap any cell. The first click is always safe and opens an area of the field.' },
+  { name: 'Read the numbers', text: 'A number shows how many of the eight cells around it hide a mine.' },
+  { name: 'Flag the mines', text: 'Right-click, long-press or use Flag mode to mark cells you know are mines.' },
+  { name: 'Clear the field', text: 'Open every cell that is not a mine to win. Double-click a satisfied number to open its neighbours at once.' },
+];
+const faq = [
+  {
+    q: 'How do I play Minesweeper on a phone?',
+    a: 'Tap to open a cell and long-press to place a flag. If you prefer, turn on Flag mode so taps place flags. Double-tap a number, or tap it with two fingers, to chord.',
+  },
+  {
+    q: 'Is the first click always safe?',
+    a: 'Yes, on every level. Mines are placed after your first click and kept off that cell and its eight neighbours, so it always opens an area.',
+  },
+  {
+    q: 'Which level should I play?',
+    a: 'Beginner (10 mines) is quick and good for learning the patterns. Intermediate (40 mines) is the classic middle ground. Expert (99 mines) is the standard for speed records.',
+  },
+  {
+    q: 'Do I need to flag every mine?',
+    a: 'No. You win as soon as every safe cell is open. Flags just help you keep track, and they let you chord.',
+  },
+];
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  videoGame(origin, {
+    url,
+    name: 'Minesweeper',
+    description,
+    image: new URL(image, site).href,
+    genre: ['Puzzle', 'Logic puzzle', 'Minesweeper'],
+    keywords: ['minesweeper', 'free minesweeper', 'minesweeper online', 'play minesweeper'],
+  }),
+  {
+    '@type': 'ItemList',
+    '@id': `${url}#levels`,
+    name: 'Minesweeper levels',
+    itemListElement: levels.map((l, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: new URL(`/minesweeper/${l.data.level}/`, site).href,
+      name: l.data.title,
+    })),
+  },
+  howTo(url, 'How to play Minesweeper', steps),
+  faqPage(url, faq),
+);
+---
+
+<BaseLayout title={title} description={description} image={image} imageAlt="A Minesweeper field with numbers and flags" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Free Minesweeper</h1>
+    <p class="text-muted mt-2 max-w-2xl">
+      The three classic boards, with a safe first click, flags, chording and your best time saved. Play with a mouse, a keyboard or a
+      touch screen.
+    </p>
+    <ul class="grid gap-4 sm:grid-cols-3 mt-6">
+      {
+        levels.map((l) => {
+          const spec = LEVELS[l.data.level];
+          return (
+            <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
+              <h2 class="font-bold text-lg">
+                <a class="hover:text-brand" href={`/minesweeper/${l.data.level}/`}>
+                  {l.data.name}
+                </a>
+              </h2>
+              <p class="text-sm font-semibold mt-1">
+                {spec.width}×{spec.height} · {spec.mines} mines
+              </p>
+              <p class="text-sm text-muted mt-2 flex-1">{l.data.summary}</p>
+              <a class="btn btn-primary mt-4 self-start" href={`/minesweeper/${l.data.level}/`}>
+                Play {l.data.name.toLowerCase()}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <section id="how-to-play" aria-labelledby="how-heading" class="mt-10 max-w-3xl prose-copy">
+      <h2 id="how-heading">How to play Minesweeper</h2>
+      <ol>
+        {
+          steps.map((s) => (
+            <li>
+              <strong>{s.name}.</strong> {s.text}
+            </li>
+          ))
+        }
+      </ol>
+      <p>
+        Every number is a clue about its eight neighbours. Comparing numbers that share hidden cells is how you find safe cells and
+        mines without guessing, and the same few patterns come up again and again.
+      </p>
+    </section>
+
+    <Faq items={faq} />
+  </div>
+</BaseLayout>
