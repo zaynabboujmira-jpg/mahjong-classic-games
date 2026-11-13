@@ -6,9 +6,10 @@ import { PUZZLE_COMPARE } from '../../data/compare';
 import NumberMergeGame from '../game/NumberMergeGame';
 import MemoryMatchGame from '../game/MemoryMatchGame';
 import NonogramGame from '../game/NonogramGame';
-import FourInRowGame from '../game/FourInRowGame';
+import WordSearchGame from '../game/WordSearchGame';
+import MiniCrosswordGame from '../game/MiniCrosswordGame';
 
-/** A puzzle or board game page; Four in a Row lives under /board/, the rest under /puzzles/. */
+/** A puzzle page under /puzzles/. */
 interface Props {
   entry: CollectionEntry<'puzzles'>;
   entries: CollectionEntry<'puzzles'>[];
@@ -16,29 +17,22 @@ interface Props {
 const { entry, entries } = Astro.props;
 const { data } = entry;
 const { Content } = await render(entry);
-const pathOfPuzzle = (id: string) => (id === 'four-in-a-row' ? '/board/four-in-a-row/' : `/puzzles/${id}/`);
-const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary, path: pathOfPuzzle(e.data.level) }));
+const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary, }));
 const GENRES: Record<string, string[]> = {
   'number-merge': ['Puzzle', 'Number game', 'Casual'],
   'memory-match': ['Memory game', 'Card game', 'Puzzle'],
   nonogram: ['Puzzle', 'Logic puzzle', 'Picture puzzle'],
-  'four-in-a-row': ['Board game', 'Strategy', 'Two-player'],
+  'word-search': ['Word game', 'Puzzle', 'Casual'],
+  'mini-crossword': ['Word game', 'Crossword', 'Puzzle'],
 };
 const ALT: Record<string, string> = {
   'number-merge': 'A 4×4 board of number tiles up to 2048',
   'memory-match': 'A grid of face-down cards with matched pairs turned up',
   nonogram: 'A nonogram grid with number clues and a filled picture',
-  'four-in-a-row': 'Red and gold discs in a blue upright grid with four in a diagonal',
+  'word-search': 'A letter grid with found words marked in colour',
+  'mini-crossword': 'A small crossword grid with numbered squares',
 };
-const MORE: Record<string, { heading: string; text: string; href: string; label: string }> = {
-  'four-in-a-row': {
-    heading: 'Prefer a solo puzzle?',
-    text: 'Sudoku is pure logic with one solution per grid, in four difficulty levels.',
-    href: '/sudoku/',
-    label: 'Play Sudoku',
-  },
-};
-const more = MORE[data.level] ?? {
+const more = {
   heading: 'Like logic puzzles?',
   text: 'Sudoku has four levels, each puzzle with exactly one solution and no guessing needed.',
   href: '/sudoku/',
@@ -49,7 +43,7 @@ const more = MORE[data.level] ?? {
 <LevelPage
   game="Puzzles"
   base="/puzzles/"
-  level={{ id: data.level, name: data.name, summary: data.summary, path: pathOfPuzzle(data.level) }}
+  level={{ id: data.level, name: data.name, summary: data.summary }}
   levels={levels}
   data={data}
   genre={GENRES[data.level]!}
@@ -57,7 +51,7 @@ const more = MORE[data.level] ?? {
   imageKey={`puzzles-${data.level}`}
   qa={data.level}
   compare={PUZZLE_COMPARE}
-  levelsHeading="More puzzle and board games"
+  levelsHeading="More puzzles"
   levelTitle={(name) => name}
   howToName={`How to play ${data.name}`}
   more={more}
@@ -65,6 +59,7 @@ const more = MORE[data.level] ?? {
   {data.level === 'number-merge' && <NumberMergeGame slot="game" client:load />}
   {data.level === 'memory-match' && <MemoryMatchGame slot="game" client:load />}
   {data.level === 'nonogram' && <NonogramGame slot="game" client:load />}
-  {data.level === 'four-in-a-row' && <FourInRowGame slot="game" client:load />}
+  {data.level === 'word-search' && <WordSearchGame slot="game" client:load />}
+  {data.level === 'mini-crossword' && <MiniCrosswordGame slot="game" client:load />}
   <Content />
 </LevelPage>

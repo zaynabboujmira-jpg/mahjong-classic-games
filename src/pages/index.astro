@@ -11,14 +11,14 @@ import { faqPage, graph, itemList, organization, webPage, website } from '../lib
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl('/', site);
-const title = `${SITE.name} – 22 Classic Browser Games`;
+const title = `${SITE.name} – 28 Classic Browser Games`;
 const description = SITE.description;
 const image = ogImagePath('home');
 
 const faq = [
   {
     q: `What is ${SITE.name}?`,
-    a: `${SITE.name} is a free website with 22 classic games that play instantly in your browser: Mahjong Solitaire, 4-player Mahjong, Klondike, Spider, FreeCell, Sudoku, Minesweeper, Word Guess, Number Merge, Nonogram, Memory Match, Four in a Row and ten retro arcade games including Snake and Brick Breaker.`,
+    a: `${SITE.name} is a free website with 28 classic games that play instantly in your browser: Mahjong Solitaire, 4-player Mahjong, Klondike, Spider, FreeCell, Sudoku, Minesweeper, Word Guess, Mini Crossword, Word Search, Number Merge, Nonogram, Memory Match, Chess, Checkers, Dominoes, Four in a Row and eleven retro arcade games including Bubble Shooter, Snake and Brick Breaker.`,
   },
   {
     q: 'Do I need to download anything or sign up?',
@@ -53,13 +53,13 @@ const jsonLd = graph(
 );
 ---
 
-<BaseLayout title={title} description={description} image={image} imageAlt={`${SITE.name}: 22 classic browser games`} jsonLd={jsonLd} quickSwitch={false}>
+<BaseLayout title={title} description={description} image={image} imageAlt={`${SITE.name}: 28 classic browser games`} jsonLd={jsonLd} quickSwitch={false}>
   <section class="hero">
     <div class="container-page">
-      <h1 class="hero-title">22 classic browser games</h1>
+      <h1 class="hero-title">28 classic browser games</h1>
       <p class="hero-sub">Instant play{FEATURES.ads ? '' : ', zero ads'}, ready on mobile and desktop. No download, no sign-up.</p>
       <ul class="hero-facts" aria-label="At a glance">
-        <li><strong>22</strong> games</li>
+        <li><strong>28</strong> games</li>
         {FEATURES.ads ? <li><strong>Daily</strong> challenges</li> : <li><strong>0</strong> ads</li>}
         <li><strong>Touch</strong>, mouse &amp; keys</li>
         <li><strong>Free</strong>, always</li>
@@ -106,11 +106,11 @@ const jsonLd = graph(
     <section class="portal-section quick-answer" aria-labelledby="qa-title">
       <h2 id="qa-title" class="portal-title">Quick answer</h2>
       <p>
-        <strong>{SITE.name}</strong> ({SITE.domain}) is a free{FEATURES.ads ? '' : ', ad-free'} website with 22 classic games that run in any modern browser on phones,
+        <strong>{SITE.name}</strong> ({SITE.domain}) is a free{FEATURES.ads ? '' : ', ad-free'} website with 28 classic games that run in any modern browser on phones,
         tablets and computers: Mahjong Solitaire (6 layouts), 4-player Mahjong against computer opponents (Hong Kong, Chinese and American
         rules), Klondike, Spider and FreeCell solitaire, Sudoku (4 levels), Minesweeper (3 levels), Word Guess (daily and unlimited, 4 to 6
-        letters), Number Merge, Nonogram picture logic, Memory Match, Four in a Row against the computer, and ten retro arcade games including
-        Snake and Brick Breaker.
+        letters), a daily Mini Crossword, Word Search, Number Merge, Nonogram picture logic, Memory Match, board games against the computer
+        (Chess, Checkers, Dominoes and Four in a Row), and eleven retro arcade games including Bubble Shooter, Snake and Brick Breaker.
       </p>
     </section>
 

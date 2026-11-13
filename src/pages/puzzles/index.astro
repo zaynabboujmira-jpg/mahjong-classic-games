@@ -11,9 +11,9 @@ const games = CATALOG.filter((g) => g.category === 'puzzles');
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Puzzle & Board Games – Logic, Memory, Numbers';
+const title = 'Free Puzzle Games – Logic, Words, Numbers';
 const description =
-  'Free puzzle and board games for any screen: Sudoku, Minesweeper, Word Guess, Number Merge, Nonogram, Memory Match and Four in a Row against the computer.';
+  'Free puzzle games for any screen: Sudoku, Minesweeper, Word Guess, Mini Crossword, Word Search, Number Merge, Nonogram and Memory Match. No sign-up.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Puzzles', href: '/puzzles/' },
@@ -32,12 +32,12 @@ const jsonLd = graph(
 );
 ---
 
-<BaseLayout title={title} description={description} image={ogImagePath('puzzles')} imageAlt="Puzzle and board games" jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} image={ogImagePath('puzzles')} imageAlt="Puzzle games" jsonLd={jsonLd}>
   <div class="container-page pt-4">
     <Breadcrumbs items={crumbs} />
-    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Puzzle &amp; board games</h1>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Puzzle games</h1>
     <p class="text-muted mt-2 max-w-2xl">
-      Games for a thinking break: pure logic, numbers, memory and strategy. Every one plays instantly in your browser on a phone or computer, with no
+      Games for a thinking break: pure logic, words, numbers and memory. Every one plays instantly in your browser on a phone or computer, with no
       sign-up.
     </p>
     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-6">

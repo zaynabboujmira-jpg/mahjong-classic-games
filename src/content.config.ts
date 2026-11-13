@@ -93,13 +93,19 @@ const word = defineCollection({
 /** Arcade games (/arcade/[game]/). */
 const arcade = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/arcade' }),
-  schema: levelPage(['color-memory', 'paddle-ball', 'maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker'] as const),
+  schema: levelPage(['color-memory', 'paddle-ball', 'maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker', 'bubble-shooter'] as const),
 });
 
-/** Puzzle and board games (/puzzles/[game]/, and Four in a Row at /board/four-in-a-row/). */
+/** Puzzle games (/puzzles/[game]/). */
 const puzzles = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/puzzles' }),
-  schema: levelPage(['number-merge', 'memory-match', 'nonogram', 'four-in-a-row'] as const),
+  schema: levelPage(['number-merge', 'memory-match', 'nonogram', 'word-search', 'mini-crossword'] as const),
 });
 
-export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade, puzzles };
+/** Board games (/board/[game]/). */
+const board = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/board' }),
+  schema: levelPage(['chess', 'checkers', 'dominoes', 'four-in-a-row'] as const),
+});
+
+export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade, puzzles, board };

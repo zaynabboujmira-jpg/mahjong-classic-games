@@ -4,6 +4,7 @@ import type { Slot } from '../engines/mahjong/types';
 import { boundsOf } from '../engines/mahjong/board';
 import { layoutPreviewSvg } from './layout-preview';
 import { SITE } from '../data/site';
+import { PIECE_PATHS } from '../components/game/chess-pieces';
 
 /*
  * Build-time PNG rendering for OpenGraph images and app icons. Runs only
@@ -283,7 +284,9 @@ ${([['#a855f7', 300], ['#f97316', 360]] as const).map(([c, x]) => `<path d="M${x
 }
 
 /** Art for the six newer games, each an original scene in a 460 × 300 frame. */
-export function newGameArt(kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row', picture: readonly (readonly boolean[])[] = []): OgArt {
+export function newGameArt(
+  kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row' | 'chess' | 'checkers' | 'dominoes' | 'word-search' | 'mini-crossword' | 'bubble-shooter',
+  picture: readonly (readonly boolean[])[] = []): OgArt {
   const frame = (bg: string, inner: string) => `<g transform="translate(40 0)"><rect width="460" height="300" rx="16" fill="${bg}"/>${inner}</g>`;
   let svg = '';
   switch (kind) {
@@ -387,6 +390,103 @@ export function newGameArt(kind: 'snake' | 'brick-breaker' | 'number-merge' | 'm
         });
       });
       svg = frame('#123f33', out);
+      break;
+    }
+    case 'chess': {
+      const sq = 36;
+      const x0 = 86;
+      let out = '';
+      for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) out += `<rect x="${x0 + c * sq}" y="${6 + r * sq}" width="${sq}" height="${sq}" fill="${(r + c) % 2 ? '#9a6b46' : '#eedcb4'}"/>`;
+      const pieces: [number, number, number, boolean][] = [
+        [6, 0, 4, false], [5, 0, 3, false], [4, 0, 7, false], [1, 1, 5, false], [1, 2, 4, false], [2, 2, 2, false],
+        [6, 7, 6, true], [5, 4, 3, true], [2, 5, 5, true], [1, 6, 3, true], [1, 6, 4, true], [4, 7, 0, true],
+      ];
+      for (const [t, r, c, white] of pieces)
+        out += `<g transform="translate(${x0 + c * sq + 2} ${6 + r * sq + 2}) scale(${(sq - 4) / 45})" fill="${white ? '#f8f4ea' : '#2b2b30'}" stroke="${white ? '#3a3a3a' : '#0d0d10'}" stroke-width="1.4" style="--eye:${white ? '#3a3a3a' : '#f8f4ea'}">${PIECE_PATHS[t]!.replace(/var\(--eye\)/g, white ? '#3a3a3a' : '#f8f4ea')}</g>`;
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'checkers': {
+      const sq = 36;
+      const x0 = 86;
+      let out = '';
+      for (let r = 0; r < 8; r++)
+        for (let c = 0; c < 8; c++) {
+          const dark = (r + c) % 2 === 1;
+          out += `<rect x="${x0 + c * sq}" y="${6 + r * sq}" width="${sq}" height="${sq}" fill="${dark ? '#3f6b4f' : '#f1e3c6'}"/>`;
+          const piece = dark && (r < 3 ? (r * 8 + c) % 5 !== 0 : r > 4 ? (r * 8 + c) % 4 !== 0 : r === 3 && c === 4);
+          if (piece) {
+            const red = r > 3;
+            out += `<circle cx="${x0 + c * sq + sq / 2}" cy="${6 + r * sq + sq / 2}" r="${sq * 0.38}" fill="${red ? '#dc2626' : '#f5f5f4'}" stroke="rgba(0,0,0,.3)" stroke-width="2"/>`;
+          }
+        }
+      out += `<text x="${x0 + 4 * sq + sq / 2}" y="${6 + 3 * sq + sq / 2 + 7}" font-size="20" text-anchor="middle" fill="#facc15">♛</text>`;
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'dominoes': {
+      const pipsAt: Record<number, [number, number][]> = {
+        0: [], 1: [[1, 1]], 2: [[0, 0], [2, 2]], 3: [[0, 0], [1, 1], [2, 2]], 4: [[0, 0], [2, 0], [0, 2], [2, 2]],
+        5: [[0, 0], [2, 0], [1, 1], [0, 2], [2, 2]], 6: [[0, 0], [0, 1], [0, 2], [2, 0], [2, 1], [2, 2]],
+      };
+      const tile = (x: number, y: number, a: number, b: number, vertical = false) => {
+        const w = vertical ? 44 : 88;
+        const h = vertical ? 88 : 44;
+        let t = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" fill="#fbf7ec" stroke="#cbd5e1" stroke-width="2"/>`;
+        t += vertical ? `<path d="M${x + 6} ${y + 44}H${x + 38}" stroke="#9ca3af" stroke-width="2"/>` : `<path d="M${x + 44} ${y + 6}V${y + 38}" stroke="#9ca3af" stroke-width="2"/>`;
+        [a, b].forEach((n, half) => {
+          const ox = vertical ? x : x + half * 44;
+          const oy = vertical ? y + half * 44 : y;
+          for (const [px, py] of pipsAt[n]!) t += `<circle cx="${ox + 10 + px * 12}" cy="${oy + 10 + py * 12}" r="4.2" fill="#1f2937"/>`;
+        });
+        return t;
+      };
+      let out = tile(20, 40, 3, 6) + tile(110, 40, 6, 6) + tile(200, 40, 6, 2) + tile(290, 40, 2, 5) + tile(380, 18, 5, 5, true);
+      out += tile(60, 190, 4, 1, true) + tile(120, 190, 0, 3, true) + tile(180, 190, 5, 4, true) + tile(240, 190, 2, 2, true) + tile(300, 190, 6, 1, true) + tile(360, 190, 3, 3, true);
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'word-search': {
+      const rows = ['TIGERXOAPM', 'KOALAWNUEO', 'BZEBRALRNO', 'IRSOTTERGS', 'SHPANDAICE', 'OCAMELFVUH', 'NLLAMATEIN'];
+      let out = '<rect x="40" y="14" width="380" height="272" rx="10" fill="#fffdf8"/>';
+      out += `<path d="M64 41H222" stroke="#f59e0b" stroke-width="30" stroke-linecap="round" opacity=".45"/><path d="M102 158H252" stroke="#38bdf8" stroke-width="30" stroke-linecap="round" opacity=".45"/><path d="M64 80L64 236" stroke="#22c55e" stroke-width="30" stroke-linecap="round" opacity=".4"/>`;
+      rows.forEach((row, r) => [...row].forEach((ch, c) => (out += `<text x="${64 + c * 38}" y="${50 + r * 39}" font-size="24" font-weight="700" text-anchor="middle" fill="#1b2823">${ch}</text>`)));
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'mini-crossword': {
+      const grid = ['##C#B', '#MAIL', 'A#B#A', 'D#I#Z', 'DANCE'];
+      const nums: Record<string, number> = { '0,2': 1, '0,4': 2, '1,1': 3, '2,0': 4, '4,0': 5 };
+      const sq = 54;
+      const x0 = 95;
+      let out = `<rect x="${x0 - 4}" y="8" width="${sq * 5 + 8}" height="${sq * 5 + 8}" rx="6" fill="#1b2823"/>`;
+      grid.forEach((row, r) =>
+        [...row].forEach((ch, c) => {
+          if (ch === '#') return;
+          const x = x0 + c * sq;
+          const y = 12 + r * sq;
+          out += `<rect x="${x + 1}" y="${y + 1}" width="${sq - 2}" height="${sq - 2}" fill="${r === 1 ? '#cfe8f7' : '#fffdf8'}"/>`;
+          if (nums[`${r},${c}`]) out += `<text x="${x + 5}" y="${y + 15}" font-size="12" font-weight="700" fill="#1b2823">${nums[`${r},${c}`]}</text>`;
+          if (r !== 3) out += `<text x="${x + sq / 2}" y="${y + 38}" font-size="26" font-weight="700" text-anchor="middle" fill="#1b2823">${ch}</text>`;
+        }),
+      );
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'bubble-shooter': {
+      const colors = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7'];
+      const pattern = ['00112233441', '1122334400', '22334400112', '3344001122', '44001122'];
+      let out = '';
+      pattern.forEach((row, r) =>
+        [...row].forEach((ch, c) => {
+          const x = 40 + c * 34 + (r % 2 ? 17 : 0);
+          const y = 30 + r * 29;
+          out += `<circle cx="${x}" cy="${y}" r="16" fill="${colors[Number(ch)]}"/><circle cx="${x - 5}" cy="${y - 6}" r="5" fill="#fff" opacity=".55"/>`;
+        }),
+      );
+      for (let i = 1; i < 9; i++) out += `<circle cx="${230 - i * 9}" cy="${260 - i * 16}" r="3" fill="#fff" opacity=".6"/>`;
+      out += `<circle cx="230" cy="268" r="22" fill="#1e293b"/><circle cx="230" cy="268" r="16" fill="#3b82f6"/><circle cx="225" cy="262" r="5" fill="#fff" opacity=".55"/>`;
+      svg = frame('#0f2a3f', out);
       break;
     }
     case 'four-in-a-row': {

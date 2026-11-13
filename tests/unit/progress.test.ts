@@ -142,6 +142,10 @@ describe('summarize', () => {
       'match:best:small': { moves: 7, ms: 20_000 },
       'nonogram:best:10': 185_000,
       'fourrow:record:hard': { won: 1, lost: 2, drawn: 0 },
+      'chess:record:club': { won: 2, lost: 1, drawn: 1 },
+      'wordsearch:best:12': 95_000,
+      'crossword:best:5': 48_000,
+      'dominoes:matches': 1,
     });
     recordWin('klondike', null, at(10), kv);
     const s = summarize(kv, 10);
@@ -159,8 +163,13 @@ describe('summarize', () => {
     expect(g('memory-match').best).toBe('7 moves, 0:20');
     expect(g('nonogram').best).toBe('3:05 (10×10)');
     expect(g('four-in-a-row').best).toBe('1 of 3 won vs computer');
+    expect(g('chess').best).toBe('2 of 4 won vs computer');
+    expect(g('word-search').best).toBe('1:35 (12×12)');
+    expect(g('mini-crossword').best).toBe('0:48 (5×5)');
+    expect(g('dominoes').best).toBe('1 match won');
+    expect(g('checkers').played).toBe(false);
     expect(g('spider').played).toBe(false);
-    expect(s.gamesPlayed).toBe(13);
+    expect(s.gamesPlayed).toBe(17);
     expect(s.totalWins).toBe(1 + 3 + 2);
     expect(unlocked(kv)).toEqual(['first-win']);
   });
@@ -177,7 +186,7 @@ describe('summarize', () => {
 
   it('unlocks the game-specific achievements', () => {
     const layouts = ['turtle', 'dragon', 'pyramid', 'fortress', 'butterfly', 'fish'];
-    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker'];
+    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker', 'bubble-shooter'];
     const kv = memoryKV({
       ...Object.fromEntries(layouts.map((l) => [`mahjong:best:${l}`, 100_000])),
       ...Object.fromEntries(arcade.map((id) => [`${id}:best`, 10])),
@@ -194,7 +203,7 @@ describe('summarize', () => {
   });
 
   it('does not unlock Arcade Master without a Paddle Ball win', () => {
-    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker'];
+    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker', 'bubble-shooter'];
     const kv = memoryKV({ ...Object.fromEntries(arcade.map((id) => [`${id}:best`, 10])), 'memory:best:normal': 5 });
     expect(unlocked(kv)).not.toContain('arcade-master');
   });

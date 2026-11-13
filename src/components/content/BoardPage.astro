@@ -1,0 +1,61 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import LevelPage from './LevelPage.astro';
+import { BOARD_COMPARE } from '../../data/compare';
+import ChessGame from '../game/ChessGame';
+import CheckersGame from '../game/CheckersGame';
+import DominoesGame from '../game/DominoesGame';
+import FourInRowGame from '../game/FourInRowGame';
+
+/** A board game page under /board/. */
+interface Props {
+  entry: CollectionEntry<'board'>;
+  entries: CollectionEntry<'board'>[];
+}
+const { entry, entries } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
+const GENRES: Record<string, string[]> = {
+  chess: ['Board game', 'Strategy', 'Two-player'],
+  checkers: ['Board game', 'Strategy', 'Two-player'],
+  dominoes: ['Tile game', 'Board game', 'Multiplayer'],
+  'four-in-a-row': ['Board game', 'Strategy', 'Two-player'],
+};
+const ALT: Record<string, string> = {
+  chess: 'A chess board with original piece drawings',
+  checkers: 'Red and white checkers on a green and cream board',
+  dominoes: 'A line of double-six dominoes with a hand of tiles',
+  'four-in-a-row': 'Red and gold discs in a blue upright grid with four in a diagonal',
+};
+---
+
+<LevelPage
+  game="Board Games"
+  base="/board/"
+  hubCrumb="Board games"
+  level={{ id: data.level, name: data.name, summary: data.summary }}
+  levels={levels}
+  data={data}
+  genre={GENRES[data.level]!}
+  imageAlt={ALT[data.level]!}
+  imageKey={`board-${data.level}`}
+  qa={data.level}
+  compare={BOARD_COMPARE}
+  levelsHeading="More board games"
+  levelTitle={(name) => name}
+  howToName={`How to play ${data.name}`}
+  more={{
+    heading: 'Prefer a solo puzzle?',
+    text: 'Sudoku is pure logic with one solution per grid, in four difficulty levels.',
+    href: '/sudoku/',
+    label: 'Play Sudoku',
+  }}
+>
+  {data.level === 'chess' && <ChessGame slot="game" client:load />}
+  {data.level === 'checkers' && <CheckersGame slot="game" client:load />}
+  {data.level === 'dominoes' && <DominoesGame slot="game" client:load />}
+  {data.level === 'four-in-a-row' && <FourInRowGame slot="game" client:load />}
+  <Content />
+</LevelPage>

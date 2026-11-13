@@ -7,7 +7,7 @@ import { summarize, type Summary } from '../../engines/core/stats';
 const NAMES = Object.fromEntries(CATALOG.map((g) => [g.id, { name: g.name, href: g.play }]));
 
 /**
- * The player's stats across all 22 games and the achievements, read from
+ * The player's stats across all 28 games and the achievements, read from
  * this browser only. Server-rendered as an empty profile (every achievement
  * listed, all locked) and filled in on load.
  */
@@ -33,7 +33,7 @@ export default function StatsBoard() {
       <dl class="stats-totals">
         <div>
           <dd>{loaded ? s.gamesPlayed : '–'}</dd>
-          <dt>Games played (of 22)</dt>
+          <dt>Games played (of 28)</dt>
         </div>
         <div>
           <dd>{loaded ? s.totalWins : '–'}</dd>

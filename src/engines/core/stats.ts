@@ -6,7 +6,7 @@ import { DAILY_GAMES, browserKV, dailyStreak, readProgress, type KV } from './pr
  * Key names are the ones the games write; see each game's island.
  */
 const LAYOUTS = ['turtle', 'dragon', 'pyramid', 'fortress', 'butterfly', 'fish'];
-const ARCADE_SHELL = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker'];
+const ARCADE_SHELL = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker', 'bubble-shooter'];
 
 export interface GameStat {
   id: string;
@@ -108,6 +108,24 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
   const fourRecords = withPrefix('fourrow:record:').map((k) => kv.get<{ won: number; lost: number; drawn: number } | null>(k, null));
   const fourPlayed = fourRecords.reduce((n, r) => n + (r ? r.won + r.lost + r.drawn : 0), 0);
   add('four-in-a-row', fourPlayed > 0 || keys.includes('fourrow:opponent'), fourPlayed ? `${fourRecords.reduce((n, r) => n + (r?.won ?? 0), 0)} of ${fourPlayed} won vs computer` : null);
+  for (const [id, prefix, setting] of [
+    ['chess', 'chess:record:', 'chess:settings'],
+    ['checkers', 'checkers:record:', 'checkers:opponent'],
+  ] as const) {
+    const recs = withPrefix(prefix).map((k) => kv.get<{ won: number; lost: number; drawn: number } | null>(k, null));
+    const played = recs.reduce((n, r) => n + (r ? r.won + r.lost + r.drawn : 0), 0);
+    add(id, played > 0 || keys.includes(setting), played ? `${recs.reduce((n, r) => n + (r?.won ?? 0), 0)} of ${played} won vs computer` : null);
+  }
+  const matches = num('dominoes:matches') ?? 0;
+  add('dominoes', matches > 0 || keys.includes('dominoes:settings'), matches ? `${matches} match${matches > 1 ? 'es' : ''} won` : null);
+  for (const [id, prefix, setting] of [
+    ['word-search', 'wordsearch:best:', 'wordsearch:settings'],
+    ['mini-crossword', 'crossword:best:', 'crossword:settings'],
+  ] as const) {
+    const bests = withPrefix(prefix).map((k) => [k.slice(prefix.length), num(k)] as const).filter(([, v]) => v !== null);
+    const fastest = minOf(bests.map(([, v]) => v));
+    add(id, bests.length > 0 || keys.includes(setting), fastest ? `${time(fastest)} (${bests.map(([s]) => `${s}×${s}`).join(', ')})` : null);
+  }
 
   const streak = dailyStreak(progress, today);
   const dailyDays = Object.values(progress.daily).filter((d) => Object.values(d).some((r) => r?.won)).length;
@@ -131,7 +149,7 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
     a('tile-master', 'Tile Master', 'Clear all six Mahjong Solitaire layouts.', layoutsDone === 6),
     a('card-shark', 'Card Shark', 'Win Klondike, Spider and FreeCell.', ['klondike', 'spider', 'freecell'].every((id) => cardBest(id) !== null || wins(id) > 0)),
     a('mine-expert', 'Minesweeper Expert', 'Clear an Expert Minesweeper field.', minesBest('expert') !== null),
-    a('arcade-master', 'Arcade Master', 'Score in all ten arcade games (beat the computer at Paddle Ball).', arcadeScored === arcadeIds.length),
+    a('arcade-master', 'Arcade Master', 'Score in all eleven arcade games (beat the computer at Paddle Ball).', arcadeScored === arcadeIds.length),
   ];
 
   return { games, totalWins, gamesPlayed: games.filter((g) => g.played).length, streak, dailyDays, achievements };

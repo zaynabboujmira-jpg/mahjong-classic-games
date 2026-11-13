@@ -1,18 +1,18 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import PuzzlePage from '../../components/content/PuzzlePage.astro';
+import BoardPage from '../../components/content/BoardPage.astro';
 
-/** Board games: Four in a Row. */
+/** One page per board game in src/content/board. */
 export const getStaticPaths = (async () => {
-  const entries = (await getCollection('puzzles')).sort((a, b) => a.data.order - b.data.order);
-  return entries.filter((e) => e.data.level === 'four-in-a-row').map((entry) => ({ params: { game: entry.data.level }, props: { entry, entries } }));
+  const entries = (await getCollection('board')).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry) => ({ params: { game: entry.data.level }, props: { entry, entries } }));
 }) satisfies GetStaticPaths;
 
 interface Props {
-  entry: CollectionEntry<'puzzles'>;
-  entries: CollectionEntry<'puzzles'>[];
+  entry: CollectionEntry<'board'>;
+  entries: CollectionEntry<'board'>[];
 }
 ---
 
-<PuzzlePage {...Astro.props} />
+<BoardPage {...Astro.props} />

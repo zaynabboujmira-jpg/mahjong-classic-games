@@ -29,6 +29,7 @@ const nav = [
   { href: '/minesweeper/', label: 'Minesweeper' },
   { href: '/word-guess/', label: 'Word Guess' },
   { href: '/puzzles/', label: 'Puzzles' },
+  { href: '/board/', label: 'Board games' },
   { href: '/arcade/', label: 'Arcade' },
   { href: '/games/', label: 'All games' },
 ];
@@ -116,7 +117,7 @@ const current = tableVariants.some((v) => path.startsWith(v))
           <a href="/" class="no-underline text-fg" aria-label={`${SITE.name} home`}>
             <Logo size={28} />
           </a>
-          <p class="text-muted mt-3 max-w-xs">22 classic games that play instantly in your browser. {FEATURES.ads ? 'No sign-up, no download.' : 'No ads, no sign-up, no download.'}</p>
+          <p class="text-muted mt-3 max-w-xs">28 classic games that play instantly in your browser. {FEATURES.ads ? 'No sign-up, no download.' : 'No ads, no sign-up, no download.'}</p>
         </div>
         <nav aria-label="Games">
           <p class="footer-head">Games</p>
@@ -132,7 +133,8 @@ const current = tableVariants.some((v) => path.startsWith(v))
           <p class="footer-head">More</p>
           <ul>
             <li><a href="/word-guess/">Word Guess</a></li>
-            <li><a href="/puzzles/">Puzzle &amp; board games</a></li>
+            <li><a href="/puzzles/">Puzzle games</a></li>
+            <li><a href="/board/">Board games</a></li>
             <li><a href="/arcade/">Arcade games</a></li>
             <li><a href="/games/">All games</a></li>
             <li><a href="/daily/">Daily challenges</a></li>

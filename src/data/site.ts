@@ -30,8 +30,8 @@ export const SITE = {
   shortName: 'Free Play Classic',
   /** Production origin; SITE_URL overrides it at build time (see astro.config.mjs). */
   domain: 'freeplayclassic.com',
-  tagline: `22 classic browser games: instant play${FEATURES.ads ? '' : ', no ads'}, on mobile and desktop`,
-  description: `Free Play Classic: 22 classic browser games. Mahjong, solitaire, Sudoku, Nonogram, word, board and arcade games. Instant play${FEATURES.ads ? ', daily challenges' : ', no ads'}, no sign-up.`,
+  tagline: `28 classic browser games: instant play${FEATURES.ads ? '' : ', no ads'}, on mobile and desktop`,
+  description: `Free Play Classic: 28 classic browser games. Mahjong, solitaire, chess, Sudoku, crosswords, board and arcade games. Instant play${FEATURES.ads ? ', daily challenges' : ', no ads'}, no sign-up.`,
   lang: 'en',
   locale: 'en_US',
   themeColor: '#0f5c4a',

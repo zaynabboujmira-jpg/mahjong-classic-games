@@ -144,4 +144,10 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'memory-match', name: 'Memory Match', status: 'live', href: '/puzzles/memory-match/', blurb: 'Turn over two cards at a time and find every pair in as few moves as you can.' },
   { slug: 'nonogram', name: 'Nonogram', status: 'live', href: '/puzzles/nonogram/', blurb: 'Picture logic puzzles: fill the grid from the number clues, in three sizes.' },
   { slug: 'four-in-a-row', name: 'Four in a Row', status: 'live', href: '/board/four-in-a-row/', blurb: 'Drop discs and line up four against three computer levels or a friend.' },
+  { slug: 'chess', name: 'Chess', status: 'live', href: '/board/chess/', blurb: 'Full chess rules against three computer levels or a friend.' },
+  { slug: 'checkers', name: 'Checkers', status: 'live', href: '/board/checkers/', blurb: 'Forced jumps, multi-jump chains and kings, against the computer or a friend.' },
+  { slug: 'dominoes', name: 'Dominoes', status: 'live', href: '/board/dominoes/', blurb: 'The Draw and Block games with a double-six set against computer players.' },
+  { slug: 'word-search', name: 'Word Search', status: 'live', href: '/puzzles/word-search/', blurb: 'Find the hidden words in themed 10×10, 12×12 and 15×15 grids.' },
+  { slug: 'mini-crossword', name: 'Mini Crossword', status: 'live', href: '/puzzles/mini-crossword/', blurb: 'A daily 5×5 and 7×7 crossword plus unlimited puzzles.' },
+  { slug: 'bubble-shooter', name: 'Bubble Shooter', status: 'live', href: '/arcade/bubble-shooter/', blurb: 'Aim, bounce and match three bubbles of a colour to pop them.' },
 ];

@@ -1,10 +1,10 @@
 /**
- * The 22 games of Free Play Classic, grouped for the portal. One source for
+ * The 28 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
  */
-export type CategoryId = 'mahjong-cards' | 'puzzles' | 'arcade';
+export type CategoryId = 'mahjong-cards' | 'puzzles' | 'board' | 'arcade';
 
 export interface Category {
   id: CategoryId;
@@ -16,7 +16,8 @@ export interface Category {
 
 export const CATEGORIES: readonly Category[] = [
   { id: 'mahjong-cards', name: 'Mahjong & Card Classics', short: 'Mahjong & Cards', blurb: 'Tile matching, four-player Mahjong against computer opponents, and the three great solitaire games.' },
-  { id: 'puzzles', name: 'Brain, Logic & Board Games', short: 'Puzzles', blurb: 'Sudoku, Minesweeper, a daily word game, number merging, picture logic, memory pairs and Four in a Row against the computer.' },
+  { id: 'puzzles', name: 'Brain, Logic & Word Puzzles', short: 'Puzzles', blurb: 'Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
+  { id: 'board', name: 'Board Games', short: 'Board', blurb: 'Chess, Checkers, Dominoes and Four in a Row against computer opponents at several levels, or a friend.' },
   { id: 'arcade', name: 'Retro Arcade', short: 'Arcade', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
 
@@ -232,11 +233,96 @@ export const CATALOG: readonly CatalogGame[] = [
     },
   },
   {
+    id: 'word-search',
+    name: 'Word Search',
+    category: 'puzzles',
+    play: '/puzzles/word-search/',
+    hub: '/puzzles/',
+    hook: 'Find every hidden word in a themed letter grid.',
+    badges: ['10 Themes', '3 Sizes', 'Hints'],
+    icon: `<rect x="3" y="3" width="18" height="18" rx="2" ${S}/><path d="M7 8h2M11 8h2M15 8h2M7 12h2M15 12h2M7 16h2M11 16h2M15 16h2" ${S}/><path d="M7 16l10-8" ${S} opacity=".5"/>`,
+    facts: {
+      type: 'Word search puzzle',
+      goal: 'Find all the listed words hidden across, down and diagonally (and backwards on bigger grids)',
+      modes: '10×10, 12×12 and 15×15 grids; ten themes such as Animals, Ocean and Space; hint button and timer',
+      controls: 'Drag from the first letter to the last; arrow keys and Enter on the first and last letters',
+      players: '1',
+    },
+  },
+  {
+    id: 'mini-crossword',
+    name: 'Mini Crossword',
+    category: 'puzzles',
+    play: '/puzzles/mini-crossword/',
+    hub: '/puzzles/',
+    hook: 'A quick daily crossword, plus unlimited new grids.',
+    badges: ['Daily + Unlimited', '5×5 / 7×7', 'Check + Reveal'],
+    icon: `<rect x="3" y="3" width="18" height="18" rx="1" ${S}/><path d="M9 3v18M15 3v18M3 9h18M3 15h18" ${S}/><rect x="15" y="3" width="6" height="6" fill="currentColor"/><rect x="3" y="15" width="6" height="6" fill="currentColor"/>`,
+    facts: {
+      type: 'Small crossword puzzle',
+      goal: 'Fill the grid with words that answer the Across and Down clues',
+      modes: 'Daily 5×5 and 7×7 puzzles (the same for everyone, new at local midnight) and unlimited generated grids; check and reveal letter',
+      controls: 'Tap a square and type with the on-screen or your own keyboard; Tab for the next clue',
+      players: '1',
+    },
+  },
+  {
+    id: 'chess',
+    name: 'Chess',
+    category: 'board',
+    play: '/board/chess/',
+    hub: '/board/',
+    hook: 'The full game of chess against three computer levels or a friend.',
+    badges: ['3 AI Levels', 'All Rules', 'Undo'],
+    icon: `<path d="M9 21h6M10 18h4l1-6h-6zM9.5 12l-.5-3h6l-.5 3M10 6h4M12 3v6" ${S}/>`,
+    facts: {
+      type: 'Two-player strategy board game',
+      goal: 'Checkmate the opposing king: attack it so it has no legal escape',
+      modes: 'Against the computer (Beginner, Club, Tactician: minimax search with alpha-beta pruning and piece-square tables) or 2 players on one device; play White or Black',
+      controls: 'Tap or click a piece, then a highlighted square; arrow keys and Enter; undo',
+      players: '1 against the computer, or 2 on one device',
+    },
+  },
+  {
+    id: 'checkers',
+    name: 'Checkers',
+    category: 'board',
+    play: '/board/checkers/',
+    hub: '/board/',
+    hook: 'Jump your way across the board, crown kings and capture every piece.',
+    badges: ['Forced Jumps', '3 AI Levels', '2 Players'],
+    icon: `<circle cx="9" cy="9" r="5" ${S}/><circle cx="15" cy="15" r="5" fill="currentColor" opacity=".35" ${S}/>`,
+    facts: {
+      type: 'Two-player diagonal capture board game (draughts)',
+      goal: 'Capture all of the opponent\'s pieces or leave them without a legal move',
+      modes: 'American rules on 8×8: compulsory jumps, multi-jump chains, kings that move both ways; Easy, Medium and Hard computer or 2 players',
+      controls: 'Tap a piece, then each landing square; arrow keys and Enter; undo',
+      players: '1 against the computer, or 2 on one device',
+    },
+  },
+  {
+    id: 'dominoes',
+    name: 'Dominoes',
+    category: 'board',
+    play: '/board/dominoes/',
+    hub: '/board/',
+    hook: 'Match the open ends with a double-six set: the Draw and Block games.',
+    badges: ['Draw + Block', '2-4 Players', 'Auto Scoring'],
+    icon: `<rect x="3" y="7" width="18" height="10" rx="2" ${S}/><path d="M12 7v10" ${S}/><circle cx="7.5" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><circle cx="18" cy="14" r="1.2" fill="currentColor"/>`,
+    facts: {
+      type: 'Tile-matching game with a double-six set',
+      goal: 'Play all your tiles by matching the numbers on the open ends; score the pips left in the other hands; first to 100 wins',
+      modes: 'Draw game or Block game; against 1, 2 or 3 computer players',
+      controls: 'Tap a glowing tile to play it; ◀ or ▶ when it fits both ends; Draw and Pass buttons',
+      players: '1 against 1-3 computer players',
+    },
+  },
+  {
     id: 'four-in-a-row',
     name: 'Four in a Row',
-    category: 'puzzles',
+    category: 'board',
     play: '/board/four-in-a-row/',
-    hub: '/puzzles/',
+    hub: '/board/',
     hook: 'Drop discs into the grid and line up four before your opponent does.',
     badges: ['3 AI Levels', '2 Players', 'Undo'],
     icon: `<rect x="3" y="4" width="18" height="16" rx="2" ${S}/><circle cx="8" cy="15" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="16" cy="9" r="1.8" fill="currentColor"/><circle cx="12" cy="15" r="1.8" ${S}/>`,
@@ -415,6 +501,23 @@ export const CATALOG: readonly CatalogGame[] = [
       goal: 'Keep the ball in play with the paddle and break every brick; silver bricks take two hits',
       modes: 'Five brick layouts that repeat faster; 3 lives; power-ups for a wider paddle, extra balls and extra lives',
       controls: 'Drag on the game or move the mouse; arrow keys or A/D; tap, click or Space to launch',
+      players: '1',
+    },
+  },
+  {
+    id: 'bubble-shooter',
+    name: 'Bubble Shooter',
+    category: 'arcade',
+    play: '/arcade/bubble-shooter/',
+    hub: '/arcade/',
+    hook: 'Aim, bounce and match three bubbles of a colour to pop them.',
+    badges: ['Wall Bounces', 'Cluster Drops', 'Levels'],
+    icon: `<circle cx="7" cy="7" r="3.5" ${S}/><circle cx="14" cy="7" r="3.5" fill="currentColor" opacity=".35" ${S}/><circle cx="10.5" cy="13" r="3.5" ${S}/><path d="M12 22v-3" ${S}/>`,
+    facts: {
+      type: 'Bubble shooter arcade puzzle',
+      goal: 'Fire bubbles to make groups of three or more of one colour; pop and drop the whole cluster before it reaches the line',
+      modes: 'Endless levels with more rows and colours; a new row after several shots that pop nothing; next-bubble preview and swap',
+      controls: 'Drag to aim and lift to shoot, or point and click; arrow keys aim, Space shoots, Down swaps',
       players: '1',
     },
   },
