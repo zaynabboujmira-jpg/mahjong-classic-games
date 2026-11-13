@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import CompareTable from '../../components/content/CompareTable.astro';
+import { CATALOG } from '../../data/catalog';
+import { PUZZLE_COMPARE } from '../../data/compare';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, graph, organization, webPage, website } from '../../lib/seo/schema';
+
+const games = CATALOG.filter((g) => g.category === 'puzzles');
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Free Puzzle & Board Games – Logic, Memory, Numbers';
+const description =
+  'Free puzzle and board games for any screen: Sudoku, Minesweeper, Word Guess, Number Merge, Nonogram, Memory Match and Four in a Row against the computer.';
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Puzzles', href: '/puzzles/' },
+];
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description, 'CollectionPage', `${url}#games`),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  {
+    '@type': 'ItemList',
+    '@id': `${url}#games`,
+    name: title,
+    itemListElement: games.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(g.play, site).href, name: g.name })),
+  },
+);
+---
+
+<BaseLayout title={title} description={description} image={ogImagePath('puzzles')} imageAlt="Puzzle and board games" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Puzzle &amp; board games</h1>
+    <p class="text-muted mt-2 max-w-2xl">
+      Games for a thinking break: pure logic, numbers, memory and strategy. Every one plays instantly in your browser on a phone or computer, with no
+      sign-up.
+    </p>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-6">
+      {
+        games.map((g) => (
+          <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
+            <h2 class="font-bold text-lg">
+              <a class="hover:text-brand" href={g.play}>
+                {g.name}
+              </a>
+            </h2>
+            <p class="text-sm text-muted mt-2 flex-1">{g.hook}</p>
+            <a class="btn btn-primary mt-4 self-start" href={g.play}>
+              Play {g.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <CompareTable table={PUZZLE_COMPARE} />
+  </div>
+</BaseLayout>

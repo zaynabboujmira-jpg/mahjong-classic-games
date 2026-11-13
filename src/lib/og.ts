@@ -282,6 +282,129 @@ ${([['#a855f7', 300], ['#f97316', 360]] as const).map(([c, x]) => `<path d="M${x
   return { svg, width: 540, height: 300 };
 }
 
+/** Art for the six newer games, each an original scene in a 460 × 300 frame. */
+export function newGameArt(kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row', picture: readonly (readonly boolean[])[] = []): OgArt {
+  const frame = (bg: string, inner: string) => `<g transform="translate(40 0)"><rect width="460" height="300" rx="16" fill="${bg}"/>${inner}</g>`;
+  let svg = '';
+  switch (kind) {
+    case 'snake': {
+      const path = [[3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [7, 8], [7, 7], [7, 6], [8, 6], [9, 6], [10, 6], [11, 6], [12, 6], [12, 7], [12, 8], [13, 8], [14, 8]];
+      const c = 20;
+      const cells = path.map(([x, y], i) => `<rect x="${30 + x! * c + 2}" y="${y! * c + 2}" width="${c - 4}" height="${c - 4}" rx="5" fill="hsl(${150 + (i / path.length) * 20} 70% ${32 + (i / path.length) * 22}%)"/>`).join('');
+      svg = frame('#123b2f', `<rect x="4" y="4" width="452" height="292" rx="14" fill="none" stroke="#f59e0b" stroke-width="5"/>${cells}<circle cx="${30 + 19 * c + 10}" cy="${8 * c + 11}" r="8" fill="#f43f5e"/><ellipse cx="${30 + 19 * c + 13}" cy="${8 * c + 2}" rx="4" ry="2" fill="#4ade80"/>`);
+      break;
+    }
+    case 'brick-breaker': {
+      const colors = ['#f43f5e', '#f59e0b', '#22c55e', '#0ea5e9', '#8b5cf6'];
+      let bricks = '';
+      colors.forEach((col, r) => {
+        for (let i = 0; i < 10; i++) if (!(r === 3 && (i === 4 || i === 5))) bricks += `<rect x="${22 + i * 42}" y="${26 + r * 22}" width="38" height="18" rx="3" fill="${col}"/>`;
+      });
+      svg = frame('#0b1324', `${bricks}<rect x="190" y="262" width="96" height="12" rx="6" fill="#e2e8f0"/><circle cx="262" cy="196" r="8" fill="#fef08a"/><rect x="96" y="200" width="30" height="18" rx="9" fill="#0ea5e9"/><text x="111" y="214" font-size="13" font-weight="700" text-anchor="middle" fill="#fff">W</text>`);
+      break;
+    }
+    case 'number-merge': {
+      const vals = [
+        [2, 4, 8, 0],
+        [0, 16, 32, 64],
+        [4, 128, 256, 512],
+        [2, 0, 1024, 2048],
+      ];
+      const hues = [0, 0, 168, 176, 190, 205, 220, 262, 290, 320, 345, 18, 38];
+      const s = 62;
+      const g = 8;
+      let tiles = '';
+      vals.forEach((row, r) =>
+        row.forEach((v, c) => {
+          const x = 100 + c * (s + g);
+          const y = 12 + r * (s + g);
+          if (!v) {
+            tiles += `<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="8" fill="#ffffff" fill-opacity=".08"/>`;
+            return;
+          }
+          const k = Math.log2(v);
+          const light = k <= 2 ? 88 - k * 4 : Math.max(38, 62 - (k % 4) * 4);
+          tiles += `<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="8" fill="hsl(${hues[Math.min(k, hues.length - 1)]} ${k <= 2 ? 45 : 70}% ${light}%)"/><text x="${x + s / 2}" y="${y + s / 2 + (v >= 1000 ? 7 : 10)}" font-size="${v >= 1000 ? 20 : v >= 100 ? 24 : 28}" font-weight="700" text-anchor="middle" fill="${light > 70 ? '#12332b' : '#ffffff'}">${v}</text>`;
+        }),
+      );
+      svg = frame('#0d3a30', tiles);
+      break;
+    }
+    case 'memory-match': {
+      const faces: Record<number, string> = {
+        1: '<circle cx="0" cy="0" r="16" fill="#f59e0b"/>',
+        4: '<path d="M0 -20l6 13 14 1-11 9 3 14-12-7-12 7 3-14-11-9 14-1z" fill="#eab308"/>',
+        6: '<circle cx="0" cy="0" r="16" fill="#f59e0b"/>',
+        9: '<path d="M0 -20 20 0 0 20 -20 0z" fill="#14b8a6"/>',
+      };
+      let cards = '';
+      for (let i = 0; i < 12; i++) {
+        const x = 40 + (i % 4) * 98;
+        const y = 14 + Math.floor(i / 4) * 94;
+        const face = faces[i];
+        cards += face
+          ? `<rect x="${x}" y="${y}" width="86" height="84" rx="10" fill="#fffdf8" stroke="${i === 1 || i === 6 ? '#22c55e' : '#e0d6c1'}" stroke-width="3"/><g transform="translate(${x + 43} ${y + 42})">${face}</g>`
+          : `<rect x="${x}" y="${y}" width="86" height="84" rx="10" fill="#0f766e"/><rect x="${x + 6}" y="${y + 6}" width="74" height="72" rx="7" fill="none" stroke="#ffffff" stroke-opacity=".3" stroke-width="2"/><circle cx="${x + 43}" cy="${y + 42}" r="9" fill="#ffffff" fill-opacity=".25"/>`;
+      }
+      svg = frame('#123f33', cards);
+      break;
+    }
+    case 'nonogram': {
+      const n = picture.length || 10;
+      const cell = 23;
+      const x0 = 200;
+      const y0 = 50;
+      let out = `<rect x="${x0}" y="${y0}" width="${n * cell}" height="${n * cell}" fill="#fffdf8"/>`;
+      picture.forEach((row, r) =>
+        row.forEach((v, c) => {
+          if (v) out += `<rect x="${x0 + c * cell}" y="${y0 + r * cell}" width="${cell}" height="${cell}" fill="#134e4a"/>`;
+        }),
+      );
+      for (let i = 0; i <= n; i++) {
+        const w = i % 5 === 0 ? 2.5 : 1;
+        out += `<path d="M${x0 + i * cell} ${y0}V${y0 + n * cell}M${x0} ${y0 + i * cell}H${x0 + n * cell}" stroke="${i % 5 === 0 ? '#1b2823' : '#cdbf9f'}" stroke-width="${w}"/>`;
+      }
+      const runs = (line: readonly boolean[]) => {
+        const o: number[] = [];
+        let k = 0;
+        for (const v of line) {
+          if (v) k++;
+          else if (k) {
+            o.push(k);
+            k = 0;
+          }
+        }
+        if (k) o.push(k);
+        return o.length ? o : [0];
+      };
+      picture.forEach((row, r) => {
+        out += `<text x="${x0 - 8}" y="${y0 + r * cell + 17}" font-size="15" font-weight="700" text-anchor="end" fill="#f5ecd2">${runs(row).join(' ')}</text>`;
+      });
+      picture[0]?.forEach((_, c) => {
+        const clue = runs(picture.map((row) => row[c]!));
+        clue.forEach((v, i) => {
+          out += `<text x="${x0 + c * cell + cell / 2}" y="${y0 - 8 - (clue.length - 1 - i) * 15}" font-size="13" font-weight="700" text-anchor="middle" fill="#f5ecd2">${v}</text>`;
+        });
+      });
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'four-in-a-row': {
+      const board = ['.......', '.......', '....1..', '...12..', '.2121..', '21122..'];
+      let holes = '';
+      board.forEach((row, r) =>
+        [...row].forEach((ch, c) => {
+          const fill = ch === '1' ? '#e11d48' : ch === '2' ? '#f59e0b' : '#0b1a3a';
+          holes += `<circle cx="${82 + c * 50}" cy="${32 + r * 46}" r="19" fill="${fill}"/>`;
+        }),
+      );
+      svg = frame('#123f33', `<rect x="52" y="8" width="356" height="284" rx="16" fill="#1d4ed8"/>${holes}<path d="M132 262 L282 124" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".85"/>`);
+      break;
+    }
+  }
+  return { svg, width: 540, height: 300 };
+}
+
 /** 1200x630 social card: title on the left, artwork on the right. */
 export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt }): string {
   const titleLines = wrap(opts.title, 16).slice(0, 3);

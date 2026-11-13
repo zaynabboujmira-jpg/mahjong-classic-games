@@ -10,13 +10,23 @@ export interface ArcadeButton {
   aria: string;
 }
 
+/** A setting shown as a segmented control (e.g. mode or speed); saved per game. */
+export interface ArcadeOption {
+  id: string;
+  label: string;
+  choices: readonly { value: string; label: string }[];
+  /** Default choice; the first one when omitted. */
+  initial?: string;
+}
+
 export interface ArcadeShellProps<G extends ArcadeEngine> {
   name: string;
   storageKey: string;
   /** Logical game size; the canvas scales it to fit, keeping the aspect ratio. */
   width: number;
   height: number;
-  create: (seed: string) => G;
+  create: (seed: string, options: Record<string, string>) => G;
+  options?: readonly ArcadeOption[];
   /** Draws the game in logical units (the context is already scaled). */
   draw: (ctx: CanvasRenderingContext2D, game: G, time: number) => void;
   sounds?: Record<string, (s: Synth) => void>;
@@ -36,10 +46,13 @@ type Status = 'ready' | 'playing' | 'paused' | 'over';
  * a draw function.
  */
 export default function ArcadeShell<G extends ArcadeEngine>(props: ArcadeShellProps<G>) {
-  const { name, storageKey, width, height, create, draw, sounds = {}, buttons = [], help } = props;
+  const { name, storageKey, width, height, create, draw, sounds = {}, buttons = [], help, options = [] } = props;
+  const defaults = Object.fromEntries(options.map((o) => [o.id, o.initial ?? o.choices[0]!.value]));
+  const opts = useRef<Record<string, string>>(defaults);
+  const [optView, setOptView] = useState(defaults);
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const game = useRef<G>(create('preview'));
+  const game = useRef<G>(create('preview', defaults));
   const input = useRef<Input>(emptyInput());
   const status = useRef<Status>('ready');
   const scale = useRef(1);
@@ -92,7 +105,7 @@ export default function ArcadeShell<G extends ArcadeEngine>(props: ArcadeShellPr
   };
 
   const begin = () => {
-    game.current = create(randomSeed());
+    game.current = create(randomSeed(), opts.current);
     input.current = emptyInput();
     setStatus('playing');
     setAnnounce(`${name} started. ${help}`);
@@ -198,7 +211,24 @@ export default function ArcadeShell<G extends ArcadeEngine>(props: ArcadeShellPr
     if (e.pointerType === 'mouse' && !down.current.size) input.current.pointer = null;
   };
 
+  /** Changing a setting shows a fresh game waiting to start. */
+  const choose = (id: string, value: string) => {
+    opts.current = { ...opts.current, [id]: value };
+    setOptView(opts.current);
+    writeJson(`${storageKey}:settings`, opts.current);
+    game.current = create('preview', opts.current);
+    input.current = emptyInput();
+    setStatus('ready');
+    canvasRef.current?.focus();
+  };
+
   useEffect(() => {
+    if (options.length) {
+      const saved = readJson<Record<string, string>>(`${storageKey}:settings`, {});
+      for (const o of options) if (saved[o.id] && o.choices.some((c) => c.value === saved[o.id])) opts.current[o.id] = saved[o.id]!;
+      setOptView({ ...opts.current });
+      game.current = create('preview', opts.current);
+    }
     setBest(readJson<number>(bestKey, 0));
     setMuted(synth.current.muted);
     setTouch(matchMedia('(pointer: coarse)').matches);
@@ -256,6 +286,15 @@ export default function ArcadeShell<G extends ArcadeEngine>(props: ArcadeShellPr
         <button type="button" class="btn" onClick={togglePause} disabled={view !== 'playing' && view !== 'paused'} aria-pressed={view === 'paused'}>
           {view === 'paused' ? 'Resume' : 'Pause'}
         </button>
+        {options.map((o) => (
+          <div key={o.id} class="segmented" role="radiogroup" aria-label={o.label}>
+            {o.choices.map((c) => (
+              <button key={c.value} type="button" role="radio" class="seg" aria-checked={optView[o.id] === c.value} onClick={() => choose(o.id, c.value)}>
+                {c.label}
+              </button>
+            ))}
+          </div>
+        ))}
         <button
           type="button"
           class="btn"

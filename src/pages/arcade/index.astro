@@ -11,9 +11,9 @@ const games = (await getCollection('arcade')).sort((a, b) => a.data.order - b.da
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Arcade Games – 8 Classics, No Download';
+const title = 'Free Arcade Games – 10 Classics, No Download';
 const description =
-  'Eight free arcade games for any screen: maze chase, alien shooter, space rocks, river crossing, one-tap flyer, fish growing, memory and paddle ball.';
+  'Ten free arcade games for any screen: snake, brick breaker, maze chase, alien shooter, space rocks, river crossing, one-tap flyer, fish, memory and paddle ball.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Arcade', href: '/arcade/' },

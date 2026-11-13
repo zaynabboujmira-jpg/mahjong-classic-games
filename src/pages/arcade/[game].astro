@@ -11,6 +11,8 @@ import SpaceRocksGame from '../../components/game/arcade/SpaceRocksGame';
 import RiverHopperGame from '../../components/game/arcade/RiverHopperGame';
 import FlappyWingGame from '../../components/game/arcade/FlappyWingGame';
 import OceanGrowGame from '../../components/game/arcade/OceanGrowGame';
+import SnakeGame from '../../components/game/arcade/SnakeGame';
+import BrickBreakerGame from '../../components/game/arcade/BrickBreakerGame';
 
 /** One playable page per arcade game in src/content/arcade. */
 export const getStaticPaths = (async () => {
@@ -36,6 +38,8 @@ const GENRES: Record<string, string[]> = {
   'river-hopper': ['Arcade', 'Action', 'Retro'],
   'flappy-wing': ['Arcade', 'Casual', 'One-button'],
   'ocean-grow': ['Arcade', 'Casual', 'Action'],
+  snake: ['Arcade', 'Casual', 'Retro'],
+  'brick-breaker': ['Arcade', 'Action', 'Retro'],
 };
 const ALT: Record<string, string> = {
   'color-memory': 'Four coloured memory pads',
@@ -46,6 +50,8 @@ const ALT: Record<string, string> = {
   'river-hopper': 'A critter hopping across a road and a river',
   'flappy-wing': 'A coral bird flying between stone columns',
   'ocean-grow': 'A gold fish among other fish in the ocean',
+  snake: 'A green snake on a grid heading for a red berry',
+  'brick-breaker': 'Rows of coloured bricks above a paddle and a ball',
 };
 ---
 
@@ -78,5 +84,7 @@ const ALT: Record<string, string> = {
   {data.level === 'river-hopper' && <RiverHopperGame slot="game" client:load />}
   {data.level === 'flappy-wing' && <FlappyWingGame slot="game" client:load />}
   {data.level === 'ocean-grow' && <OceanGrowGame slot="game" client:load />}
+  {data.level === 'snake' && <SnakeGame slot="game" client:load />}
+  {data.level === 'brick-breaker' && <BrickBreakerGame slot="game" client:load />}
   <Content />
 </LevelPage>

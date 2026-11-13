@@ -14,6 +14,7 @@ import {
   type Progress,
 } from '../../src/engines/core/progress';
 import { summarize } from '../../src/engines/core/stats';
+import { CATALOG } from '../../src/data/catalog';
 
 const at = (day: number) => new Date(2026, 0, day, 12); // local noon on day `day`
 const won = (...days: number[]): Progress => ({
@@ -114,10 +115,9 @@ describe('summarize', () => {
       .map((a) => a.id)
       .sort();
 
-  it('lists all 16 games and ten locked achievements for a new player', () => {
+  it('lists every catalog game and ten locked achievements for a new player', () => {
     const s = summarize(memoryKV(), 1);
-    expect(s.games).toHaveLength(16);
-    expect(new Set(s.games.map((g) => g.id)).size).toBe(16);
+    expect(s.games.map((g) => g.id).sort()).toEqual(CATALOG.map((g) => g.id).sort());
     expect(s.gamesPlayed).toBe(0);
     expect(s.totalWins).toBe(0);
     expect(s.achievements).toHaveLength(10);
@@ -137,6 +137,11 @@ describe('summarize', () => {
       'memory:best:normal': 9,
       'paddle:wins:normal': 2,
       'table:hong-kong': { hands: 3 },
+      'merge:best:4': 5120,
+      'match:best:medium': { moves: 12, ms: 61_000 },
+      'match:best:small': { moves: 7, ms: 20_000 },
+      'nonogram:best:10': 185_000,
+      'fourrow:record:hard': { won: 1, lost: 2, drawn: 0 },
     });
     recordWin('klondike', null, at(10), kv);
     const s = summarize(kv, 10);
@@ -150,8 +155,12 @@ describe('summarize', () => {
     expect(g('color-memory').best).toBe('9 rounds');
     expect(g('paddle-ball')).toMatchObject({ wins: 2, best: '2 wins' });
     expect(g('mahjong-4p').best).toBe('3 hands played');
+    expect(g('number-merge').best).toBe('5,120 points');
+    expect(g('memory-match').best).toBe('7 moves, 0:20');
+    expect(g('nonogram').best).toBe('3:05 (10×10)');
+    expect(g('four-in-a-row').best).toBe('1 of 3 won vs computer');
     expect(g('spider').played).toBe(false);
-    expect(s.gamesPlayed).toBe(9);
+    expect(s.gamesPlayed).toBe(13);
     expect(s.totalWins).toBe(1 + 3 + 2);
     expect(unlocked(kv)).toEqual(['first-win']);
   });
@@ -168,7 +177,7 @@ describe('summarize', () => {
 
   it('unlocks the game-specific achievements', () => {
     const layouts = ['turtle', 'dragon', 'pyramid', 'fortress', 'butterfly', 'fish'];
-    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow'];
+    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker'];
     const kv = memoryKV({
       ...Object.fromEntries(layouts.map((l) => [`mahjong:best:${l}`, 100_000])),
       ...Object.fromEntries(arcade.map((id) => [`${id}:best`, 10])),
@@ -185,7 +194,7 @@ describe('summarize', () => {
   });
 
   it('does not unlock Arcade Master without a Paddle Ball win', () => {
-    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow'];
+    const arcade = ['maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow', 'snake', 'brick-breaker'];
     const kv = memoryKV({ ...Object.fromEntries(arcade.map((id) => [`${id}:best`, 10])), 'memory:best:normal': 5 });
     expect(unlocked(kv)).not.toContain('arcade-master');
   });

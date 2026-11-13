@@ -1,5 +1,5 @@
 /**
- * The 16 games of Free Play Classic, grouped for the portal. One source for
+ * The 22 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -16,7 +16,7 @@ export interface Category {
 
 export const CATEGORIES: readonly Category[] = [
   { id: 'mahjong-cards', name: 'Mahjong & Card Classics', short: 'Mahjong & Cards', blurb: 'Tile matching, four-player Mahjong against computer opponents, and the three great solitaire games.' },
-  { id: 'puzzles', name: 'Brain, Logic & Word Puzzles', short: 'Puzzles', blurb: 'Pure-logic Sudoku, Minesweeper with a safe first click, and a daily word game.' },
+  { id: 'puzzles', name: 'Brain, Logic & Board Games', short: 'Puzzles', blurb: 'Sudoku, Minesweeper, a daily word game, number merging, picture logic, memory pairs and Four in a Row against the computer.' },
   { id: 'arcade', name: 'Retro Arcade', short: 'Arcade', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
 
@@ -181,6 +181,74 @@ export const CATALOG: readonly CatalogGame[] = [
     },
   },
   {
+    id: 'number-merge',
+    name: 'Number Merge',
+    category: 'puzzles',
+    play: '/puzzles/number-merge/',
+    hub: '/puzzles/',
+    hook: 'Slide the tiles and join equal numbers until you reach 2048.',
+    badges: ['3 Board Sizes', 'Undo', 'Swipe + Keys'],
+    icon: `<rect x="3" y="3" width="8" height="8" rx="2" ${S}/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".35" ${S}/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".35" ${S}/><rect x="13" y="13" width="8" height="8" rx="2" ${S}/>`,
+    facts: {
+      type: 'Sliding number puzzle',
+      goal: 'Slide all tiles at once so equal numbers merge into their sum; reach the 2048 tile (256 on 3×3, 4096 on 5×5) and keep going until no move is left',
+      modes: 'Board sizes 3×3, 4×4 and 5×5; one-step undo; best score saved per size',
+      controls: 'Swipe on the board, arrow keys or WASD; Z to undo',
+      players: '1',
+    },
+  },
+  {
+    id: 'memory-match',
+    name: 'Memory Match',
+    category: 'puzzles',
+    play: '/puzzles/memory-match/',
+    hub: '/puzzles/',
+    hook: 'Turn over two cards at a time and find every matching pair.',
+    badges: ['3 Board Sizes', 'Moves + Timer', 'Keyboard'],
+    icon: `<rect x="3" y="4" width="8" height="11" rx="1.5" ${S}/><rect x="13" y="9" width="8" height="11" rx="1.5" ${S}/><circle cx="7" cy="9.5" r="2" fill="currentColor"/>`,
+    facts: {
+      type: 'Card matching memory game',
+      goal: 'Find every pair of matching symbols by turning over two cards per move, in as few moves as possible',
+      modes: 'Boards of 4×3 (6 pairs), 4×4 (8 pairs) and 6×5 (15 pairs); move counter, timer and best result per board',
+      controls: 'Tap or click a card; arrow keys and Enter or Space',
+      players: '1',
+    },
+  },
+  {
+    id: 'nonogram',
+    name: 'Nonogram',
+    category: 'puzzles',
+    play: '/puzzles/nonogram/',
+    hub: '/puzzles/',
+    hook: 'Use the number clues to fill the grid and reveal a hidden picture.',
+    badges: ['5 / 10 / 15', 'No Guessing', 'Mistake Check'],
+    icon: `<rect x="8" y="8" width="13" height="13" rx="1" ${S}/><path d="M8 12.3h13M8 16.6h13M12.3 8v13M16.6 8v13" ${S}/><path d="M3 10h2M3 14h2M3 18h2M10 3v2M14 3v2M18 3v2" ${S}/>`,
+    facts: {
+      type: 'Picture logic puzzle (also called griddlers or hanjie)',
+      goal: 'Fill the cells so every row and column matches its clue, the lengths of its runs of filled cells in order, to reveal a picture',
+      modes: '5×5, 10×10 and 15×15; every puzzle is generated from its number and checked to have one solution reachable without guessing',
+      controls: 'Tap or drag to fill, Mark mode or right-click to cross; arrow keys, Space and X; Check highlights mistakes',
+      players: '1',
+    },
+  },
+  {
+    id: 'four-in-a-row',
+    name: 'Four in a Row',
+    category: 'puzzles',
+    play: '/board/four-in-a-row/',
+    hub: '/puzzles/',
+    hook: 'Drop discs into the grid and line up four before your opponent does.',
+    badges: ['3 AI Levels', '2 Players', 'Undo'],
+    icon: `<rect x="3" y="4" width="18" height="16" rx="2" ${S}/><circle cx="8" cy="15" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="16" cy="9" r="1.8" fill="currentColor"/><circle cx="12" cy="15" r="1.8" ${S}/>`,
+    facts: {
+      type: 'Two-player vertical strategy board game',
+      goal: 'Drop discs into a 7-column, 6-row grid and be first to line up four across, down or diagonally',
+      modes: 'Against the computer (Easy, Medium, Hard with a minimax search) or 2 players on one device',
+      controls: 'Tap or click a column, or press 1-7; arrow keys and Enter; undo',
+      players: '1 against the computer, or 2 on one device',
+    },
+  },
+  {
     id: 'maze-chomper',
     name: 'Maze Chomper',
     category: 'arcade',
@@ -314,6 +382,40 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'Against the computer (Easy, Medium, Unbeatable) or 2 players on one device',
       controls: 'Drag on your half, move the mouse, or W/S and the arrow keys',
       players: '1 against the computer, or 2 on one device',
+    },
+  },
+  {
+    id: 'snake',
+    name: 'Snake',
+    category: 'arcade',
+    play: '/arcade/snake/',
+    hub: '/arcade/',
+    hook: 'Eat the berries, grow longer and never bite your own tail.',
+    badges: ['Walls or Wrap', '3 Speeds', 'Swipe + Keys'],
+    icon: `<path d="M4 18h6a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h9" ${S}/><circle cx="19.5" cy="6" r="1.5" fill="currentColor"/>`,
+    facts: {
+      type: 'Classic snake arcade game',
+      goal: 'Steer the snake to the berries to grow as long as you can without running into yourself (or the walls in Walls mode)',
+      modes: 'Walls or Wrap-around; Easy, Normal and Fast speeds',
+      controls: 'Arrow keys or WASD, swipe on the field, or the on-screen pad',
+      players: '1',
+    },
+  },
+  {
+    id: 'brick-breaker',
+    name: 'Brick Breaker',
+    category: 'arcade',
+    play: '/arcade/brick-breaker/',
+    hub: '/arcade/',
+    hook: 'Bounce the ball off your paddle and smash every brick in the wall.',
+    badges: ['Power-ups', '5 Layouts', 'Touch Drag'],
+    icon: `<path d="M3 4h5v3H3zM9.5 4h5v3h-5zM16 4h5v3h-5zM6 8.5h5v3H6zM13 8.5h5v3h-5z" ${S}/><circle cx="13" cy="15" r="1.5" fill="currentColor"/><path d="M8 20h8" ${S}/>`,
+    facts: {
+      type: 'Ball-and-paddle brick breaking arcade game',
+      goal: 'Keep the ball in play with the paddle and break every brick; silver bricks take two hits',
+      modes: 'Five brick layouts that repeat faster; 3 lives; power-ups for a wider paddle, extra balls and extra lives',
+      controls: 'Drag on the game or move the mouse; arrow keys or A/D; tap, click or Space to launch',
+      players: '1',
     },
   },
 ];

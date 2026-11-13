@@ -138,4 +138,10 @@ export const GAMES: readonly GameEntry[] = [
     href: '/arcade/ocean-grow/',
     blurb: 'Eat smaller fish to grow and avoid bigger ones in a calm underwater game.',
   },
+  { slug: 'snake', name: 'Snake', status: 'live', href: '/arcade/snake/', blurb: 'Eat the berries and grow without biting your tail. Walls or wrap-around, three speeds.' },
+  { slug: 'brick-breaker', name: 'Brick Breaker', status: 'live', href: '/arcade/brick-breaker/', blurb: 'Bounce the ball off your paddle to smash every brick, with power-ups and five layouts.' },
+  { slug: 'number-merge', name: 'Number Merge', status: 'live', href: '/puzzles/number-merge/', blurb: 'Slide the tiles and join equal numbers to reach 2048, on 3×3, 4×4 or 5×5.' },
+  { slug: 'memory-match', name: 'Memory Match', status: 'live', href: '/puzzles/memory-match/', blurb: 'Turn over two cards at a time and find every pair in as few moves as you can.' },
+  { slug: 'nonogram', name: 'Nonogram', status: 'live', href: '/puzzles/nonogram/', blurb: 'Picture logic puzzles: fill the grid from the number clues, in three sizes.' },
+  { slug: 'four-in-a-row', name: 'Four in a Row', status: 'live', href: '/board/four-in-a-row/', blurb: 'Drop discs and line up four against three computer levels or a friend.' },
 ];

@@ -72,3 +72,12 @@ export const ARCADE_COMPARE: Comparison = {
     href: g.play,
   })),
 };
+
+export const PUZZLE_COMPARE: Comparison = {
+  title: 'Puzzle and board games compared',
+  head: ['Game', 'Type', 'Modes', 'Controls'],
+  rows: CATALOG.filter((g) => g.category === 'puzzles').map((g) => ({
+    cells: [g.name, g.facts.type, g.facts.modes, g.facts.controls],
+    href: g.play,
+  })),
+};

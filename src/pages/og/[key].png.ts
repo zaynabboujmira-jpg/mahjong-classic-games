@@ -9,7 +9,8 @@ import { score } from '../../engines/word/game';
 /** Rows of a real solve, coloured by the game's own scoring. */
 const solve = (answer: string, ...guesses: string[]) =>
   [...guesses, answer].map((g) => ({ word: g.toUpperCase(), marks: score(g, answer).map((m) => m[0]).join('') }));
-import { arcadeArt, cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
+import { generate as nonogram } from '../../engines/puzzles/nonogram';
+import { arcadeArt, newGameArt, cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
 
 const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese', { title: string; subtitle: string; tiles: ArtTile[] }> = {
   american: {
@@ -55,7 +56,7 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `16 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `22 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
     { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong' }, props: { title: 'Mahjong Solitaire Layouts', subtitle: `${pages.length} layouts · Play free`, art: butterfly } },
     ...pages.map((p) => ({
@@ -97,6 +98,13 @@ export const getStaticPaths = (async () => {
     { params: { key: 'arcade-river-hopper' }, props: { title: 'River Hopper', subtitle: 'Road & river crossing · Free', art: arcadeArt('river-hopper') } },
     { params: { key: 'arcade-flappy-wing' }, props: { title: 'Flappy Wing', subtitle: 'One tap to flap · Medals', art: arcadeArt('flappy-wing') } },
     { params: { key: 'arcade-ocean-grow' }, props: { title: 'Ocean Grow', subtitle: 'Eat & grow · Play free', art: arcadeArt('ocean-grow') } },
+    { params: { key: 'arcade-snake' }, props: { title: 'Snake', subtitle: 'Walls or wrap · 3 speeds', art: newGameArt('snake') } },
+    { params: { key: 'arcade-brick-breaker' }, props: { title: 'Brick Breaker', subtitle: 'Power-ups · 5 layouts', art: newGameArt('brick-breaker') } },
+    { params: { key: 'puzzles' }, props: { title: 'Puzzle & Board Games', subtitle: 'Logic, numbers, memory, strategy', art: newGameArt('nonogram', nonogram(10, 'og').solution) } },
+    { params: { key: 'puzzles-number-merge' }, props: { title: 'Number Merge', subtitle: 'Slide & join to reach 2048', art: newGameArt('number-merge') } },
+    { params: { key: 'puzzles-memory-match' }, props: { title: 'Memory Match', subtitle: 'Find every pair · 3 sizes', art: newGameArt('memory-match') } },
+    { params: { key: 'puzzles-nonogram' }, props: { title: 'Nonogram', subtitle: 'Picture logic · 5×5 to 15×15', art: newGameArt('nonogram', nonogram(10, 'og').solution) } },
+    { params: { key: 'puzzles-four-in-a-row' }, props: { title: 'Four in a Row', subtitle: 'vs computer or a friend', art: newGameArt('four-in-a-row') } },
     {
       params: { key: 'sudoku' },
       props: { title: 'Free Sudoku', subtitle: 'Easy to Expert · One solution each', art: sudokuArt(generate('medium', 'og').givens) },
