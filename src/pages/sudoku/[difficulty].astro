@@ -3,6 +3,7 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import LevelPage from '../../components/content/LevelPage.astro';
 import SudokuGame from '../../components/game/SudokuGame';
+import { SUDOKU_COMPARE } from '../../data/compare';
 
 /** One playable page per difficulty in src/content/sudoku. */
 export const getStaticPaths = (async () => {
@@ -28,6 +29,9 @@ const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summar
   data={data}
   genre={['Puzzle', 'Logic puzzle', 'Sudoku']}
   imageAlt={`A ${data.name.toLowerCase()} Sudoku grid`}
+  qa="sudoku"
+  qaExtra={[{ label: 'This page', value: `${data.name} level: ${SUDOKU_COMPARE.rows.find((r) => r.href === `/sudoku/${data.level}/`)!.cells[1]}` }]}
+  compare={SUDOKU_COMPARE}
   more={{
     heading: 'Fancy a different puzzle?',
     text: 'Minesweeper is logic of another kind: read the numbers and clear the field without opening a mine.',

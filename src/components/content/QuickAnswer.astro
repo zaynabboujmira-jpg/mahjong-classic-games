@@ -1,0 +1,49 @@
+---
+import { gameById } from '../../data/catalog';
+
+/**
+ * "Quick answer" block: one self-contained paragraph plus a facts table, so
+ * search engines and AI answer engines can quote the essentials of a game
+ * accurately. Facts come from src/data/catalog.ts.
+ */
+interface Props {
+  id: string;
+  /** Page-specific rows, e.g. the level or layout this page plays. */
+  extra?: { label: string; value: string }[];
+}
+const { id, extra = [] } = Astro.props;
+const g = gameById(id);
+const f = g.facts;
+const rows = [
+  { label: 'What it is', value: f.type },
+  ...extra,
+  { label: 'Goal', value: f.goal },
+  { label: 'Modes', value: f.modes },
+  { label: 'Controls', value: f.controls },
+  { label: 'Players', value: f.players },
+  { label: 'Price', value: 'Free, no ads, no sign-up, no download' },
+  { label: 'Works on', value: 'Phones, tablets and computers, in any modern browser' },
+];
+const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+---
+
+<section class="qa-box" aria-labelledby={`qa-${id}`}>
+  <h2 id={`qa-${id}`}>Quick answer</h2>
+  <p>
+    <strong>{g.name}</strong> is a free {lower(f.type)} that plays instantly in your browser on phones, tablets and computers, with no download,
+    sign-up or ads. {f.goal}.
+  </p>
+  <table class="fact-table">
+    <caption class="sr-only">{g.name} at a glance</caption>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr>
+            <th scope="row">{r.label}</th>
+            <td>{r.value}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</section>

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import LevelPage from './LevelPage.astro';
 import WordGuessGame from '../game/WordGuessGame';
+import { WORD_COMPARE } from '../../data/compare';
 
 /** A Word Guess page for one word length; the 5-letter game lives at /word-guess/ itself. */
 interface Props {
@@ -26,6 +27,9 @@ const length = Number(level[0]) as 4 | 5 | 6;
   genre={['Word game', 'Puzzle', 'Word puzzle']}
   imageAlt={`A ${length}-letter Word Guess grid with coloured tiles`}
   imageKey={`word-${length}`}
+  qa="word-guess"
+  qaExtra={[{ label: 'This page', value: `${length}-letter words, six guesses, daily word plus unlimited play` }]}
+  compare={WORD_COMPARE}
   levelsHeading="Other word lengths"
   levelTitle={(name) => `Word Guess, ${name}`}
   howToName={`How to play Word Guess (${length} letters)`}

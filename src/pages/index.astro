@@ -1,102 +1,113 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import GameShell from '../components/game/GameShell.astro';
-import HowToPlay from '../components/content/HowToPlay.astro';
 import Faq from '../components/content/Faq.astro';
-import LayoutCard from '../components/content/LayoutCard.astro';
-import { layoutPages } from '../lib/mahjong-pages';
-import { GAMES } from '../data/games';
-import { GENERAL_FAQ, HOW_TO_STEPS } from '../data/mahjong';
+import GameCatalog from '../components/content/GameCatalog.astro';
+import { CATALOG, CATEGORIES } from '../data/catalog';
 import { SITE } from '../data/site';
 import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
-import { faqPage, graph, howTo, organization, videoGame, webPage, website } from '../lib/seo/schema';
+import { faqPage, graph, itemList, organization, webPage, website } from '../lib/seo/schema';
 
-const pages = await layoutPages();
-const turtle = pages.find((p) => p.id === 'turtle')!;
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl('/', site);
-const title = 'Free Mahjong Solitaire Online – No Download';
+const title = `${SITE.name} – 16 Classic Browser Games`;
 const description = SITE.description;
 const image = ogImagePath('home');
+
+const faq = [
+  {
+    q: `What is ${SITE.name}?`,
+    a: `${SITE.name} is a free website with 16 classic games that play instantly in your browser: Mahjong Solitaire, 4-player Mahjong, Klondike, Spider, FreeCell, Sudoku, Minesweeper, Word Guess and eight retro arcade games.`,
+  },
+  {
+    q: 'Do I need to download anything or sign up?',
+    a: 'No. Every game opens straight away in your browser. There is no app to install, no account and no email address to give.',
+  },
+  {
+    q: 'Do the games work on phones and tablets?',
+    a: 'Yes. Every game has touch controls and resizes to fit the screen, and the arcade games add on-screen buttons. On a computer you can use the mouse or the keyboard.',
+  },
+  {
+    q: 'Are there ads?',
+    a: `No. ${SITE.name} shows no advertising and uses no tracking cookies. Your scores and settings are saved only in your own browser.`,
+  },
+  {
+    q: 'Are the arcade games the original arcade games?',
+    a: 'No. They are original games in the classic arcade genres, with their own names, characters, artwork and sound, built to play well on modern phones and computers.',
+  },
+];
 
 const jsonLd = graph(
   organization(origin),
   website(origin),
-  webPage(origin, url, title, description),
-  videoGame(origin, {
+  webPage(origin, url, title, description, 'CollectionPage', `${url}#games`),
+  itemList(
     url,
-    name: 'Mahjong Solitaire',
-    description,
-    image: new URL(image, site).href,
-    genre: ['Puzzle', 'Tile-matching', 'Mahjong Solitaire'],
-    keywords: ['mahjong', 'mahjong solitaire', 'free mahjong', 'mahjong online'],
-  }),
-  howTo(url, 'How to play Mahjong Solitaire', HOW_TO_STEPS),
-  faqPage(url, GENERAL_FAQ),
+    `${SITE.name} games`,
+    CATALOG.map((g) => ({ name: g.name, url: new URL(g.play, site).href, description: g.hook })),
+  ),
+  faqPage(url, faq),
 );
 ---
 
-<BaseLayout title={title} description={description} image={image} imageAlt="A Mahjong Solitaire board in the Turtle layout" jsonLd={jsonLd}>
-  <GameShell engineId="turtle" layoutName="Turtle" next={turtle.next}>
-    <h1 class="text-lg sm:text-xl font-extrabold leading-tight">Mahjong Solitaire – free, no download</h1>
-  </GameShell>
-
-  <div class="container-page mt-8">
-    <section class="max-w-3xl prose-copy">
-      <h2>Play Mahjong Solitaire in your browser</h2>
-      <p>
-        Mahjong Solitaire is a single-player matching game played with the 144 tiles of a Mahjong set. Tiles are stacked into a
-        layout, and you remove them in matching pairs. You can only take a tile that is <strong>free</strong>: nothing on top of
-        it, and an open side on its left or right. Clear every tile to win.
-      </p>
-      <p>
-        The board above is the classic Turtle layout. Every deal is built with a guaranteed solution, the tiles stay large and readable
-        on phones, and you can play with a mouse, a touch screen or the keyboard.
-      </p>
-    </section>
-
-    <section aria-labelledby="layouts-heading" class="mt-10">
-      <div class="flex items-end justify-between gap-4 mb-4">
-        <h2 id="layouts-heading" class="text-2xl font-bold">Choose a layout</h2>
-        <a href="/mahjong/" class="text-brand font-semibold hover:underline">All layouts →</a>
-      </div>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          pages.map((p) => (
-            <LayoutCard
-              engineId={p.id}
-              title={p.entry.data.title}
-              summary={p.entry.data.summary}
-              difficulty={p.entry.data.difficulty}
-              tiles={p.tiles}
-            />
-          ))
-        }
-      </div>
-    </section>
-
-    <HowToPlay />
-    <Faq items={GENERAL_FAQ} />
-
-    <section aria-labelledby="more-games" class="mt-12">
-      <h2 id="more-games" class="text-2xl font-bold mb-4">More classic games</h2>
-      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          GAMES.filter((g) => g.status === 'live' && g.slug !== 'mahjong-solitaire').map((g) => (
-            <li class="rounded-xl border border-border bg-card p-5">
-              <h3 class="font-bold text-lg">
-                <a class="hover:text-brand" href={g.href}>{g.name}</a>
-              </h3>
-              <p class="text-sm text-muted mt-1">{g.blurb}</p>
-            </li>
-          ))
-        }
+<BaseLayout title={title} description={description} image={image} imageAlt={`${SITE.name}: 16 classic browser games`} jsonLd={jsonLd} quickSwitch={false}>
+  <section class="hero">
+    <div class="container-page">
+      <h1 class="hero-title">16 classic browser games</h1>
+      <p class="hero-sub">Instant play, zero ads, ready on mobile and desktop. No download, no sign-up.</p>
+      <ul class="hero-facts" aria-label="At a glance">
+        <li><strong>16</strong> games</li>
+        <li><strong>0</strong> ads</li>
+        <li><strong>Touch</strong>, mouse &amp; keys</li>
+        <li><strong>Free</strong>, always</li>
       </ul>
-      <p class="text-muted mt-4">
-        {GAMES.some((g) => g.status === 'planned') && <>Coming soon: {GAMES.filter((g) => g.status === 'planned').map((g) => g.name).join(', ')}. </>}
-        <a href="/games/" class="text-brand font-semibold hover:underline">All games →</a>
+      <nav class="hero-jump" aria-label="Jump to a category">
+        {
+          CATEGORIES.map((c) => (
+            <a class="btn" href={`#${c.id}`}>
+              {c.name}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </section>
+
+  <div class="container-page">
+    <GameCatalog />
+
+    <section class="portal-section" aria-labelledby="why-title">
+      <h2 id="why-title" class="portal-title">Why {SITE.name}</h2>
+      <ul class="why-grid">
+        <li>
+          <h3>Instant play</h3>
+          <p>The game is the first thing on every page. Pages are small and load in a moment, even on a slow connection.</p>
+        </li>
+        <li>
+          <h3>No ads, no sign-up</h3>
+          <p>No advertising, no accounts and no tracking cookies. Scores and settings stay on your device.</p>
+        </li>
+        <li>
+          <h3>Fair and well made</h3>
+          <p>Every Mahjong deal can be solved, every Sudoku has one logical solution, and the first Minesweeper click is always safe.</p>
+        </li>
+        <li>
+          <h3>Any screen</h3>
+          <p>Touch, mouse and keyboard all work. Boards resize and rotate for phones, with large, readable tiles and cards.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="portal-section quick-answer" aria-labelledby="qa-title">
+      <h2 id="qa-title" class="portal-title">Quick answer</h2>
+      <p>
+        <strong>{SITE.name}</strong> ({SITE.domain}) is a free, ad-free website with 16 classic games that run in any modern browser on phones,
+        tablets and computers: Mahjong Solitaire (6 layouts), 4-player Mahjong against computer opponents (Hong Kong, Chinese and American
+        rules), Klondike, Spider and FreeCell solitaire, Sudoku (4 levels), Minesweeper (3 levels), Word Guess (daily and unlimited, 4 to 6
+        letters), and eight retro arcade games.
       </p>
     </section>
+
+    <Faq items={faq} />
   </div>
 </BaseLayout>

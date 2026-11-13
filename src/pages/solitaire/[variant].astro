@@ -8,6 +8,9 @@ import FreeCellGame from '../../components/game/FreeCellGame';
 import { FAMOUS_DEALS } from '../../data/freecell';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import Faq from '../../components/content/Faq.astro';
+import QuickAnswer from '../../components/content/QuickAnswer.astro';
+import CompareTable from '../../components/content/CompareTable.astro';
+import { SOLITAIRE_COMPARE } from '../../data/compare';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
 import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
 
@@ -55,7 +58,7 @@ const jsonLd = graph(
 
 <BaseLayout title={data.title} description={data.description} image={image} imageAlt={`${data.title} cards on a green table`} jsonLd={jsonLd}>
   <div class="game-shell">
-    <div class="container-page pt-2 pb-1">
+    <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">{data.h1}</h1>
     </div>
@@ -64,8 +67,10 @@ const jsonLd = graph(
     {data.engine === 'freecell' && <FreeCellGame client:load otherGame={other} />}
   </div>
 
-  <div class="container-page mt-8">
-    <article class="prose-copy max-w-3xl">
+  <div class="container-page mt-2">
+    <QuickAnswer id={data.engine} />
+    <CompareTable table={SOLITAIRE_COMPARE} current={Astro.url.pathname} />
+    <article class="prose-copy max-w-3xl mt-6">
       <Content />
     </article>
 

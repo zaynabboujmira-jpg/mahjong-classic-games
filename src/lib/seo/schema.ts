@@ -31,9 +31,11 @@ export function website(origin: string): JsonLd {
   };
 }
 
-export function webPage(origin: string, url: string, name: string, description: string): JsonLd {
+/** A page; hubs that list games use 'CollectionPage' (pass mainEntity to point at their ItemList). */
+export function webPage(origin: string, url: string, name: string, description: string, type: 'WebPage' | 'CollectionPage' = 'WebPage', mainEntity?: string): JsonLd {
   return {
-    '@type': 'WebPage',
+    '@type': type,
+    ...(mainEntity ? { mainEntity: { '@id': mainEntity } } : {}),
     '@id': id(url, 'webpage'),
     url,
     name,
@@ -119,6 +121,23 @@ export function howTo(url: string, name: string, steps: readonly { name: string;
       name: s.name,
       text: s.text,
       url: `${url}#how-to-play`,
+    })),
+  };
+}
+
+/** An ordered list of game pages (homepage and hubs). */
+export function itemList(url: string, name: string, items: readonly { name: string; url: string; description?: string }[], frag = 'games'): JsonLd {
+  return {
+    '@type': 'ItemList',
+    '@id': id(url, frag),
+    name,
+    numberOfItems: items.length,
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: it.url,
+      name: it.name,
+      ...(it.description ? { description: it.description } : {}),
     })),
   };
 }

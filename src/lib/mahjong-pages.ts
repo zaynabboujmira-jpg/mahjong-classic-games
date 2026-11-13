@@ -40,3 +40,12 @@ export async function layoutPages(): Promise<LayoutPage[]> {
   });
   return pages;
 }
+
+/** All six layouts side by side, for the layout pages and the hub. */
+export function mahjongLayoutCompare(pages: readonly LayoutPage[]): import('../data/compare').Comparison {
+  return {
+    title: 'Mahjong layouts compared',
+    head: ['Layout', 'Tiles', 'Layers', 'Difficulty'],
+    rows: pages.map((p) => ({ cells: [p.name, String(p.tiles), String(p.layers), p.entry.data.difficulty], href: `/mahjong/${p.id}/` })),
+  };
+}

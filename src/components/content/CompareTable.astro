@@ -1,0 +1,37 @@
+---
+import type { Comparison } from '../../data/compare';
+
+/** A rules / levels comparison table; the current page's row is highlighted. */
+interface Props {
+  table: Comparison;
+  /** Path of the current page, to highlight its row. */
+  current?: string;
+}
+const { table, current } = Astro.props;
+const slug = table.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+---
+
+<section class="compare-wrap" aria-labelledby={`cmp-${slug}`}>
+  <h2 id={`cmp-${slug}`}>{table.title}</h2>
+  <table class="compare-table">
+    <caption class="sr-only">{table.title}</caption>
+    <thead>
+      <tr>{table.head.map((h) => <th scope="col">{h}</th>)}</tr>
+    </thead>
+    <tbody>
+      {
+        table.rows.map((r) => (
+          <tr aria-current={r.href && r.href === current ? 'page' : undefined}>
+            {r.cells.map((c, i) =>
+              i === 0 ? (
+                <th scope="row">{r.href ? <a href={r.href}>{c}</a> : c}</th>
+              ) : (
+                <td>{c}</td>
+              ),
+            )}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</section>

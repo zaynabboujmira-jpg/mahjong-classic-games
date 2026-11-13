@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import LevelPage from '../../components/content/LevelPage.astro';
+import { ARCADE_COMPARE } from '../../data/compare';
 import ColorMemoryGame from '../../components/game/ColorMemoryGame';
 import PaddleBallGame from '../../components/game/PaddleBallGame';
 import MazeChomperGame from '../../components/game/arcade/MazeChomperGame';
@@ -57,6 +58,8 @@ const ALT: Record<string, string> = {
   genre={GENRES[data.level]!}
   imageAlt={ALT[data.level]!}
   imageKey={`arcade-${data.level}`}
+  qa={data.level}
+  compare={ARCADE_COMPARE}
   levelsHeading="More arcade games"
   levelTitle={(name) => name}
   howToName={`How to play ${data.name}`}

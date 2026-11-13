@@ -1,5 +1,8 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import { getEntry } from 'astro:content';
+import QuickAnswer from '../../../../components/content/QuickAnswer.astro';
+import Faq from '../../../../components/content/Faq.astro';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import FreeCellGame from '../../../../components/game/FreeCellGame';
 import Breadcrumbs from '../../../../components/seo/Breadcrumbs.astro';
@@ -7,7 +10,7 @@ import { FAMOUS_DEALS } from '../../../../data/freecell';
 import { RANK_LABELS, SUIT_SYMBOLS, SUIT_NAMES, isRed } from '../../../../engines/solitaire/cards';
 import { msDeal } from '../../../../engines/solitaire/freecell';
 import { canonicalUrl, ogImagePath } from '../../../../lib/seo/meta';
-import { breadcrumbs, graph, organization, videoGame, webPage, website } from '../../../../lib/seo/schema';
+import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../../../lib/seo/schema';
 
 /** One page per curated deal; its starting layout is unique content generated from the deal number. */
 export const getStaticPaths = (() => FAMOUS_DEALS.map((d) => ({ params: { deal: String(d.deal) }, props: d }))) satisfies GetStaticPaths;
@@ -21,6 +24,14 @@ const cascades = msDeal(deal);
 const rows = Math.max(...cascades.map((c) => c.length));
 const aces = cascades.flatMap((col, i) => col.map((c, r) => ({ c, col: i + 1, depth: col.length - r - 1 }))).filter((x) => x.c.rank === 1);
 
+const rules = (await getEntry('solitaire', 'freecell'))!.data;
+const dealFaq = [
+  {
+    q: `Is FreeCell deal #${deal} the same as in Windows FreeCell?`,
+    a: `Yes. Deals use the classic numbering, so deal #${deal} here has exactly the same starting layout as deal #${deal} in classic Windows FreeCell.`,
+  },
+  ...rules.faq.filter((f) => !/keyboard/i.test(f.q)).slice(0, 3),
+];
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
@@ -46,6 +57,8 @@ const jsonLd = graph(
     genre: ['Card game', 'Solitaire', 'FreeCell'],
     keywords: [`freecell ${deal}`, `freecell deal ${deal}`, 'freecell'],
   }),
+  howTo(url, `How to play FreeCell deal #${deal}`, rules.howTo),
+  faqPage(url, dealFaq),
 );
 const others = FAMOUS_DEALS.filter((d) => d.deal !== deal);
 const short = (rank: number) => RANK_LABELS[rank];
@@ -53,15 +66,16 @@ const short = (rank: number) => RANK_LABELS[rank];
 
 <BaseLayout title={title} description={description} image={image} imageAlt="FreeCell cards on a green table" jsonLd={jsonLd}>
   <div class="game-shell">
-    <div class="container-page pt-2 pb-1">
+    <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">FreeCell deal #{deal}</h1>
     </div>
     <FreeCellGame client:load deal={deal} otherGame={{ name: 'More FreeCell', href: '/solitaire/freecell/' }} />
   </div>
 
-  <div class="container-page mt-8 max-w-4xl">
-    <section class="prose-copy">
+  <div class="container-page mt-2 max-w-4xl">
+    <QuickAnswer id="freecell" extra={[{ label: 'This page', value: `Deal #${deal}: ${note}` }]} />
+    <section class="prose-copy mt-6">
       <h2>About deal #{deal}</h2>
       <p>{note}</p>
       <p>
@@ -97,6 +111,25 @@ const short = (rank: number) => RANK_LABELS[rank];
         </table>
       </div>
     </section>
+
+    <section id="how-to-play" aria-labelledby="how-heading" class="mt-10">
+      <h2 id="how-heading" class="text-2xl font-bold mb-4">How to play FreeCell</h2>
+      <ol class="grid gap-3 sm:grid-cols-2">
+        {
+          rules.howTo.map((step, i) => (
+            <li class="rounded-xl border border-border bg-card p-4 flex gap-3">
+              <span class="shrink-0 grid place-items-center size-8 rounded-full bg-brand text-brand-fg font-bold">{i + 1}</span>
+              <div>
+                <h3 class="font-semibold">{step.name}</h3>
+                <p class="text-muted text-sm mt-1">{step.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <Faq items={dealFaq} />
 
     <section aria-labelledby="other-deals" class="mt-10">
       <h2 id="other-deals" class="text-2xl font-bold mb-3">Other numbered deals</h2>

@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import LevelPage from './LevelPage.astro';
 import TableMahjongGame from '../game/TableMahjongGame';
 import type { Variant } from '../../engines/mahjong-table/game';
+import { TABLE_MAHJONG_COMPARE } from '../../data/compare';
 
 /** The playable page for one 4-player rule set; each route file just names its variant. */
 interface Props {
@@ -27,6 +28,9 @@ const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summar
   genre={['Board game', 'Tile game', 'Mahjong']}
   imageAlt={`${data.name} Mahjong tiles on a green table`}
   imageKey={`mahjong-table-${data.level}`}
+  qa="mahjong-4p"
+  qaExtra={[{ label: 'This page', value: `${data.name} rules: ${TABLE_MAHJONG_COMPARE.rows.find((r) => r.href === `/mahjong/${data.level}/`)!.cells.slice(1).join(' · ')}` }]}
+  compare={TABLE_MAHJONG_COMPARE}
   levelsHeading="Other 4-player rules"
   levelTitle={(name) => `${name} Mahjong`}
   more={{

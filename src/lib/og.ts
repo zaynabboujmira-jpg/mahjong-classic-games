@@ -299,12 +299,12 @@ export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt })
 </svg>`;
 }
 
-/** App icon: a stacked tile showing three dots. No text, so no font needed. */
+/** App icon: the Free Play Classic mark (a play tile on a green badge). No text, so no font needed. */
 export function iconSvg(size: number): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0f5c4a"/>
-  <rect x="13" y="13" width="34" height="44" rx="6" fill="#b3a27c"/>
-  <rect x="18" y="8" width="34" height="44" rx="6" fill="#fbf6e9"/>
-  <circle cx="27" cy="18" r="5" fill="#1d4e89"/><circle cx="35" cy="30" r="5" fill="#c2272d"/><circle cx="43" cy="42" r="5" fill="#167a3e"/>
+  <rect width="64" height="64" rx="15" fill="#0f5c4a"/>
+  <rect x="15" y="12" width="36" height="44" rx="7" fill="#0b4738"/>
+  <rect x="13" y="9" width="36" height="44" rx="7" fill="#fbf6e9"/>
+  <path d="M26 21.5v19.5c0 1.6 1.7 2.5 3 1.7l15.4-9.7c1.3-.8 1.3-2.6 0-3.4L29 19.8c-1.3-.8-3 .1-3 1.7z" fill="#f59e0b"/>
 </svg>`;
 }

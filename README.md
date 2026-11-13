@@ -1,6 +1,6 @@
-# Mahjong & Classic Games
+# Free Play Classic
 
-Fast, accessible Mahjong Solitaire, 4-player Mahjong against bots, solitaire card games, Sudoku and Minesweeper built with Astro, TypeScript, Tailwind CSS v4, Preact islands and HTML5 Canvas, deployed as a static site on Cloudflare Pages. See [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md) for the strategy behind it.
+Free Play Classic (freeplayclassic.com): 16 fast, accessible classic browser games (Mahjong, 4-player Mahjong against bots, solitaire, Sudoku, Minesweeper, Word Guess and eight retro arcade games) built with Astro, TypeScript, Tailwind CSS v4, Preact islands and HTML5 Canvas, deployed as a static site on Cloudflare Pages. See [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md) for the strategy behind it.
 
 ## Commands
 
@@ -15,7 +15,7 @@ Fast, accessible Mahjong Solitaire, 4-player Mahjong against bots, solitaire car
 
 ## Deploying to Cloudflare Pages
 
-Build command `npm run build`, output directory `dist`, environment variable `SITE_URL=https://your-domain` (used for canonicals, sitemaps and OpenGraph URLs; defaults to `https://example.com`).
+Build command `npm run build`, output directory `dist`, optional environment variable `SITE_URL` (canonicals, sitemaps and OpenGraph URLs; defaults to `https://freeplayclassic.com`, so only set it for a staging build).
 
 ## Structure
 

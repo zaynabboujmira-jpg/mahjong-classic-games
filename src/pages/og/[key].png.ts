@@ -54,7 +54,7 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Mahjong Solitaire', subtitle: 'No download · Solvable deals', art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: '16 classic games · No ads · No download', art: turtle } },
     { params: { key: 'mahjong' }, props: { title: 'Mahjong Solitaire Layouts', subtitle: `${pages.length} layouts · Play free`, art: butterfly } },
     ...pages.map((p) => ({
       params: { key: `mahjong-${p.id}` },

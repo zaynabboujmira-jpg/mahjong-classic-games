@@ -1,8 +1,11 @@
 export const SITE = {
-  name: 'Mahjong & Classic Games',
-  shortName: 'Mahjong',
+  name: 'Free Play Classic',
+  shortName: 'Free Play Classic',
+  /** Production origin; SITE_URL overrides it at build time (see astro.config.mjs). */
+  domain: 'freeplayclassic.com',
+  tagline: '16 classic browser games: instant play, no ads, on mobile and desktop',
   description:
-    'Play free Mahjong Solitaire online: six layouts, no download, no sign-up, large readable tiles on any phone, tablet or computer.',
+    'Free Play Classic: 16 classic browser games. Mahjong, solitaire, Sudoku, Minesweeper, word and retro arcade games. Instant play, no ads, no sign-up.',
   lang: 'en',
   locale: 'en_US',
   themeColor: '#0f5c4a',

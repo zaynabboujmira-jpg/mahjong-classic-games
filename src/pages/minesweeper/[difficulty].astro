@@ -3,6 +3,8 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import LevelPage from '../../components/content/LevelPage.astro';
 import MinesweeperGame from '../../components/game/MinesweeperGame';
+import { MINESWEEPER_COMPARE } from '../../data/compare';
+import { LEVELS } from '../../engines/minesweeper/game';
 
 /** One playable page per level in src/content/minesweeper. */
 export const getStaticPaths = (async () => {
@@ -28,6 +30,9 @@ const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summar
   data={data}
   genre={['Puzzle', 'Logic puzzle', 'Minesweeper']}
   imageAlt={`A Minesweeper ${data.name} field with numbers and flags`}
+  qa="minesweeper"
+  qaExtra={[{ label: 'This page', value: `${data.name}: ${LEVELS[data.level].width} × ${LEVELS[data.level].height} with ${LEVELS[data.level].mines} mines` }]}
+  compare={MINESWEEPER_COMPARE}
   more={{
     heading: 'Prefer a puzzle with no luck at all?',
     text: 'Every Sudoku here has exactly one solution and can be solved by logic alone, from Easy to Expert.',

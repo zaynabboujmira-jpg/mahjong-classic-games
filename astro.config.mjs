@@ -3,8 +3,8 @@ import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import tailwindcss from '@tailwindcss/vite';
 
-/** Public origin for canonicals, sitemaps and OpenGraph. Set SITE_URL in Cloudflare Pages. */
-const site = process.env.SITE_URL ?? 'https://example.com';
+/** Public origin for canonicals, sitemaps and OpenGraph. SITE_URL overrides it (e.g. for a staging build). */
+const site = process.env.SITE_URL ?? 'https://freeplayclassic.com';
 
 export default defineConfig({
   site,

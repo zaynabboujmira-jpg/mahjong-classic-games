@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import CompareTable from '../../components/content/CompareTable.astro';
+import { mahjongLayoutCompare } from '../../lib/mahjong-pages';
 import HowToPlay from '../../components/content/HowToPlay.astro';
 import Faq from '../../components/content/Faq.astro';
 import LayoutCard from '../../components/content/LayoutCard.astro';
@@ -26,7 +28,7 @@ const crumbs = [
 const jsonLd = graph(
   organization(origin),
   website(origin),
-  webPage(origin, url, title, description),
+  webPage(origin, url, title, description, 'CollectionPage', `${url}#layouts`),
   breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
   {
     '@type': 'ItemList',
@@ -53,7 +55,8 @@ const jsonLd = graph(
       and your best time for each layout is saved on your device.
     </p>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+    <h2 class="text-2xl font-bold mt-6">Pick a layout</h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-3">
       {
         pages.map((p) => (
           <LayoutCard
@@ -66,6 +69,8 @@ const jsonLd = graph(
         ))
       }
     </div>
+
+    <CompareTable table={mahjongLayoutCompare(pages)} />
 
     <section aria-labelledby="table-heading" class="mt-10">
       <h2 id="table-heading" class="text-2xl font-bold mb-2">Play 4-player Mahjong against bots</h2>

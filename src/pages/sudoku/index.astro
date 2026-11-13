@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import CompareTable from '../../components/content/CompareTable.astro';
+import { SUDOKU_COMPARE } from '../../data/compare';
 import Faq from '../../components/content/Faq.astro';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
 import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
@@ -46,7 +48,7 @@ const faq = [
 const jsonLd = graph(
   organization(origin),
   website(origin),
-  webPage(origin, url, title, description),
+  webPage(origin, url, title, description, 'CollectionPage', `${url}#levels`),
   breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
   videoGame(origin, {
     url,
@@ -97,6 +99,7 @@ const jsonLd = graph(
         ))
       }
     </ul>
+    <CompareTable table={SUDOKU_COMPARE} />
 
     <section id="how-to-play" aria-labelledby="how-heading" class="mt-10 max-w-3xl prose-copy">
       <h2 id="how-heading">How to play Sudoku</h2>

@@ -1,27 +1,45 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site';
-import { ogImagePath } from '../lib/seo/meta';
+import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
+import { graph, organization, webPage, website } from '../lib/seo/schema';
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const description = `How ${SITE.name} handles your data: no accounts, no ads, no tracking cookies. Game settings and scores stay in your own browser.`;
 ---
 
 <BaseLayout
   title="Privacy"
-  description={`How ${SITE.name} handles your data: no accounts, no tracking cookies, game settings and best times stored only in your own browser.`}
+  description={description}
   image={ogImagePath('home')}
   imageAlt={SITE.name}
+  jsonLd={graph(organization(origin), website(origin), webPage(origin, url, `${SITE.name} privacy`, description))}
 >
   <div class="container-page pt-6 prose-copy max-w-3xl">
     <h1 class="text-3xl font-extrabold mb-4">Privacy</h1>
+    <p>Last updated: 13 November 2026.</p>
+    <h2>The short version</h2>
+    <ul>
+      <li>No accounts, no sign-up and no advertising.</li>
+      <li>No tracking cookies and no third-party analytics.</li>
+      <li>Your scores, streaks, settings and saved games stay in your browser on your own device.</li>
+    </ul>
+    <h2>What is stored on your device</h2>
     <p>
-      {SITE.name} does not ask for an account and does not set tracking cookies. Your game settings and best times are saved in your
-      browser's local storage on your own device and are never sent to us. Clearing your browser data removes them.
+      Games save things like best times, daily-word streaks, chosen difficulty and unfinished puzzles in your browser's local storage, so
+      you can pick up where you left off. This data is never sent to us. Clearing your browser data, or using a private window, removes it.
     </p>
     <h2>Hosting</h2>
     <p>
-      The site is served by Cloudflare. Like any web host, Cloudflare processes technical data such as IP addresses to deliver pages and
-      protect the service.
+      {SITE.name} is served by Cloudflare. Like any web host, Cloudflare processes technical data such as IP addresses to deliver pages and
+      protect the service from abuse. We do not use this data to identify or profile visitors.
     </p>
+    <h2>Children</h2>
+    <p>The games are suitable for all ages. We do not knowingly collect personal information from anyone, including children.</p>
     <h2>Changes</h2>
-    <p>If we add analytics or advertising in the future, this page will be updated before that happens.</p>
+    <p>If we ever add analytics or advertising, this page will be updated before that happens.</p>
+    <p><a href="/terms/">Terms of use</a> · <a href="/about/">About</a></p>
   </div>
 </BaseLayout>

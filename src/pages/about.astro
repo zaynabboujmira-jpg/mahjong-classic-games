@@ -1,34 +1,46 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site';
-import { ogImagePath } from '../lib/seo/meta';
-import { graph, organization, website } from '../lib/seo/schema';
+import { ogImagePath, canonicalUrl } from '../lib/seo/meta';
+import { graph, organization, webPage, website } from '../lib/seo/schema';
 
-const origin = new URL('/', Astro.site!).href;
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const description = `${SITE.name} is a free collection of 16 classic browser games that load instantly, work on phones and computers, and show no ads.`;
 ---
 
 <BaseLayout
   title="About"
-  description={`${SITE.name} is a fast, free collection of classic puzzle games: no download, no sign-up, large readable tiles and full keyboard support.`}
+  description={description}
   image={ogImagePath('home')}
   imageAlt={SITE.name}
-  jsonLd={graph(organization(origin), website(origin))}
+  jsonLd={graph(organization(origin), website(origin), { ...webPage(origin, url, `About ${SITE.name}`, description), '@type': 'AboutPage' })}
 >
   <div class="container-page pt-6 prose-copy max-w-3xl">
     <h1 class="text-3xl font-extrabold mb-4">About {SITE.name}</h1>
     <p>
-      We make classic puzzle games that load instantly and are comfortable to play for everyone. The game is always the first thing
-      on the page: no landing screens, no sign-up and nothing to install.
+      {SITE.name} is a home for classic games that simply work: open a page and play. There is no landing screen, no sign-up, nothing to
+      install and no advertising. Every game runs in your browser on a phone, tablet or computer.
     </p>
+    <h2>What you can play</h2>
+    <ul>
+      <li><strong>Mahjong and card classics:</strong> Mahjong Solitaire (six layouts), 4-player Mahjong against computer opponents, Klondike, Spider and FreeCell.</li>
+      <li><strong>Brain, logic and word puzzles:</strong> Sudoku (four levels), Minesweeper (three levels) and Word Guess (daily and unlimited).</li>
+      <li><strong>Retro arcade:</strong> Maze Chomper, Alien Invaders, Space Rocks, River Hopper, Flappy Wing, Ocean Grow, Color Memory and Paddle Ball.</li>
+    </ul>
     <h2>What we care about</h2>
     <ul>
-      <li><strong>Fair games.</strong> Every Mahjong deal is generated with a guaranteed solution.</li>
-      <li>
-        <strong>Readable on any screen.</strong> Tiles stay at a comfortable tap size on phones, and the board rotates to fit portrait
-        screens.
-      </li>
+      <li><strong>Fair games.</strong> Every Mahjong Solitaire deal can be solved, and every Sudoku has one solution that logic alone can reach.</li>
+      <li><strong>Every device.</strong> Touch, mouse and keyboard all work, and boards resize and rotate to fit small screens.</li>
       <li><strong>Accessible.</strong> Keyboard play, screen-reader announcements, dark mode and reduced motion are built in.</li>
-      <li><strong>Private.</strong> No tracking cookies. Your best times stay on your own device.</li>
+      <li><strong>Fast and private.</strong> Pages are small, and your scores and settings stay on your own device.</li>
     </ul>
+    <h2>Original games</h2>
+    <p>
+      Our arcade and word games are original takes on classic game types, with their own names, characters, artwork and sound. They are not
+      affiliated with, or endorsed by, the makers of any other game.
+    </p>
+    <p><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms of use</a></p>
   </div>
 </BaseLayout>

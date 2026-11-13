@@ -19,7 +19,7 @@ const slots = layout.slots.map((s) => ({ x: s.x, y: s.y, z: s.z }));
 ---
 
 <div class="game-shell">
-  <div class="container-page pt-2 pb-1">
+  <div class="container-page pt-2 pb-1 game-head">
     <slot />
   </div>
   <MahjongGame client:load layoutId={engineId} layoutName={layoutName} slots={slots} next={next} />

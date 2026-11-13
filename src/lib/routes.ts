@@ -30,6 +30,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { path: '/games/', section: 'pages', priority: 0.6 },
     { path: '/about/', section: 'pages', priority: 0.3 },
     { path: '/privacy/', section: 'pages', priority: 0.2 },
+    { path: '/terms/', section: 'pages', priority: 0.2 },
     { path: '/mahjong/', section: 'mahjong', priority: 0.9, ...(newest ? { lastmod: newest } : {}) },
     ...layouts.map((l) => ({
       path: `/mahjong/${l.data.engineId}/`,

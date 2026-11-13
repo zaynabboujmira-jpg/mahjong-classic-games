@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { title, description, image, imageAlt, type = 'website', noindex = false, jsonLd } = Astro.props;
-const site = Astro.site ?? new URL('https://example.com');
+const site = Astro.site ?? new URL('https://freeplayclassic.com');
 const canonical = canonicalUrl(Astro.url.pathname, site);
 const fullTitle = pageTitle(title);
 const desc = clampDescription(description);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { boundsOf } from '../../src/engines/mahjong/board';
-import { MIN_TILE, fitBoard, projectSlot } from '../../src/engines/mahjong/fit';
+import { FIT_MIN_TILE, MIN_TILE, fitBoard, projectSlot } from '../../src/engines/mahjong/fit';
 import { LAYOUTS } from '../../src/engines/mahjong/layouts';
 
 const PHONES = [
@@ -14,11 +14,15 @@ describe('fitBoard', () => {
     const b = boundsOf(layout.slots);
 
     for (const phone of PHONES) {
-      it(`${layout.name} on ${phone.name}: tiles >= ${MIN_TILE}px and no horizontal overflow`, () => {
+      it(`${layout.name} on ${phone.name}: tiles >= ${MIN_TILE}px, or >= ${FIT_MIN_TILE}px with the whole board on screen`, () => {
         // The board area is roughly the viewport minus header and toolbar.
-        const fit = fitBoard(b, phone.w, phone.h - 140);
-        expect(fit.tileSize).toBeGreaterThanOrEqual(MIN_TILE);
+        const area = phone.h - 140;
+        const fit = fitBoard(b, phone.w, area);
         expect(fit.boardW).toBeLessThanOrEqual(phone.w + 0.01);
+        if (fit.tileSize < MIN_TILE) {
+          expect(fit.tileSize).toBeGreaterThanOrEqual(FIT_MIN_TILE);
+          expect(fit.boardH).toBeLessThanOrEqual(area + 0.01);
+        }
       });
     }
 

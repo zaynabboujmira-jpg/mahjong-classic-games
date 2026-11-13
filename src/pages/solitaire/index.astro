@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import CompareTable from '../../components/content/CompareTable.astro';
+import { SOLITAIRE_COMPARE } from '../../data/compare';
 import { GAMES } from '../../data/games';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
 import { breadcrumbs, graph, organization, webPage, website } from '../../lib/seo/schema';
@@ -22,7 +24,7 @@ const comingSoon = GAMES.filter((g) => g.status === 'planned' && /solitaire|free
 const jsonLd = graph(
   organization(origin),
   website(origin),
-  webPage(origin, url, title, description),
+  webPage(origin, url, title, description, 'CollectionPage', `${url}#games`),
   breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
   {
     '@type': 'ItemList',
@@ -71,5 +73,6 @@ const jsonLd = graph(
         ))
       }
     </ul>
+    <CompareTable table={SOLITAIRE_COMPARE} />
   </div>
 </BaseLayout>

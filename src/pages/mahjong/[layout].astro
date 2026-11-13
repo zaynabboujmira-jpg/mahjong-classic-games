@@ -7,6 +7,9 @@ import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import HowToPlay from '../../components/content/HowToPlay.astro';
 import Faq from '../../components/content/Faq.astro';
 import LayoutCard from '../../components/content/LayoutCard.astro';
+import QuickAnswer from '../../components/content/QuickAnswer.astro';
+import CompareTable from '../../components/content/CompareTable.astro';
+import { mahjongLayoutCompare } from '../../lib/mahjong-pages';
 import { layoutPages, type LayoutPage } from '../../lib/mahjong-pages';
 import { HOW_TO_STEPS } from '../../data/mahjong';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
@@ -65,7 +68,10 @@ const jsonLd = graph(
     <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">{data.h1}</h1>
   </GameShell>
 
-  <div class="container-page mt-8">
+  <div class="container-page mt-2">
+    <QuickAnswer id="mahjong-solitaire" extra={[{ label: 'This page', value: `${page.name} layout: ${page.tiles} tiles in ${page.layers} layers, ${data.difficulty.toLowerCase()} difficulty` }]} />
+    <CompareTable table={mahjongLayoutCompare(all)} current={Astro.url.pathname} />
+    <div class="mt-8"></div>
     <dl class="grid grid-cols-3 gap-3 max-w-xl">
       <div class="rounded-xl border border-border bg-card p-3 text-center">
         <dt class="text-xs uppercase tracking-wide text-muted">Tiles</dt>

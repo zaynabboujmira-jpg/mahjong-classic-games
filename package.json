@@ -13,7 +13,8 @@
     "check": "astro check && tsc --noEmit",
     "test": "vitest run",
     "budget": "node scripts/js-budget.mjs",
-    "verify": "npm run check && npm run test && npm run build && npm run budget"
+    "verify": "npm run check && npm run test && npm run build && npm run budget && npm run audit",
+    "audit": "node scripts/audit-seo.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "^6.1.4",

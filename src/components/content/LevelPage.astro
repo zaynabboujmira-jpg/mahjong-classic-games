@@ -2,6 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../seo/Breadcrumbs.astro';
 import Faq from './Faq.astro';
+import QuickAnswer from './QuickAnswer.astro';
+import CompareTable from './CompareTable.astro';
+import type { Comparison } from '../../data/compare';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
 import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
 
@@ -45,8 +48,12 @@ interface Props {
   hubCrumb?: string;
   /** Title of the how-to section and HowTo schema; defaults to "How to play {game}". */
   howToName?: string;
+  /** Catalog id for the Quick answer block. */
+  qa: string;
+  qaExtra?: { label: string; value: string }[];
+  compare?: Comparison;
 }
-const { game, base, level, levels, data, genre, imageAlt, more, levelsHeading, levelTitle, imageKey, hubCrumb, howToName } = Astro.props;
+const { game, base, level, levels, data, genre, imageAlt, more, levelsHeading, levelTitle, imageKey, hubCrumb, howToName, qa, qaExtra, compare } = Astro.props;
 const pathOf = (l: Level) => l.path ?? `${base}${l.id}/`;
 const howTitle = howToName ?? `How to play ${game}`;
 
@@ -81,15 +88,17 @@ const jsonLd = graph(
 
 <BaseLayout title={data.title} description={data.description} image={image} imageAlt={imageAlt} jsonLd={jsonLd}>
   <div class="game-shell">
-    <div class="container-page pt-2 pb-1">
+    <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">{data.h1}</h1>
     </div>
     <slot name="game" />
   </div>
 
-  <div class="container-page mt-8">
-    <article class="prose-copy max-w-3xl">
+  <div class="container-page mt-2">
+    <QuickAnswer id={qa} extra={qaExtra ?? []} />
+    {compare && <CompareTable table={compare} current={Astro.url.pathname} />}
+    <article class="prose-copy max-w-3xl mt-6">
       <slot />
     </article>
 

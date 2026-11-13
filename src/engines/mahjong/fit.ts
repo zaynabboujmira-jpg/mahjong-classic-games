@@ -5,6 +5,8 @@ export const TILE_ASPECT = 1.22;
 /** Thickness of a tile (and per-layer offset) as a fraction of its short side. */
 export const DEPTH_RATIO = 0.09;
 export const MIN_TILE = 36;
+/** Smallest tile used to keep the whole board on screen; below this the page scrolls instead. */
+export const FIT_MIN_TILE = 30;
 export const MAX_TILE = 76;
 
 /** Round down to 0.01px so floating-point error can never push the board past the viewport. */
@@ -52,8 +54,9 @@ function makeFit(b: Bounds, rotated: boolean, size: number): Fit {
  * 1. Never wider than the viewport (no horizontal scrolling), ever.
  * 2. Prefer the orientation where the whole board fits with the largest tiles.
  *    Rotation is only considered on portrait viewports.
- * 3. If that makes tiles smaller than MIN_TILE, grow them to MIN_TILE (or as
- *    close as the width allows) and let the page scroll vertically.
+ * 3. Tiles may shrink to FIT_MIN_TILE (30 px) to keep the whole board on
+ *    screen. Below that, grow them to MIN_TILE (36 px, or as close as the
+ *    width allows) and let the page scroll vertically instead.
  */
 export function fitBoard(b: Bounds, viewportW: number, viewportH: number): Fit {
   const options = viewportH > viewportW ? [false, true] : [false];
@@ -65,7 +68,8 @@ export function fitBoard(b: Bounds, viewportW: number, viewportH: number): Fit {
   });
 
   const bestWhole = candidates.reduce((a, c) => (c.whole > a.whole ? c : a));
-  if (bestWhole.whole >= MIN_TILE) {
+  // Whole board on screen when tiles stay at least FIT_MIN_TILE (36 px preferred, 30 px allowed).
+  if (bestWhole.whole >= FIT_MIN_TILE) {
     return makeFit(b, bestWhole.rotated, floor2(Math.min(bestWhole.whole, MAX_TILE)));
   }
   const bestWidth = candidates.reduce((a, c) => (c.byWidth > a.byWidth ? c : a));

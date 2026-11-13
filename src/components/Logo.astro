@@ -1,0 +1,24 @@
+---
+/**
+ * Free Play Classic logo: a cream play tile with an amber play triangle on a
+ * green badge, plus the wordmark. Inline SVG, so it costs no request.
+ */
+interface Props {
+  size?: number;
+  /** Hide the wordmark below the sm breakpoint. */
+  compact?: boolean;
+}
+const { size = 30, compact = false } = Astro.props;
+---
+
+<span class="logo">
+  <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
+    <rect width="64" height="64" rx="15" fill="#0f5c4a" />
+    <rect x="15" y="12" width="36" height="44" rx="7" fill="#0b4738" />
+    <rect x="13" y="9" width="36" height="44" rx="7" fill="#fbf6e9" />
+    <path d="M26 21.5v19.5c0 1.6 1.7 2.5 3 1.7l15.4-9.7c1.3-.8 1.3-2.6 0-3.4L29 19.8c-1.3-.8-3 .1-3 1.7z" fill="#f59e0b" />
+  </svg>
+  <span class:list={['logo-word', compact && 'hidden min-[380px]:inline']}>
+    Free <span class="logo-play">Play</span> Classic
+  </span>
+</span>

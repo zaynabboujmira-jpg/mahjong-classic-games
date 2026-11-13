@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
+import { graph, organization, webPage, website } from '../lib/seo/schema';
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const description = `The terms for using ${SITE.name}: free personal play, fair use, original games, and no warranty. Short and in plain English.`;
+---
+
+<BaseLayout
+  title="Terms of use"
+  description={description}
+  image={ogImagePath('home')}
+  imageAlt={SITE.name}
+  jsonLd={graph(organization(origin), website(origin), webPage(origin, url, `${SITE.name} terms of use`, description))}
+>
+  <div class="container-page pt-6 prose-copy max-w-3xl">
+    <h1 class="text-3xl font-extrabold mb-4">Terms of use</h1>
+    <p>Last updated: 13 November 2026. By using {SITE.name} ({SITE.domain}) you agree to these terms.</p>
+    <h2>Free to play</h2>
+    <p>
+      All games are free for personal, non-commercial use. You do not need an account. Please do not copy, re-host, frame or resell the
+      games or the site's content without permission.
+    </p>
+    <h2>Fair use</h2>
+    <p>Do not try to disrupt the site, overload it with automated traffic, or get around its normal operation.</p>
+    <h2>Original games and trademarks</h2>
+    <p>
+      The games, artwork, text and code on {SITE.name} are our own work. Our arcade and word games are original games in classic genres; they
+      are not affiliated with, or endorsed by, the makers of any other game. Other names mentioned on the site belong to their owners.
+    </p>
+    <h2>No warranty</h2>
+    <p>
+      The site is provided as it is, without warranties of any kind. We work to keep it fast and reliable but cannot promise it will always be
+      available or error-free, and we are not liable for any loss arising from its use, to the extent the law allows.
+    </p>
+    <h2>Your data</h2>
+    <p>See the <a href="/privacy/">privacy page</a>: scores and settings stay in your own browser.</p>
+    <h2>Changes</h2>
+    <p>We may update these terms. The date above shows when they last changed.</p>
+  </div>
+</BaseLayout>
