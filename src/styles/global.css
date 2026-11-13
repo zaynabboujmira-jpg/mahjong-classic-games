@@ -787,3 +787,44 @@
     color: var(--brand);
   }
 }
+
+/* ---------- Arcade pack: canvas and touch pad ---------- */
+@layer components {
+  .arcade-canvas {
+    touch-action: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.3);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .arcade-pad {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 30rem;
+    padding-bottom: 0.25rem;
+  }
+  .arcade-btn {
+    flex: 1 1 0;
+    min-width: 3.5rem;
+    min-height: 3.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    background: rgb(255 255 255 / 0.12);
+    color: #f2f7f4;
+    font-weight: 800;
+    font-size: 1.1rem;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .arcade-btn:active {
+    background: rgb(255 255 255 / 0.3);
+  }
+  .arcade-btn-fire {
+    background: rgb(244 63 94 / 0.45);
+  }
+}

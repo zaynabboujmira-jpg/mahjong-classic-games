@@ -8,7 +8,7 @@ import { score } from '../../engines/word/game';
 /** Rows of a real solve, coloured by the game's own scoring. */
 const solve = (answer: string, ...guesses: string[]) =>
   [...guesses, answer].map((g) => ({ word: g.toUpperCase(), marks: score(g, answer).map((m) => m[0]).join('') }));
-import { cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
+import { arcadeArt, cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
 
 const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese', { title: string; subtitle: string; tiles: ArtTile[] }> = {
   american: {
@@ -86,9 +86,15 @@ export const getStaticPaths = (async () => {
       params: { key: 'word-6' },
       props: { title: '6-Letter Word Guess', subtitle: 'Daily word · Unlimited play', art: wordArt(solve('golden', 'stolen', 'garden')) },
     },
-    { params: { key: 'arcade' }, props: { title: 'Free Arcade Games', subtitle: 'Color Memory · Paddle Ball', art: memoryArt() } },
+    { params: { key: 'arcade' }, props: { title: 'Free Arcade Games', subtitle: '8 classics · No download', art: arcadeArt('maze-chomper') } },
     { params: { key: 'arcade-color-memory' }, props: { title: 'Color Memory', subtitle: 'Lights & sounds · 3 modes', art: memoryArt() } },
     { params: { key: 'arcade-paddle-ball' }, props: { title: 'Paddle Ball', subtitle: 'vs computer or a friend', art: paddleArt() } },
+    { params: { key: 'arcade-maze-chomper' }, props: { title: 'Maze Chomper', subtitle: 'Maze chase · Play free', art: arcadeArt('maze-chomper') } },
+    { params: { key: 'arcade-alien-invaders' }, props: { title: 'Alien Invaders', subtitle: 'Retro space shooter · Free', art: arcadeArt('alien-invaders') } },
+    { params: { key: 'arcade-space-rocks' }, props: { title: 'Space Rocks', subtitle: 'Vector shooter · Play free', art: arcadeArt('space-rocks') } },
+    { params: { key: 'arcade-river-hopper' }, props: { title: 'River Hopper', subtitle: 'Road & river crossing · Free', art: arcadeArt('river-hopper') } },
+    { params: { key: 'arcade-flappy-wing' }, props: { title: 'Flappy Wing', subtitle: 'One tap to flap · Medals', art: arcadeArt('flappy-wing') } },
+    { params: { key: 'arcade-ocean-grow' }, props: { title: 'Ocean Grow', subtitle: 'Eat & grow · Play free', art: arcadeArt('ocean-grow') } },
     {
       params: { key: 'sudoku' },
       props: { title: 'Free Sudoku', subtitle: 'Easy to Expert · One solution each', art: sudokuArt(generate('medium', 'og').givens) },

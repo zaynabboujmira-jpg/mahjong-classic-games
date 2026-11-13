@@ -93,7 +93,7 @@ const word = defineCollection({
 /** Arcade games (/arcade/[game]/). */
 const arcade = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/arcade' }),
-  schema: levelPage(['color-memory', 'paddle-ball'] as const),
+  schema: levelPage(['color-memory', 'paddle-ball', 'maze-chomper', 'alien-invaders', 'space-rocks', 'river-hopper', 'flappy-wing', 'ocean-grow'] as const),
 });
 
 export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade };

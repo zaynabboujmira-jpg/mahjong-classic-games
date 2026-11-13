@@ -223,6 +223,65 @@ export function paddleArt(): OgArt {
   return { svg, width: 540, height: h };
 }
 
+/** Arcade pack artwork: one small original scene per game, 460 × 300 inside a 540-wide art box. */
+export function arcadeArt(kind: 'maze-chomper' | 'alien-invaders' | 'space-rocks' | 'river-hopper' | 'flappy-wing' | 'ocean-grow'): OgArt {
+  const frame = (bg: string, inner: string) => `<g transform="translate(40 0)"><rect width="460" height="300" rx="16" fill="${bg}"/>${inner}</g>`;
+  let svg = '';
+  switch (kind) {
+    case 'maze-chomper': {
+      const walls = [
+        [20, 20, 420, 14], [20, 266, 420, 14], [20, 20, 14, 260], [426, 20, 14, 260],
+        [70, 70, 110, 30], [280, 70, 110, 30], [70, 200, 110, 30], [280, 200, 110, 30], [215, 70, 30, 160],
+      ];
+      const dots = Array.from({ length: 14 }, (_, i) => `<circle cx="${60 + i * 25}" cy="155" r="4" fill="#fde68a"/>`).join('');
+      svg = frame('#081722', `${walls.map(([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#145c4c"/>`).join('')}${dots}
+<circle cx="120" cy="155" r="18" fill="#34d399"/><circle cx="124" cy="150" r="5" fill="#fff"/><circle cx="134" cy="150" r="5" fill="#fff"/><circle cx="126" cy="150" r="2.4" fill="#0f172a"/><circle cx="136" cy="150" r="2.4" fill="#0f172a"/>
+${([['#a855f7', 300], ['#f97316', 360]] as const).map(([c, x]) => `<path d="M${x} 137 Q${+x + 18} 137 ${+x + 18} 155 Q${+x + 18} 173 ${x} 173 Q${+x - 18} 173 ${+x - 18} 155 Q${+x - 18} 137 ${x} 137z" fill="${c}"/><rect x="${+x - 9}" y="148" width="6" height="8" fill="#fff"/><rect x="${+x + 3}" y="148" width="6" height="8" fill="#fff"/>`).join('')}`);
+      break;
+    }
+    case 'alien-invaders': {
+      const alien = (x: number, y: number, c: string) =>
+        ['..XXXX..', '.XXXXXX.', 'XX.XX.XX', 'XXXXXXXX', '.X.XX.X.', 'X......X']
+          .flatMap((row, r) => [...row].map((ch, k) => (ch === 'X' ? `<rect x="${x + k * 5}" y="${y + r * 5}" width="5" height="5" fill="${c}"/>` : '')))
+          .join('');
+      let a = '';
+      ['#f472b6', '#a3e635', '#38bdf8'].forEach((c, r) => {
+        for (let i = 0; i < 6; i++) a += alien(70 + i * 56, 40 + r * 44, c);
+      });
+      svg = frame('#070d16', `${a}<rect x="90" y="200" width="60" height="30" rx="6" fill="#22c55e"/><rect x="310" y="200" width="60" height="30" rx="6" fill="#22c55e"/><rect x="205" y="258" width="50" height="16" rx="4" fill="#34d399"/><rect x="226" y="246" width="8" height="14" fill="#34d399"/><rect x="229" y="190" width="3" height="24" fill="#fff"/>`);
+      break;
+    }
+    case 'space-rocks': {
+      const rock = (cx: number, cy: number, r: number) => {
+        const k = [1, 0.8, 1.05, 0.85, 1, 0.75, 1.1, 0.9, 0.95];
+        return `<polygon points="${k.map((m, i) => `${(cx + Math.cos((i / k.length) * 6.283) * r * m).toFixed(1)},${(cy + Math.sin((i / k.length) * 6.283) * r * m).toFixed(1)}`).join(' ')}" fill="none" stroke="#cbd5e1" stroke-width="3"/>`;
+      };
+      svg = frame('#05070d', `${rock(110, 90, 50)}${rock(350, 80, 34)}${rock(380, 220, 22)}${rock(130, 230, 26)}<polygon points="250,130 220,180 230,165 240,180" fill="none" stroke="#5eead4" stroke-width="3" transform="rotate(20 235 160)"/><circle cx="270" cy="110" r="3" fill="#fde68a"/><circle cx="285" cy="90" r="3" fill="#fde68a"/>`);
+      break;
+    }
+    case 'river-hopper': {
+      const rows = ['#14532d', '#1d4ed8', '#1d4ed8', '#a16207', '#334155', '#334155', '#166534'];
+      const bands = rows.map((c, i) => `<rect x="0" y="${i * 42.8}" width="460" height="43" fill="${c}"/>`).join('');
+      svg = frame('#000', `<clipPath id="rh"><rect width="460" height="300" rx="16"/></clipPath><g clip-path="url(#rh)">${bands}
+<rect x="40" y="50" width="150" height="26" rx="12" fill="#92400e"/><rect x="260" y="93" width="190" height="26" rx="12" fill="#92400e"/>
+<rect x="60" y="180" width="70" height="28" rx="6" fill="#f87171"/><rect x="300" y="222" width="60" height="28" rx="6" fill="#60a5fa"/>
+<circle cx="230" cy="150" r="18" fill="#f59e0b"/><circle cx="219" cy="134" r="7" fill="#f59e0b"/><circle cx="241" cy="134" r="7" fill="#f59e0b"/><circle cx="224" cy="148" r="2.5" fill="#1c1917"/><circle cx="236" cy="148" r="2.5" fill="#1c1917"/></g>`);
+      break;
+    }
+    case 'flappy-wing':
+      svg = frame('#38bdf8', `<rect x="250" y="0" width="60" height="110" fill="#94a3b8"/><rect x="244" y="96" width="72" height="16" fill="#64748b"/><rect x="250" y="210" width="60" height="70" fill="#94a3b8"/><rect x="244" y="210" width="72" height="16" fill="#64748b"/><rect x="0" y="270" width="460" height="30" fill="#e7c98f"/><rect x="0" y="270" width="460" height="6" fill="#16a34a"/><ellipse cx="90" cy="70" rx="40" ry="14" fill="#fff" opacity=".8"/>
+<circle cx="150" cy="160" r="26" fill="#fb7185"/><ellipse cx="142" cy="170" rx="14" ry="8" fill="#fecdd3"/><circle cx="160" cy="151" r="9" fill="#fff"/><circle cx="163" cy="151" r="4" fill="#111827"/><path d="M174 156 L190 162 L174 168z" fill="#f59e0b"/>`);
+      break;
+    case 'ocean-grow': {
+      const fish = (x: number, y: number, r: number, c: string, dir = 1, outline = '') =>
+        `<g transform="translate(${x} ${y}) scale(${dir} 1)"><path d="M${-r * 0.8} 0 L${-r * 1.45} ${-r * 0.6} L${-r * 1.45} ${r * 0.6}z" fill="${c}"/><ellipse rx="${r}" ry="${r * 0.68}" fill="${c}" ${outline ? `stroke="${outline}" stroke-width="3"` : ''}/><circle cx="${r * 0.5}" cy="${-r * 0.18}" r="${r * 0.18}" fill="#fff"/><circle cx="${r * 0.55}" cy="${-r * 0.18}" r="${r * 0.09}" fill="#0f172a"/></g>`;
+      svg = frame('#0e5a7a', `${fish(150, 150, 34, '#fbbf24', 1, '#fff7ed')}${fish(240, 120, 12, '#f472b6')}${fish(270, 190, 10, '#a3e635')}${fish(370, 90, 58, '#7c3aed', -1, '#f87171')}${fish(90, 250, 9, '#38bdf8', -1)}<rect x="20" y="16" width="420" height="10" rx="5" fill="rgba(0,0,0,.3)"/><rect x="20" y="16" width="250" height="10" rx="5" fill="#fbbf24"/>`);
+      break;
+    }
+  }
+  return { svg, width: 540, height: 300 };
+}
+
 /** 1200x630 social card: title on the left, artwork on the right. */
 export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt }): string {
   const titleLines = wrap(opts.title, 16).slice(0, 3);

@@ -4,6 +4,12 @@ import type { GetStaticPaths } from 'astro';
 import LevelPage from '../../components/content/LevelPage.astro';
 import ColorMemoryGame from '../../components/game/ColorMemoryGame';
 import PaddleBallGame from '../../components/game/PaddleBallGame';
+import MazeChomperGame from '../../components/game/arcade/MazeChomperGame';
+import AlienInvadersGame from '../../components/game/arcade/AlienInvadersGame';
+import SpaceRocksGame from '../../components/game/arcade/SpaceRocksGame';
+import RiverHopperGame from '../../components/game/arcade/RiverHopperGame';
+import FlappyWingGame from '../../components/game/arcade/FlappyWingGame';
+import OceanGrowGame from '../../components/game/arcade/OceanGrowGame';
 
 /** One playable page per arcade game in src/content/arcade. */
 export const getStaticPaths = (async () => {
@@ -20,6 +26,26 @@ const { data } = entry;
 const { Content } = await render(entry);
 const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
 const isMemory = data.level === 'color-memory';
+const GENRES: Record<string, string[]> = {
+  'color-memory': ['Memory game', 'Puzzle', 'Arcade'],
+  'paddle-ball': ['Arcade', 'Sports', 'Retro'],
+  'maze-chomper': ['Arcade', 'Maze', 'Retro'],
+  'alien-invaders': ['Arcade', 'Shooter', 'Retro'],
+  'space-rocks': ['Arcade', 'Shooter', 'Retro'],
+  'river-hopper': ['Arcade', 'Action', 'Retro'],
+  'flappy-wing': ['Arcade', 'Casual', 'One-button'],
+  'ocean-grow': ['Arcade', 'Casual', 'Action'],
+};
+const ALT: Record<string, string> = {
+  'color-memory': 'Four coloured memory pads',
+  'paddle-ball': 'Two paddles and a ball on a green court',
+  'maze-chomper': 'A mint critter in a teal maze chased by four Wisps',
+  'alien-invaders': 'Rows of pixel aliens above a cannon and shields',
+  'space-rocks': 'A vector ship among outlined space rocks',
+  'river-hopper': 'A critter hopping across a road and a river',
+  'flappy-wing': 'A coral bird flying between stone columns',
+  'ocean-grow': 'A gold fish among other fish in the ocean',
+};
 ---
 
 <LevelPage
@@ -28,8 +54,8 @@ const isMemory = data.level === 'color-memory';
   level={{ id: data.level, name: data.name, summary: data.summary }}
   levels={levels}
   data={data}
-  genre={isMemory ? ['Memory game', 'Puzzle', 'Arcade'] : ['Arcade', 'Sports', 'Retro']}
-  imageAlt={isMemory ? 'Four coloured memory pads' : 'Two paddles and a ball on a green court'}
+  genre={GENRES[data.level]!}
+  imageAlt={ALT[data.level]!}
   imageKey={`arcade-${data.level}`}
   levelsHeading="More arcade games"
   levelTitle={(name) => name}
@@ -41,6 +67,13 @@ const isMemory = data.level === 'color-memory';
     label: 'Play Mahjong',
   }}
 >
-  {isMemory ? <ColorMemoryGame slot="game" client:load /> : <PaddleBallGame slot="game" client:load />}
+  {isMemory && <ColorMemoryGame slot="game" client:load />}
+  {data.level === 'paddle-ball' && <PaddleBallGame slot="game" client:load />}
+  {data.level === 'maze-chomper' && <MazeChomperGame slot="game" client:load />}
+  {data.level === 'alien-invaders' && <AlienInvadersGame slot="game" client:load />}
+  {data.level === 'space-rocks' && <SpaceRocksGame slot="game" client:load />}
+  {data.level === 'river-hopper' && <RiverHopperGame slot="game" client:load />}
+  {data.level === 'flappy-wing' && <FlappyWingGame slot="game" client:load />}
+  {data.level === 'ocean-grow' && <OceanGrowGame slot="game" client:load />}
   <Content />
 </LevelPage>

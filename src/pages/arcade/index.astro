@@ -9,9 +9,9 @@ const games = (await getCollection('arcade')).sort((a, b) => a.data.order - b.da
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Arcade Games – Memory & Paddle Ball';
+const title = 'Free Arcade Games – 8 Classics, No Download';
 const description =
-  'Quick, free arcade games that work on any screen: Color Memory, the sound and light sequence game, and Paddle Ball against the computer or a friend.';
+  'Eight free arcade games for any screen: maze chase, alien shooter, space rocks, river crossing, one-tap flyer, fish growing, memory and paddle ball.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Arcade', href: '/arcade/' },
@@ -37,7 +37,7 @@ const jsonLd = graph(
     <p class="text-muted mt-2 max-w-2xl">
       Short, quick games for a break: no downloads and no sign-up. They play with touch, mouse or keyboard, and the sound is made in your browser.
     </p>
-    <ul class="grid gap-4 sm:grid-cols-2 mt-6">
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-6">
       {
         games.map((g) => (
           <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
