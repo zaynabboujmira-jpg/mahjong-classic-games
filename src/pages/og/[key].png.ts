@@ -3,7 +3,25 @@ import { getLayout } from '../../engines/mahjong/layouts';
 import { layoutPages } from '../../lib/mahjong-pages';
 import { Minesweeper, LEVELS, LEVEL_IDS } from '../../engines/minesweeper/game';
 import { DIFFICULTIES, generate } from '../../engines/sudoku/generator';
-import { cardFanArt, layoutArt, minesArt, ogCardSvg, sudokuArt, svgToPng } from '../../lib/og';
+import { cardFanArt, layoutArt, minesArt, ogCardSvg, sudokuArt, svgToPng, tileHandArt, type ArtTile } from '../../lib/og';
+
+const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese', { title: string; subtitle: string; tiles: ArtTile[] }> = {
+  american: {
+    title: 'American Mahjong',
+    subtitle: 'Jokers & Charleston · vs 3 bots',
+    tiles: [{ dots: 2 }, { dots: 2 }, 'joker', { dots: 4 }, { bamboo: 6 }, { bamboo: 6 }, 'flower'],
+  },
+  'hong-kong': {
+    title: 'Hong Kong Mahjong',
+    subtitle: 'Pung, Kong, Chow · vs 3 bots',
+    tiles: [{ bamboo: 1 }, { bamboo: 2 }, { bamboo: 3 }, { dots: 5 }, { dots: 5 }, { dots: 5 }, 'flower'],
+  },
+  chinese: {
+    title: 'Chinese Mahjong',
+    subtitle: 'Classic rules · vs 3 bots',
+    tiles: [{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 7 }, { bamboo: 7 }, { bamboo: 8 }, { dots: 9 }],
+  },
+};
 
 const SUDOKU_NAMES = { easy: 'Easy', medium: 'Medium', hard: 'Hard', expert: 'Expert' } as const;
 const SUDOKU_SUBTITLES = {
@@ -47,6 +65,10 @@ export const getStaticPaths = (async () => {
       params: { key: 'solitaire-spider' },
       props: { title: 'Spider Solitaire', subtitle: '1, 2 or 4 suits · Play free', art: cardFanArt([['K', 's'], ['Q', 's'], ['J', 's'], ['10', 's'], ['9', 's']]) },
     },
+    ...(Object.keys(TABLE_ART) as (keyof typeof TABLE_ART)[]).map((v) => ({
+      params: { key: `mahjong-table-${v}` },
+      props: { title: TABLE_ART[v].title, subtitle: TABLE_ART[v].subtitle, art: tileHandArt(TABLE_ART[v].tiles) },
+    })),
     {
       params: { key: 'sudoku' },
       props: { title: 'Free Sudoku', subtitle: 'Easy to Expert · One solution each', art: sudokuArt(generate('medium', 'og').givens) },

@@ -1,0 +1,46 @@
+---
+import { getCollection, render } from 'astro:content';
+import LevelPage from './LevelPage.astro';
+import TableMahjongGame from '../game/TableMahjongGame';
+import type { Variant } from '../../engines/mahjong-table/game';
+
+/** The playable page for one 4-player rule set; each route file just names its variant. */
+interface Props {
+  variant: Variant;
+}
+const { variant } = Astro.props;
+const entries = (await getCollection('tableMahjong')).sort((a, b) => a.data.order - b.data.order);
+const entry = entries.find((e) => e.data.level === variant);
+if (!entry) throw new Error(`Missing src/content/mahjong-table/${variant}.md`);
+const { data } = entry;
+const { Content } = await render(entry);
+const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
+---
+
+<LevelPage
+  game="Mahjong"
+  base="/mahjong/"
+  hubCrumb="Mahjong"
+  level={{ id: data.level, name: data.name, summary: data.summary }}
+  levels={levels}
+  data={data}
+  genre={['Board game', 'Tile game', 'Mahjong']}
+  imageAlt={`${data.name} Mahjong tiles on a green table`}
+  imageKey={`mahjong-table-${data.level}`}
+  levelsHeading="Other 4-player rules"
+  levelTitle={(name) => `${name} Mahjong`}
+  more={{
+    heading: 'Prefer to play alone?',
+    text: 'Mahjong Solitaire uses the same tiles: match free pairs to clear the board, with six layouts and solvable deals.',
+    href: '/mahjong/',
+    label: 'Play Mahjong Solitaire',
+  }}
+>
+  <TableMahjongGame
+    slot="game"
+    client:load
+    variant={variant}
+    variants={levels.map((l) => ({ id: l.id, name: l.name, href: `/mahjong/${l.id}/` }))}
+  />
+  <Content />
+</LevelPage>

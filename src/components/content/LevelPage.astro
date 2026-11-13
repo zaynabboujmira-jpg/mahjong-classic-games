@@ -33,16 +33,24 @@ interface Props {
   genre: readonly string[];
   imageAlt: string;
   more: { heading: string; text: string; href: string; label: string };
+  /** Heading of the list of other levels, e.g. "Other Mahjong rules". */
+  levelsHeading?: string;
+  /** Link text for another level; defaults to "{game} {name}". */
+  levelTitle?: (name: string) => string;
+  /** OG image key; defaults to "{game}-{level}". */
+  imageKey?: string;
+  /** Crumb for the game hub; defaults to the game name. */
+  hubCrumb?: string;
 }
-const { game, base, level, levels, data, genre, imageAlt, more } = Astro.props;
+const { game, base, level, levels, data, genre, imageAlt, more, levelsHeading, levelTitle, imageKey, hubCrumb } = Astro.props;
 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const image = ogImagePath(`${game.toLowerCase()}-${level.id}`);
+const image = ogImagePath(imageKey ?? `${game.toLowerCase()}-${level.id}`);
 const crumbs = [
   { name: 'Home', href: '/' },
-  { name: game, href: base },
+  { name: hubCrumb ?? game, href: base },
   { name: level.name, href: `${base}${level.id}/` },
 ];
 
@@ -96,7 +104,7 @@ const jsonLd = graph(
     </section>
 
     <section aria-labelledby="levels-heading" class="mt-10">
-      <h2 id="levels-heading" class="text-2xl font-bold mb-4">Other {game} levels</h2>
+      <h2 id="levels-heading" class="text-2xl font-bold mb-4">{levelsHeading ?? `Other ${game} levels`}</h2>
       <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {
           levels
@@ -105,7 +113,7 @@ const jsonLd = graph(
               <li class="rounded-xl border border-border bg-card p-4 flex flex-col">
                 <h3 class="font-bold">
                   <a class="hover:text-brand" href={`${base}${l.id}/`}>
-                    {game} {l.name}
+                    {levelTitle ? levelTitle(l.name) : `${game} ${l.name}`}
                   </a>
                 </h3>
                 <p class="text-sm text-muted mt-1">{l.summary}</p>

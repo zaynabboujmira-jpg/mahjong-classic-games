@@ -11,6 +11,7 @@ export const GET: APIRoute = async ({ site }) => {
   const pages = await layoutPages();
   const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
   const mines = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
+  const table = (await getCollection('tableMahjong')).sort((a, b) => a.data.order - b.data.order);
   const body = [
     `# ${SITE.name}`,
     '',
@@ -23,6 +24,10 @@ export const GET: APIRoute = async ({ site }) => {
       (p) =>
         `- [${p.entry.data.title}](${abs(`/mahjong/${p.id}/`)}): ${p.tiles} tiles, ${p.layers} layers, ${p.entry.data.difficulty.toLowerCase()}. ${p.entry.data.summary}`,
     ),
+    '',
+    '## 4-player Mahjong against bots',
+    "Four-player Mahjong against three computer players, in the browser. The American table uses this site's own hand card; the official National Mah Jongg League card is not reproduced.",
+    ...table.map((e) => `- [${e.data.title}](${abs(`/mahjong/${e.data.level}/`)}): ${e.data.summary}`),
     '',
     '## Sudoku',
     'Every Sudoku puzzle has exactly one solution and is solved by a logic engine before it is shown, so it never needs guessing. The level is set by the hardest technique required.',

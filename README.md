@@ -1,6 +1,6 @@
 # Mahjong & Classic Games
 
-Fast, accessible Mahjong Solitaire, solitaire card games, Sudoku and Minesweeper built with Astro, TypeScript, Tailwind CSS v4, Preact islands and HTML5 Canvas, deployed as a static site on Cloudflare Pages. See [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md) for the strategy behind it.
+Fast, accessible Mahjong Solitaire, 4-player Mahjong against bots, solitaire card games, Sudoku and Minesweeper built with Astro, TypeScript, Tailwind CSS v4, Preact islands and HTML5 Canvas, deployed as a static site on Cloudflare Pages. See [docs/01-competitor-analysis-and-niche-strategy.md](docs/01-competitor-analysis-and-niche-strategy.md) for the strategy behind it.
 
 ## Commands
 
@@ -32,6 +32,13 @@ src/
 │       ├── fit.ts           Tile sizing, portrait rotation, >=36px tiles, no h-overflow
 │       ├── layouts/         define.ts DSL + Turtle, Dragon, Pyramid, Fortress, Butterfly, Fish
 │       └── render/          canvas.ts (renderer + hit testing), faces.ts (tile art)
+│   ├── mahjong-table/       4-player Mahjong vs 3 bots
+│   │   ├── tiles.ts         Tile kinds (shared numbering with the solitaire art), walls, melds
+│   │   ├── classic.ts       Winning shapes, shanten, Hong Kong / Chinese faan scoring
+│   │   ├── american.ts      This site's own American-style card (not the NMJL card), jokers, matching
+│   │   ├── game.ts          Turn engine: draw, discard, claims by priority, kongs, flowers, Charleston, joker swaps, settlement
+│   │   ├── ai.ts            Bots: efficiency + faan plans (classic), card-distance play (American)
+│   │   └── render.ts        Canvas table: hand, opponents, rivers, latest discard
 │   ├── solitaire/
 │       ├── cards.ts         Shared 52-card model
 │       ├── table.ts         PileRef, Hint, SolitaireEngine interface, TableSpec (per-game layout)
@@ -54,19 +61,21 @@ src/
 ├── components/
 │   ├── game/                MahjongGame.tsx, CardTable.tsx (shared solitaire UI),
 │   │                        KlondikeGame/SpiderGame/FreeCellGame.tsx (thin islands), GameShell.astro,
-│   │                        SudokuGame.tsx, MinesweeperGame.tsx
+│   │                        SudokuGame.tsx, MinesweeperGame.tsx, TableMahjongGame.tsx
 │   ├── seo/                 Seo.astro (meta/OG/Twitter/canonical/JSON-LD), Breadcrumbs.astro
-│   └── content/             Faq.astro, HowToPlay.astro, LayoutCard.astro, LevelPage.astro (per-level game page)
+│   └── content/             Faq.astro, HowToPlay.astro, LayoutCard.astro, LevelPage.astro (per-level game page), TableMahjongPage.astro
 ├── content/layouts/*.md     SEO copy per layout (validated by src/content.config.ts)
 ├── content/solitaire/*.md   SEO copy, how-to steps and FAQ per solitaire variant
 ├── content/sudoku/*.md      One page per difficulty (easy, medium, hard, expert)
 ├── content/minesweeper/*.md One page per level (beginner, intermediate, expert)
+├── content/mahjong-table/*.md One page per 4-player rule set (american, hong-kong, chinese)
 ├── data/                    site.ts, games.ts (catalogue), mahjong.ts (how-to + FAQ copy)
 ├── lib/                     seo/ (meta, JSON-LD builders), routes.ts (sitemaps), og.ts, layout-preview.ts
 ├── layouts/BaseLayout.astro
 └── pages/
     ├── index.astro          Plays Turtle immediately
-    ├── mahjong/             index.astro (gallery), [layout].astro (one page per layout)
+    ├── mahjong/             index.astro (gallery), [layout].astro (one page per layout),
+    │                        american/hong-kong/chinese.astro (4-player tables)
     ├── solitaire/           index.astro (hub), [variant].astro (klondike, spider, freecell),
     │                        freecell/deal/[deal].astro (curated numbered deals, see src/data/freecell.ts)
     ├── sudoku/              index.astro (hub), [difficulty].astro

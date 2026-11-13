@@ -20,6 +20,27 @@ export const GAMES: readonly GameEntry[] = [
     blurb: 'Match free pairs of tiles to clear the board. Six layouts from relaxed to tricky.',
   },
   {
+    slug: 'mahjong-hong-kong',
+    name: 'Hong Kong Mahjong (4 players)',
+    status: 'live',
+    href: '/mahjong/hong-kong/',
+    blurb: 'Classic four-player Mahjong against three bots: Pung, Kong, Chow, flowers and faan scoring.',
+  },
+  {
+    slug: 'mahjong-american',
+    name: 'American Mahjong (4 players)',
+    status: 'live',
+    href: '/mahjong/american/',
+    blurb: 'Jokers, the Charleston and a card of hands to build, against three bots.',
+  },
+  {
+    slug: 'mahjong-chinese',
+    name: 'Chinese Mahjong (4 players)',
+    status: 'live',
+    href: '/mahjong/chinese/',
+    blurb: 'The simplest four-player rules: no flowers, no minimum. The best table for learning.',
+  },
+  {
     slug: 'klondike-solitaire',
     name: 'Klondike Solitaire',
     status: 'live',

@@ -78,4 +78,10 @@ const minesweeper = defineCollection({
   schema: levelPage(LEVEL_IDS),
 });
 
-export const collections = { layouts, solitaire, sudoku, minesweeper };
+/** One Markdown file per 4-player rule set (/mahjong/american/, /mahjong/hong-kong/, /mahjong/chinese/). */
+const tableMahjong = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/mahjong-table' }),
+  schema: levelPage(['american', 'hong-kong', 'chinese'] as const),
+});
+
+export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong };

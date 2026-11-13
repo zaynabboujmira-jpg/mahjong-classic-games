@@ -125,6 +125,56 @@ export function minesArt(field: { width: number; height: number; cells: readonly
   return { svg, width: 540, height: h };
 }
 
+const TILE_PIPS: readonly (readonly [number, number])[][] = [
+  [[0.5, 0.5]],
+  [[0.5, 0.28], [0.5, 0.72]],
+  [[0.26, 0.22], [0.5, 0.5], [0.74, 0.78]],
+  [[0.3, 0.28], [0.7, 0.28], [0.3, 0.72], [0.7, 0.72]],
+  [[0.28, 0.24], [0.72, 0.24], [0.5, 0.5], [0.28, 0.76], [0.72, 0.76]],
+  [[0.32, 0.2], [0.68, 0.2], [0.32, 0.5], [0.68, 0.5], [0.32, 0.8], [0.68, 0.8]],
+  [[0.24, 0.16], [0.5, 0.27], [0.76, 0.38], [0.32, 0.62], [0.68, 0.62], [0.32, 0.85], [0.68, 0.85]],
+  [[0.32, 0.15], [0.68, 0.15], [0.32, 0.38], [0.68, 0.38], [0.32, 0.62], [0.68, 0.62], [0.32, 0.85], [0.68, 0.85]],
+  [[0.22, 0.18], [0.5, 0.18], [0.78, 0.18], [0.22, 0.5], [0.5, 0.5], [0.78, 0.5], [0.22, 0.82], [0.5, 0.82], [0.78, 0.82]],
+];
+
+/** One tile face for OG art: dots, bamboo, a flower or a joker (no CJK font needed). */
+export type ArtTile = { dots: number } | { bamboo: number } | 'flower' | 'joker';
+
+/** A row of upright Mahjong tiles, the middle one raised like a tile being played. */
+export function tileHandArt(tiles: readonly ArtTile[]): OgArt {
+  const w = 70;
+  const h = 94;
+  const gap = 6;
+  const total = tiles.length * w + (tiles.length - 1) * gap;
+  const x0 = (540 - total) / 2;
+  const svg = tiles
+    .map((t, i) => {
+      const x = x0 + i * (w + gap);
+      const y = 70 - (i === 3 ? 18 : 0);
+      let face = '';
+      if (t === 'joker') {
+        face = `<text x="${w / 2}" y="${h * 0.55}" font-size="40" font-weight="700" text-anchor="middle" fill="#7b3fa0">J</text><text x="${w / 2}" y="${h * 0.83}" font-size="12" font-weight="700" text-anchor="middle" fill="#b7791f">JOKER</text>`;
+      } else if (t === 'flower') {
+        face =
+          [0, 1, 2, 3, 4]
+            .map((k) => {
+              const a = (k * 2 * Math.PI) / 5 - Math.PI / 2;
+              return `<circle cx="${w / 2 + Math.cos(a) * 14}" cy="${h / 2 + Math.sin(a) * 14}" r="10" fill="#c2417a"/>`;
+            })
+            .join('') + `<circle cx="${w / 2}" cy="${h / 2}" r="7" fill="#f5d37a"/>`;
+      } else if ('dots' in t) {
+        const colors = ['#1d4e89', '#167a3e', '#c2272d'];
+        const r = t.dots === 1 ? 20 : t.dots <= 4 ? 10 : 8;
+        face = TILE_PIPS[t.dots - 1]!.map(([px, py], k) => `<circle cx="${8 + px * (w - 16)}" cy="${10 + py * (h - 20)}" r="${r}" fill="${colors[(k + t.dots) % 3]}"/>`).join('');
+      } else {
+        face = TILE_PIPS[t.bamboo - 1]!.map(([px, py]) => `<rect x="${8 + px * (w - 16) - 4}" y="${10 + py * (h - 20) - 11}" width="8" height="22" rx="4" fill="#167a3e"/>`).join('');
+      }
+      return `<g transform="translate(${x} ${y})"><rect y="7" width="${w}" height="${h}" rx="9" fill="#b3a27c"/><rect width="${w}" height="${h}" rx="9" fill="#fbf6e9" stroke="#a8987a" stroke-width="2"/>${face}</g>`;
+    })
+    .join('');
+  return { svg, width: 540, height: 250 };
+}
+
 /** 1200x630 social card: title on the left, artwork on the right. */
 export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt }): string {
   const titleLines = wrap(opts.title, 16).slice(0, 3);

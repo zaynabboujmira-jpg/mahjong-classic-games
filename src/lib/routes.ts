@@ -15,6 +15,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const variants = await getCollection('solitaire');
   const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
   const mines = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
+  const table = (await getCollection('tableMahjong')).sort((a, b) => a.data.order - b.data.order);
   const newestOf = (entries: { data: { updated: Date } }[]) =>
     entries.reduce<Date | undefined>((d, e) => (!d || e.data.updated > d ? e.data.updated : d), undefined);
   const newestVariant = variants.reduce<Date | undefined>((d, v) => (!d || v.data.updated > d ? v.data.updated : d), undefined);
@@ -34,6 +35,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.8,
       lastmod: l.data.updated,
     })),
+    ...table.map((t) => ({ path: `/mahjong/${t.data.level}/`, section: 'mahjong' as const, priority: 0.9, lastmod: t.data.updated })),
     { path: '/solitaire/', section: 'solitaire', priority: 0.8, ...(newestVariant ? { lastmod: newestVariant } : {}) },
     ...variants.map((v) => ({
       path: `/solitaire/${v.id}/`,

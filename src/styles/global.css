@@ -511,3 +511,124 @@
     }
   }
 }
+
+/* ---------- 4-player Mahjong table ---------- */
+@layer components {
+  .table-area {
+    align-items: stretch;
+    justify-content: stretch;
+  }
+  .action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    padding: 0.4rem 1rem;
+    /* Room for two status lines and a row of buttons, so the table does not jump between turns. */
+    min-height: 4.4rem;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+  }
+  .action-status {
+    flex: 1 1 16rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+  .action-last {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .table-panel-wrap {
+    align-items: start;
+    overflow: auto;
+  }
+  .table-panel {
+    max-width: 34rem;
+    text-align: left;
+    max-height: 100%;
+    overflow: auto;
+  }
+  .card-list,
+  .faan-list,
+  .score-list {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .card-list li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 0.75rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-pattern {
+    font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .card-meta {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .card-note {
+    grid-column: 1 / -1;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .card-closest {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--bg);
+    font-size: 0.85rem;
+  }
+  .card-closest h3 {
+    font-weight: 700;
+  }
+  .card-legend {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .faan-list li,
+  .score-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-list li {
+    display: grid;
+    grid-template-columns: 1fr 4rem 4rem;
+    text-align: right;
+  }
+  .score-list li span:first-child {
+    text-align: left;
+  }
+  @media (max-width: 640px) {
+    .action-bar {
+      min-height: 7.4rem;
+      align-content: flex-start;
+      padding: 0.4rem 0.5rem;
+    }
+    .action-status {
+      flex-basis: 100%;
+      font-size: 0.85rem;
+    }
+  }
+}
