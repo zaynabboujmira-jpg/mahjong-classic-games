@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, graph, organization, webPage, website } from '../../lib/seo/schema';
+
+const games = (await getCollection('arcade')).sort((a, b) => a.data.order - b.data.order);
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Free Arcade Games – Memory & Paddle Ball';
+const description =
+  'Quick, free arcade games that work on any screen: Color Memory, the sound and light sequence game, and Paddle Ball against the computer or a friend.';
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Arcade', href: '/arcade/' },
+];
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  {
+    '@type': 'ItemList',
+    '@id': `${url}#games`,
+    name: title,
+    itemListElement: games.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/arcade/${g.data.level}/`, site).href, name: g.data.title })),
+  },
+);
+---
+
+<BaseLayout title={title} description={description} image={ogImagePath('arcade')} imageAlt="Arcade games" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Arcade games</h1>
+    <p class="text-muted mt-2 max-w-2xl">
+      Short, quick games for a break: no downloads and no sign-up. They play with touch, mouse or keyboard, and the sound is made in your browser.
+    </p>
+    <ul class="grid gap-4 sm:grid-cols-2 mt-6">
+      {
+        games.map((g) => (
+          <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
+            <h2 class="font-bold text-lg">
+              <a class="hover:text-brand" href={`/arcade/${g.data.level}/`}>
+                {g.data.name}
+              </a>
+            </h2>
+            <p class="text-sm text-muted mt-2 flex-1">{g.data.summary}</p>
+            <a class="btn btn-primary mt-4 self-start" href={`/arcade/${g.data.level}/`}>
+              Play {g.data.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

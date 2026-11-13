@@ -1,5 +1,6 @@
 ---
 import Seo from '../components/seo/Seo.astro';
+import QuickSwitch from '../components/content/QuickSwitch.astro';
 import { SITE } from '../data/site';
 import type { JsonLd } from '../lib/seo/schema';
 import '../styles/global.css';
@@ -21,6 +22,8 @@ const nav = [
   { href: '/solitaire/', label: 'Solitaire' },
   { href: '/sudoku/', label: 'Sudoku' },
   { href: '/minesweeper/', label: 'Minesweeper' },
+  { href: '/word-guess/', label: 'Word Guess' },
+  { href: '/arcade/', label: 'Arcade' },
   { href: '/games/', label: 'All games' },
 ];
 const year = new Date().getFullYear();
@@ -59,7 +62,7 @@ const current = tableVariants.some((v) => path.startsWith(v))
           <span>{SITE.shortName}<span class="text-muted font-semibold hidden sm:inline"> &amp; Classic Games</span></span>
         </a>
         <nav aria-label="Main" class="relative">
-          <details class="nav-menu lg:hidden">
+          <details class="nav-menu xl:hidden">
             <summary class="btn">Games</summary>
             <ul class="nav-menu-list">
               {
@@ -73,7 +76,7 @@ const current = tableVariants.some((v) => path.startsWith(v))
               }
             </ul>
           </details>
-          <ul class="hidden lg:flex items-center gap-1 xl:gap-3 text-base">
+          <ul class="hidden xl:flex items-center gap-1 text-base">
             {
               nav.map((item) => (
                 <li>
@@ -95,6 +98,7 @@ const current = tableVariants.some((v) => path.startsWith(v))
     <main id="main" class="flex-1">
       <slot />
     </main>
+    <QuickSwitch current={path} />
 
     <footer class="border-t border-border bg-card mt-12">
       <div class="container-page py-8 text-sm text-muted flex flex-col sm:flex-row gap-4 justify-between">
@@ -105,6 +109,8 @@ const current = tableVariants.some((v) => path.startsWith(v))
           <li><a class="hover:text-brand" href="/solitaire/klondike/">Klondike Solitaire</a></li>
           <li><a class="hover:text-brand" href="/sudoku/">Sudoku</a></li>
           <li><a class="hover:text-brand" href="/minesweeper/">Minesweeper</a></li>
+          <li><a class="hover:text-brand" href="/word-guess/">Word Guess</a></li>
+          <li><a class="hover:text-brand" href="/arcade/">Arcade</a></li>
           <li><a class="hover:text-brand" href="/about/">About</a></li>
           <li><a class="hover:text-brand" href="/privacy/">Privacy</a></li>
         </ul>

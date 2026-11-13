@@ -1,0 +1,46 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import LevelPage from '../../components/content/LevelPage.astro';
+import ColorMemoryGame from '../../components/game/ColorMemoryGame';
+import PaddleBallGame from '../../components/game/PaddleBallGame';
+
+/** One playable page per arcade game in src/content/arcade. */
+export const getStaticPaths = (async () => {
+  const entries = (await getCollection('arcade')).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry) => ({ params: { game: entry.data.level }, props: { entry, entries } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entry: CollectionEntry<'arcade'>;
+  entries: CollectionEntry<'arcade'>[];
+}
+const { entry, entries } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
+const isMemory = data.level === 'color-memory';
+---
+
+<LevelPage
+  game="Arcade"
+  base="/arcade/"
+  level={{ id: data.level, name: data.name, summary: data.summary }}
+  levels={levels}
+  data={data}
+  genre={isMemory ? ['Memory game', 'Puzzle', 'Arcade'] : ['Arcade', 'Sports', 'Retro']}
+  imageAlt={isMemory ? 'Four coloured memory pads' : 'Two paddles and a ball on a green court'}
+  imageKey={`arcade-${data.level}`}
+  levelsHeading="More arcade games"
+  levelTitle={(name) => name}
+  howToName={`How to play ${data.name}`}
+  more={{
+    heading: 'Something calmer?',
+    text: 'Mahjong Solitaire is the relaxing classic: match free pairs of tiles to clear the board, with six layouts and solvable deals.',
+    href: '/mahjong/',
+    label: 'Play Mahjong',
+  }}
+>
+  {isMemory ? <ColorMemoryGame slot="game" client:load /> : <PaddleBallGame slot="game" client:load />}
+  <Content />
+</LevelPage>

@@ -84,4 +84,16 @@ const tableMahjong = defineCollection({
   schema: levelPage(['american', 'hong-kong', 'chinese'] as const),
 });
 
-export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong };
+/** Word Guess pages, one per word length (/word-guess/ is 5 letters). */
+const word = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/word' }),
+  schema: levelPage(['4-letters', '5-letters', '6-letters'] as const),
+});
+
+/** Arcade games (/arcade/[game]/). */
+const arcade = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/arcade' }),
+  schema: levelPage(['color-memory', 'paddle-ball'] as const),
+});
+
+export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade };

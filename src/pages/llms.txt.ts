@@ -12,6 +12,8 @@ export const GET: APIRoute = async ({ site }) => {
   const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
   const mines = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
   const table = (await getCollection('tableMahjong')).sort((a, b) => a.data.order - b.data.order);
+  const word = (await getCollection('word')).sort((a, b) => a.data.order - b.data.order);
+  const arcade = (await getCollection('arcade')).sort((a, b) => a.data.order - b.data.order);
   const body = [
     `# ${SITE.name}`,
     '',
@@ -39,6 +41,13 @@ export const GET: APIRoute = async ({ site }) => {
       const l = LEVELS[e.data.level];
       return `- [${e.data.title}](${abs(`/minesweeper/${e.data.level}/`)}): ${l.width}×${l.height}, ${l.mines} mines. ${e.data.summary}`;
     }),
+    '',
+    '## Word Guess',
+    'A daily word for everyone (same word on the same calendar day, new at local midnight) plus unlimited play, in 4, 5 or 6 letters. Six guesses; green = right spot, orange = elsewhere in the word, grey = not in the word.',
+    ...word.map((e) => `- [${e.data.title}](${abs(e.data.level === '5-letters' ? '/word-guess/' : `/word-guess/${e.data.level}/`)}): ${e.data.summary}`),
+    '',
+    '## Arcade',
+    ...arcade.map((e) => `- [${e.data.title}](${abs(`/arcade/${e.data.level}/`)}): ${e.data.summary}`),
     '',
     '## Games',
     ...GAMES.map((g) => `- ${g.name}${g.href ? ` (${abs(g.href)})` : ' (coming soon)'}: ${g.blurb}`),

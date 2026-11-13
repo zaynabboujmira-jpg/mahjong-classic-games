@@ -15,3 +15,7 @@
 
 /*.xml
   Cache-Control: public, max-age=3600
+
+# Word lists for Word Guess (fetched on demand)
+/words/*
+  Cache-Control: public, max-age=604800

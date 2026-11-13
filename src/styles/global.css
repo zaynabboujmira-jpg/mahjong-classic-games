@@ -632,3 +632,158 @@
     }
   }
 }
+
+/* ---------- Word Guess, arcade games, quick switch ---------- */
+@layer components {
+  .word-area,
+  .arcade-area {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem;
+    background: radial-gradient(ellipse at 50% 35%, var(--felt-1), var(--felt-2));
+  }
+  .word-message,
+  .arcade-message {
+    min-height: 1.4rem;
+    margin: 0;
+    color: #f2f7f4;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  .word-board,
+  .arcade-fit {
+    flex: 1;
+    min-height: 8rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .word-keys {
+    width: 100%;
+    max-width: 34rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .word-row {
+    display: flex;
+    gap: 0.3rem;
+    justify-content: center;
+  }
+  .word-key {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 2.9rem;
+    height: 3.1rem;
+    border-radius: 0.45rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .word-key-wide {
+    flex: 1.6 1 0;
+    max-width: 4.6rem;
+    font-size: 0.8rem;
+  }
+  .word-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  .word-stats dd {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+  .word-stats dt {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .word-dist {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    text-align: left;
+  }
+  .word-dist li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.2rem 0;
+    font-size: 0.85rem;
+  }
+  .word-bar {
+    display: inline-block;
+    min-width: 1.6rem;
+    padding: 0 0.4rem;
+    border-radius: 0.3rem;
+    background: var(--brand);
+    color: var(--brand-fg);
+    text-align: right;
+    font-weight: 700;
+  }
+  .paddle-area {
+    justify-content: center;
+  }
+  .paddle-board {
+    touch-action: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.3);
+  }
+
+  .quick-switch {
+    margin-top: 2.5rem;
+  }
+  .quick-switch > summary {
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding: 0.5rem 0;
+  }
+  .quick-switch ul {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+    gap: 0.5rem;
+  }
+  .quick-switch a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--card);
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+  .quick-switch a:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  .quick-switch a[aria-current='page'] {
+    border-color: var(--brand);
+    background: var(--bg);
+  }
+  .quick-switch svg {
+    flex: none;
+    color: var(--brand);
+  }
+}

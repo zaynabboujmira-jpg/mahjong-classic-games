@@ -75,4 +75,25 @@ export const GAMES: readonly GameEntry[] = [
     href: '/minesweeper/',
     blurb: 'Clear the field without opening a mine. Beginner, Intermediate and Expert, with a safe first click.',
   },
+  {
+    slug: 'word-guess',
+    name: 'Word Guess',
+    status: 'live',
+    href: '/word-guess/',
+    blurb: 'Find the hidden word in six tries. A daily word plus unlimited play, with 4, 5 or 6 letters.',
+  },
+  {
+    slug: 'color-memory',
+    name: 'Color Memory',
+    status: 'live',
+    href: '/arcade/color-memory/',
+    blurb: 'Watch four pads light up with tones, then repeat the growing sequence. Classic, Strict and Speed modes.',
+  },
+  {
+    slug: 'paddle-ball',
+    name: 'Paddle Ball',
+    status: 'live',
+    href: '/arcade/paddle-ball/',
+    blurb: 'The classic paddle and ball game against three computer levels or a friend, with touch controls.',
+  },
 ];

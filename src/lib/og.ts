@@ -175,6 +175,54 @@ export function tileHandArt(tiles: readonly ArtTile[]): OgArt {
   return { svg, width: 540, height: 250 };
 }
 
+/** Word Guess: rows of coloured letter tiles. */
+export function wordArt(rows: readonly { word: string; marks: string }[]): OgArt {
+  const colors: Record<string, string> = { h: '#15803d', n: '#d97706', m: '#4b5563' };
+  const len = rows[0]!.word.length;
+  const tile = Math.min(64, Math.floor(440 / len));
+  const gap = 8;
+  const w = len * tile + (len - 1) * gap;
+  const x0 = (540 - w) / 2;
+  const svg = rows
+    .map((r, ri) =>
+      [...r.word]
+        .map((ch, i) => {
+          const x = x0 + i * (tile + gap);
+          const y = ri * (tile + gap);
+          return `<rect x="${x}" y="${y}" width="${tile}" height="${tile}" rx="8" fill="${colors[r.marks[i]!]}"/><text x="${x + tile / 2}" y="${y + tile * 0.7}" font-size="${tile * 0.55}" font-weight="700" text-anchor="middle" fill="#ffffff">${ch}</text>`;
+        })
+        .join(''),
+    )
+    .join('');
+  return { svg, width: 540, height: rows.length * (tile + gap) - gap };
+}
+
+/** Color Memory: four rounded pads, one lit. */
+export function memoryArt(): OgArt {
+  const pads = [
+    ['#0f9b8e', '#5eead4'],
+    ['#c0264d', '#c0264d'],
+    ['#c77c0a', '#c77c0a'],
+    ['#4338ca', '#4338ca'],
+  ];
+  const s = 160;
+  const gap = 14;
+  const x0 = (540 - (2 * s + gap)) / 2;
+  const svg = pads
+    .map(([base, lit], i) => `<rect x="${x0 + (i % 2) * (s + gap)}" y="${Math.floor(i / 2) * (s + gap)}" width="${s}" height="${s}" rx="26" fill="${i === 0 ? lit : base}"/>`)
+    .join('');
+  return { svg, width: 540, height: 2 * s + gap };
+}
+
+/** Paddle Ball: a small court with two paddles and a ball. */
+export function paddleArt(): OgArt {
+  const w = 460;
+  const h = 290;
+  const x0 = 40;
+  const svg = `<g transform="translate(${x0} 0)"><rect width="${w}" height="${h}" rx="14" fill="#0e3127"/><path d="M${w / 2} 14V${h - 14}" stroke="#ffffff" stroke-opacity=".3" stroke-width="5" stroke-dasharray="14 14"/><rect x="26" y="70" width="14" height="96" rx="5" fill="#f5ecd2"/><rect x="${w - 40}" y="140" width="14" height="96" rx="5" fill="#f5ecd2"/><circle cx="300" cy="120" r="10" fill="#f5d37a"/><text x="${w / 2 - 40}" y="60" font-size="42" font-weight="700" text-anchor="middle" fill="#ffffff" fill-opacity=".75">3</text><text x="${w / 2 + 40}" y="60" font-size="42" font-weight="700" text-anchor="middle" fill="#ffffff" fill-opacity=".75">2</text></g>`;
+  return { svg, width: 540, height: h };
+}
+
 /** 1200x630 social card: title on the left, artwork on the right. */
 export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt }): string {
   const titleLines = wrap(opts.title, 16).slice(0, 3);

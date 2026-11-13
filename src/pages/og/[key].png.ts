@@ -3,7 +3,12 @@ import { getLayout } from '../../engines/mahjong/layouts';
 import { layoutPages } from '../../lib/mahjong-pages';
 import { Minesweeper, LEVELS, LEVEL_IDS } from '../../engines/minesweeper/game';
 import { DIFFICULTIES, generate } from '../../engines/sudoku/generator';
-import { cardFanArt, layoutArt, minesArt, ogCardSvg, sudokuArt, svgToPng, tileHandArt, type ArtTile } from '../../lib/og';
+import { score } from '../../engines/word/game';
+
+/** Rows of a real solve, coloured by the game's own scoring. */
+const solve = (answer: string, ...guesses: string[]) =>
+  [...guesses, answer].map((g) => ({ word: g.toUpperCase(), marks: score(g, answer).map((m) => m[0]).join('') }));
+import { cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
 
 const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese', { title: string; subtitle: string; tiles: ArtTile[] }> = {
   american: {
@@ -69,6 +74,21 @@ export const getStaticPaths = (async () => {
       params: { key: `mahjong-table-${v}` },
       props: { title: TABLE_ART[v].title, subtitle: TABLE_ART[v].subtitle, art: tileHandArt(TABLE_ART[v].tiles) },
     })),
+    {
+      params: { key: 'word-4' },
+      props: { title: '4-Letter Word Guess', subtitle: 'Daily word · Unlimited play', art: wordArt(solve('name', 'lake', 'cane')) },
+    },
+    {
+      params: { key: 'word-5' },
+      props: { title: 'Word Guess', subtitle: 'Daily word · 4, 5 or 6 letters', art: wordArt(solve('grape', 'stare', 'crane')) },
+    },
+    {
+      params: { key: 'word-6' },
+      props: { title: '6-Letter Word Guess', subtitle: 'Daily word · Unlimited play', art: wordArt(solve('golden', 'stolen', 'garden')) },
+    },
+    { params: { key: 'arcade' }, props: { title: 'Free Arcade Games', subtitle: 'Color Memory · Paddle Ball', art: memoryArt() } },
+    { params: { key: 'arcade-color-memory' }, props: { title: 'Color Memory', subtitle: 'Lights & sounds · 3 modes', art: memoryArt() } },
+    { params: { key: 'arcade-paddle-ball' }, props: { title: 'Paddle Ball', subtitle: 'vs computer or a friend', art: paddleArt() } },
     {
       params: { key: 'sudoku' },
       props: { title: 'Free Sudoku', subtitle: 'Easy to Expert · One solution each', art: sudokuArt(generate('medium', 'og').givens) },

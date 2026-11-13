@@ -1,0 +1,10 @@
+---
+import type { GetStaticPaths } from 'astro';
+import WordGuessPage from '../../components/content/WordGuessPage.astro';
+
+/** /word-guess/4-letters/ and /word-guess/6-letters/ (5 letters is /word-guess/). */
+export const getStaticPaths = (() => [{ params: { length: '4-letters' } }, { params: { length: '6-letters' } }]) satisfies GetStaticPaths;
+const level = Astro.params.length as '4-letters' | '6-letters';
+---
+
+<WordGuessPage level={level} />
