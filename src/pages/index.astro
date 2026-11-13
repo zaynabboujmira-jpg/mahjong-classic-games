@@ -64,8 +64,9 @@ const jsonLd = graph(
       <nav class="hero-jump" aria-label="Jump to a category">
         {
           CATEGORIES.map((c) => (
-            <a class="btn" href={`#${c.id}`}>
-              {c.name}
+            <a class="btn" href={`#${c.id}`} aria-label={c.name}>
+              <span class="sm:hidden">{c.short}</span>
+              <span class="hidden sm:inline">{c.name}</span>
             </a>
           ))
         }

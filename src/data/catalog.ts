@@ -9,13 +9,15 @@ export type CategoryId = 'mahjong-cards' | 'puzzles' | 'arcade';
 export interface Category {
   id: CategoryId;
   name: string;
+  /** Short label for the jump links on phones. */
+  short: string;
   blurb: string;
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: 'mahjong-cards', name: 'Mahjong & Card Classics', blurb: 'Tile matching, four-player Mahjong against computer opponents, and the three great solitaire games.' },
-  { id: 'puzzles', name: 'Brain, Logic & Word Puzzles', blurb: 'Pure-logic Sudoku, Minesweeper with a safe first click, and a daily word game.' },
-  { id: 'arcade', name: 'Retro Arcade', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
+  { id: 'mahjong-cards', name: 'Mahjong & Card Classics', short: 'Mahjong & Cards', blurb: 'Tile matching, four-player Mahjong against computer opponents, and the three great solitaire games.' },
+  { id: 'puzzles', name: 'Brain, Logic & Word Puzzles', short: 'Puzzles', blurb: 'Pure-logic Sudoku, Minesweeper with a safe first click, and a daily word game.' },
+  { id: 'arcade', name: 'Retro Arcade', short: 'Arcade', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
 
 export interface CatalogGame {
