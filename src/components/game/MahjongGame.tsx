@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { createRng, randomSeed } from '../../engines/core/rng';
 import { readJson, writeJson } from '../../engines/core/storage';
+import { recordWin } from '../../engines/core/progress';
 import { fitBoard } from '../../engines/mahjong/fit';
 import { MahjongGame as Engine } from '../../engines/mahjong/game';
 import { BoardRenderer } from '../../engines/mahjong/render/canvas';
@@ -102,8 +103,12 @@ export default function MahjongGame({ layoutId, layoutName, slots, next }: Props
     draw();
   }, [draw]);
 
+  /** Seed of the current deal (the daily challenge is a fixed seed). */
+  const seedRef = useRef('');
+
   const newGame = useCallback(
     (seed: string) => {
+      seedRef.current = seed;
       game.current = new Engine(slots, createRng(seed));
       hintRef.current = [];
       focusRef.current = null;
@@ -171,6 +176,7 @@ export default function MahjongGame({ layoutId, layoutName, slots, next }: Props
 
   const onWin = () => {
     stopClock();
+    recordWin('mahjong-solitaire', seedRef.current);
     const time = timer.current.banked;
     const prev = readJson<number | null>(bestKey, null);
     if (prev === null || time < prev) {

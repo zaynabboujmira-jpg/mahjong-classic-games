@@ -2,8 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/content/Faq.astro';
 import GameCatalog from '../components/content/GameCatalog.astro';
+import AdSlot from '../components/site/AdSlot.astro';
 import { CATALOG, CATEGORIES } from '../data/catalog';
-import { SITE } from '../data/site';
+import { FEATURES, SITE } from '../data/site';
 import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
 import { faqPage, graph, itemList, organization, webPage, website } from '../lib/seo/schema';
 
@@ -29,7 +30,9 @@ const faq = [
   },
   {
     q: 'Are there ads?',
-    a: `No. ${SITE.name} shows no advertising and uses no tracking cookies. Your scores and settings are saved only in your own browser.`,
+    a: FEATURES.ads
+      ? `${SITE.name} shows a few clearly marked ads, which keep the games free. Ads and analytics only load after you agree in the consent banner, and your scores stay in your own browser.`
+      : `No. ${SITE.name} shows no advertising and uses no tracking cookies. Your scores and settings are saved only in your own browser.`,
   },
   {
     q: 'Are the arcade games the original arcade games?',
@@ -54,10 +57,10 @@ const jsonLd = graph(
   <section class="hero">
     <div class="container-page">
       <h1 class="hero-title">16 classic browser games</h1>
-      <p class="hero-sub">Instant play, zero ads, ready on mobile and desktop. No download, no sign-up.</p>
+      <p class="hero-sub">Instant play{FEATURES.ads ? '' : ', zero ads'}, ready on mobile and desktop. No download, no sign-up.</p>
       <ul class="hero-facts" aria-label="At a glance">
         <li><strong>16</strong> games</li>
-        <li><strong>0</strong> ads</li>
+        {FEATURES.ads ? <li><strong>Daily</strong> challenges</li> : <li><strong>0</strong> ads</li>}
         <li><strong>Touch</strong>, mouse &amp; keys</li>
         <li><strong>Free</strong>, always</li>
       </ul>
@@ -76,6 +79,7 @@ const jsonLd = graph(
 
   <div class="container-page">
     <GameCatalog />
+    <AdSlot />
 
     <section class="portal-section" aria-labelledby="why-title">
       <h2 id="why-title" class="portal-title">Why {SITE.name}</h2>
@@ -85,8 +89,8 @@ const jsonLd = graph(
           <p>The game is the first thing on every page. Pages are small and load in a moment, even on a slow connection.</p>
         </li>
         <li>
-          <h3>No ads, no sign-up</h3>
-          <p>No advertising, no accounts and no tracking cookies. Scores and settings stay on your device.</p>
+          <h3>{FEATURES.ads ? 'No sign-up' : 'No ads, no sign-up'}</h3>
+          <p>{FEATURES.ads ? 'No accounts and nothing to install.' : 'No advertising, no accounts and no tracking cookies.'} Scores and settings stay on your device.</p>
         </li>
         <li>
           <h3>Fair and well made</h3>
@@ -102,7 +106,7 @@ const jsonLd = graph(
     <section class="portal-section quick-answer" aria-labelledby="qa-title">
       <h2 id="qa-title" class="portal-title">Quick answer</h2>
       <p>
-        <strong>{SITE.name}</strong> ({SITE.domain}) is a free, ad-free website with 16 classic games that run in any modern browser on phones,
+        <strong>{SITE.name}</strong> ({SITE.domain}) is a free{FEATURES.ads ? '' : ', ad-free'} website with 16 classic games that run in any modern browser on phones,
         tablets and computers: Mahjong Solitaire (6 layouts), 4-player Mahjong against computer opponents (Hong Kong, Chinese and American
         rules), Klondike, Spider and FreeCell solitaire, Sudoku (4 levels), Minesweeper (3 levels), Word Guess (daily and unlimited, 4 to 6
         letters), and eight retro arcade games.

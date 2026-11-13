@@ -1,4 +1,5 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
+import { FEATURES } from '../../data/site';
 import { getLayout } from '../../engines/mahjong/layouts';
 import { layoutPages } from '../../lib/mahjong-pages';
 import { Minesweeper, LEVELS, LEVEL_IDS } from '../../engines/minesweeper/game';
@@ -54,7 +55,8 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: '16 classic games · No ads · No download', art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `16 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong' }, props: { title: 'Mahjong Solitaire Layouts', subtitle: `${pages.length} layouts · Play free`, art: butterfly } },
     ...pages.map((p) => ({
       params: { key: `mahjong-${p.id}` },

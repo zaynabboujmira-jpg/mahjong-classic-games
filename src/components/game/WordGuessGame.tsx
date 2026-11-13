@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { readJson, writeJson } from '../../engines/core/storage';
+import { recordDaily } from '../../engines/core/progress';
 import { LENGTHS, MAX_GUESSES, WordGame, dailyAnswer, dayNumber, emptyStats, parseDictionary, randomAnswer, recordResult, type Mark, type Stats, type WordLength } from '../../engines/word/game';
 import { MARK_COLORS, WordBoardRenderer } from '../../engines/word/render';
 
@@ -117,6 +118,8 @@ export default function WordGuessGame({ defaultLength }: Props) {
     const s = recordResult(readJson<Stats>(statsKey(mode, length), emptyStats()), g.won, g.guesses.length, mode === 'daily' ? day : 0);
     writeJson(statsKey(mode, length), s);
     setStats(s);
+    // The 5-letter daily word is the Word Guess challenge on /daily/.
+    if (mode === 'daily' && length === 5) recordDaily('word-guess', g.won, g.won ? g.guesses.length : undefined);
     const text = g.won ? `Solved in ${g.guesses.length} of ${MAX_GUESSES}!` : `The word was ${g.answer.toUpperCase()}.`;
     flash(text);
     window.setTimeout(() => setShowStats(true), 900);
@@ -197,7 +200,8 @@ export default function WordGuessGame({ defaultLength }: Props) {
     renderer.current = new WordBoardRenderer(canvasRef.current!);
     const s = readJson<{ mode?: Mode; length?: WordLength }>('word:settings', {});
     const params = new URLSearchParams(location.search);
-    const m: Mode = params.get('mode') === 'unlimited' ? 'unlimited' : s.mode === 'unlimited' ? 'unlimited' : 'daily';
+    const asked = params.get('mode');
+    const m: Mode = asked === 'daily' ? 'daily' : asked === 'unlimited' || s.mode === 'unlimited' ? 'unlimited' : 'daily';
     start(m, defaultLength);
     const ro = new ResizeObserver(() => paint());
     ro.observe(boxRef.current!);

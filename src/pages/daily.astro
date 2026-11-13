@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import Faq from '../components/content/Faq.astro';
+import DailyHub from '../components/retention/DailyHub';
+import { SITE } from '../data/site';
+import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, itemList, organization, webPage, website } from '../lib/seo/schema';
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Daily Challenges – Word, Sudoku, Klondike, Mahjong';
+const description =
+  'Four free daily puzzle challenges, the same for everyone: a five-letter word, a Sudoku, a Klondike deal and a Mahjong deal. Keep your daily streak going.';
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Daily challenges', href: '/daily/' },
+];
+const challenges = [
+  { name: 'Daily Word Guess', href: '/word-guess/', text: 'The five-letter daily word: six guesses, the same word for everyone.' },
+  { name: 'Daily Sudoku', href: '/sudoku/medium/', text: "A Medium Sudoku with one solution, reachable by logic alone." },
+  { name: 'Daily Klondike', href: '/solitaire/klondike/', text: 'One Klondike Solitaire deal, Draw 1.' },
+  { name: 'Daily Mahjong', href: '/mahjong/turtle/', text: 'A Turtle layout deal that can always be solved.' },
+];
+const faq = [
+  {
+    q: 'How do the daily challenges work?',
+    a: 'Every day there are four challenges: a five-letter Word Guess, a Medium Sudoku, a Klondike deal and a Turtle Mahjong deal. Everyone gets the same ones on the same calendar day, so you can compare results with friends.',
+  },
+  {
+    q: 'When do new challenges appear?',
+    a: "At midnight on your device's clock. The page shows how long is left until the next set.",
+  },
+  {
+    q: 'How does the daily streak work?',
+    a: 'Your streak grows for every day in a row on which you complete at least one daily challenge. Miss a day and it starts again; your best streak is kept.',
+  },
+  {
+    q: 'Can every daily challenge be won?',
+    a: 'The Mahjong deal is always solvable and the Sudoku always has exactly one logical solution. Klondike deals are shuffled at random, so now and then a deal cannot be won.',
+  },
+  {
+    q: 'Where is my progress saved?',
+    a: `Only in your browser on this device. ${SITE.name} has no accounts, so clearing your browser data also clears your streak.`,
+  },
+];
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description, 'CollectionPage', `${url}#challenges`),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  itemList(url, 'Daily challenges', challenges.map((c) => ({ name: c.name, url: new URL(c.href, site).href, description: c.text })), 'challenges'),
+  faqPage(url, faq),
+);
+---
+
+<BaseLayout title={title} description={description} image={ogImagePath('daily')} imageAlt="Four daily challenges and a streak counter" jsonLd={jsonLd}>
+  <div class="container-page pt-4 max-w-4xl">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Daily challenges</h1>
+    <p class="text-muted mt-2 max-w-2xl">Four puzzles a day, the same for everyone. Complete at least one each day to keep your streak.</p>
+    <DailyHub client:load />
+
+    <section class="mt-10 prose-copy" aria-labelledby="today-title">
+      <h2 id="today-title">Today's four challenges</h2>
+      <ul>
+        {
+          challenges.map((c) => (
+            <li>
+              <strong>{c.name}:</strong> {c.text} <a href={c.href}>About the game</a>
+            </li>
+          ))
+        }
+      </ul>
+      <p>Want more? Every game also has unlimited play, and your results across all 16 games are on <a href="/stats/">your stats page</a>.</p>
+    </section>
+
+    <Faq items={faq} />
+  </div>
+</BaseLayout>

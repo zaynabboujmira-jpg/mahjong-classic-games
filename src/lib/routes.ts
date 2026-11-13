@@ -28,6 +28,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   return [
     { path: '/', section: 'pages', priority: 1.0, ...(newest ? { lastmod: newest } : {}) },
     { path: '/games/', section: 'pages', priority: 0.6 },
+    { path: '/daily/', section: 'pages', priority: 0.8 },
+    { path: '/stats/', section: 'pages', priority: 0.4 },
     { path: '/about/', section: 'pages', priority: 0.3 },
     { path: '/privacy/', section: 'pages', priority: 0.2 },
     { path: '/terms/', section: 'pages', priority: 0.2 },

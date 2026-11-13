@@ -1,5 +1,6 @@
 ---
 import { gameById } from '../../data/catalog';
+import { FEATURES, FREE_LINE } from '../../data/site';
 
 /**
  * "Quick answer" block: one self-contained paragraph plus a facts table, so
@@ -21,7 +22,7 @@ const rows = [
   { label: 'Modes', value: f.modes },
   { label: 'Controls', value: f.controls },
   { label: 'Players', value: f.players },
-  { label: 'Price', value: 'Free, no ads, no sign-up, no download' },
+  { label: 'Price', value: FREE_LINE.charAt(0).toUpperCase() + FREE_LINE.slice(1) },
   { label: 'Works on', value: 'Phones, tablets and computers, in any modern browser' },
 ];
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
@@ -30,8 +31,7 @@ const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 <section class="qa-box" aria-labelledby={`qa-${id}`}>
   <h2 id={`qa-${id}`}>Quick answer</h2>
   <p>
-    <strong>{g.name}</strong> is a free {lower(f.type)} that plays instantly in your browser on phones, tablets and computers, with no download,
-    sign-up or ads. {f.goal}.
+    <strong>{g.name}</strong> is a free {lower(f.type)} that plays instantly in your browser on phones, tablets and computers, with no download{FEATURES.ads ? ' or sign-up' : ', sign-up or ads'}. {f.goal}.
   </p>
   <table class="fact-table">
     <caption class="sr-only">{g.name} at a glance</caption>

@@ -1,0 +1,25 @@
+---
+import { CONFIG, FEATURES } from '../../data/site';
+
+interface Props {
+  /** Where the slot sits, for styling: below a game or between content blocks. */
+  variant?: 'game' | 'content';
+}
+const { variant = 'content' } = Astro.props;
+---
+
+{
+  FEATURES.ads && (
+    <aside class={`ad-slot ad-slot-${variant}`} aria-label="Advertisement">
+      <span class="ad-label">Advertisement</span>
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={CONFIG.adsenseClient}
+        data-ad-slot={CONFIG.adsenseSlot || undefined}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </aside>
+  )
+}

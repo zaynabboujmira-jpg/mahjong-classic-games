@@ -1147,3 +1147,216 @@
     padding-top: 1.5rem;
   }
 }
+
+/* ---------- Daily challenges and stats ---------- */
+@layer components {
+  .daily {
+    margin-top: 1.25rem;
+  }
+  .daily-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .daily-day {
+    font-weight: 700;
+  }
+  .daily-stats,
+  .stats-totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .daily-stats > div,
+  .stats-totals > div {
+    min-width: 6.5rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+  }
+  .daily-stats dd,
+  .stats-totals dd {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  .daily-stats dt,
+  .stats-totals dt {
+    order: 2;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .stats-totals dt {
+    order: 2;
+  }
+  .daily-list {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .daily-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--card);
+  }
+  .daily-check {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    border: 2px solid var(--border);
+    font-weight: 900;
+  }
+  .daily-done .daily-check {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--brand-fg);
+  }
+  .daily-missed .daily-check {
+    color: #c2272d;
+  }
+  .daily-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .daily-name {
+    font-weight: 800;
+  }
+  .daily-blurb {
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .daily-share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .stats-board {
+    margin-top: 1.25rem;
+  }
+  .stats-h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-top: 1.75rem;
+  }
+  .achievements {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    margin-top: 0.75rem;
+  }
+  .ach {
+    display: flex;
+    gap: 0.7rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    background: var(--card);
+    opacity: 0.6;
+  }
+  .ach-on {
+    opacity: 1;
+    border-color: var(--accent);
+  }
+  .ach-medal {
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .ach-desc {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .stats-reset {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 0.4rem;
+    justify-items: start;
+  }
+  .header-daily {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.5rem;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+}
+
+/* ---------- Ads (only rendered when PUBLIC_ADSENSE_CLIENT is set) ---------- */
+@layer components {
+  /* Collapsed until consent is granted; the head script sets html.ads-on before
+     first paint for returning visitors, so the reserved height never shifts. */
+  .ad-slot {
+    display: none;
+  }
+  html.ads-on .ad-slot {
+    display: block;
+    margin: 1.5rem auto;
+    max-width: 970px;
+    min-height: 280px;
+    text-align: center;
+    contain: layout;
+  }
+  @media (min-width: 768px) {
+    html.ads-on .ad-slot {
+      min-height: 120px;
+    }
+  }
+  .ad-label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+
+  /* ---------- Consent banner (only when GA4 or AdSense is set) ---------- */
+  .consent {
+    position: fixed;
+    z-index: 60;
+    left: 1rem;
+    right: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    background: var(--card);
+    color: var(--fg);
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.2);
+    font-size: 0.9rem;
+  }
+  .consent[hidden] {
+    display: none;
+  }
+  .consent-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+}

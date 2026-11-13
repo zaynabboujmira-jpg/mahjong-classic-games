@@ -2,7 +2,9 @@
 import Seo from '../components/seo/Seo.astro';
 import QuickSwitch from '../components/content/QuickSwitch.astro';
 import Logo from '../components/Logo.astro';
-import { SITE } from '../data/site';
+import AdSlot from '../components/site/AdSlot.astro';
+import Consent from '../components/site/Consent.astro';
+import { CONFIG, FEATURES, SITE } from '../data/site';
 import type { JsonLd } from '../lib/seo/schema';
 import '../styles/global.css';
 
@@ -49,6 +51,9 @@ const current = tableVariants.some((v) => path.startsWith(v))
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    {CONFIG.gscVerification && <meta name="google-site-verification" content={CONFIG.gscVerification} />}
+    {CONFIG.bingVerification && <meta name="msvalidate.01" content={CONFIG.bingVerification} />}
+    <Consent part="head" />
   </head>
   <body class="min-h-screen flex flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-card focus:px-3 focus:py-2 focus:rounded-md">
@@ -58,6 +63,10 @@ const current = tableVariants.some((v) => path.startsWith(v))
       <div class="container-page h-full flex items-center justify-between gap-4">
         <a href="/" class="no-underline text-fg" aria-label={`${SITE.name} home`}>
           <Logo size={32} />
+        </a>
+        <div class="flex items-center gap-2">
+        <a href="/daily/" class="header-daily" aria-current={path.startsWith('/daily/') ? 'page' : undefined}>
+          <span aria-hidden="true">★</span> Daily
         </a>
         <nav aria-label="Main" class="relative">
           <details class="nav-menu xl:hidden">
@@ -90,12 +99,14 @@ const current = tableVariants.some((v) => path.startsWith(v))
             }
           </ul>
         </nav>
+        </div>
       </div>
     </header>
 
     <main id="main" class="flex-1">
       <slot />
     </main>
+    {quickSwitch && <div class="container-page"><AdSlot variant="game" /></div>}
     {quickSwitch && <QuickSwitch current={path} />}
 
     <footer class="site-footer border-t border-border bg-card mt-12">
@@ -104,7 +115,7 @@ const current = tableVariants.some((v) => path.startsWith(v))
           <a href="/" class="no-underline text-fg" aria-label={`${SITE.name} home`}>
             <Logo size={28} />
           </a>
-          <p class="text-muted mt-3 max-w-xs">16 classic games that play instantly in your browser. No ads, no sign-up, no download.</p>
+          <p class="text-muted mt-3 max-w-xs">16 classic games that play instantly in your browser. {FEATURES.ads ? 'No sign-up, no download.' : 'No ads, no sign-up, no download.'}</p>
         </div>
         <nav aria-label="Games">
           <p class="footer-head">Games</p>
@@ -122,6 +133,8 @@ const current = tableVariants.some((v) => path.startsWith(v))
             <li><a href="/word-guess/">Word Guess</a></li>
             <li><a href="/arcade/">Arcade games</a></li>
             <li><a href="/games/">All games</a></li>
+            <li><a href="/daily/">Daily challenges</a></li>
+            <li><a href="/stats/">Your stats</a></li>
           </ul>
         </nav>
         <nav aria-label="About this site">
@@ -130,10 +143,19 @@ const current = tableVariants.some((v) => path.startsWith(v))
             <li><a href="/about/">About</a></li>
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms of use</a></li>
+            {FEATURES.consent && <li><a href="/privacy/" data-privacy-choices>Privacy choices</a></li>}
           </ul>
         </nav>
       </div>
       <p class="container-page pb-8 text-xs text-muted">© {year} {SITE.name} · {SITE.domain}</p>
     </footer>
+    <Consent part="body" />
+    {
+      import.meta.env.PROD && (
+        <script is:inline>
+          if ('serviceWorker' in navigator) addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+        </script>
+      )
+    }
   </body>
 </html>

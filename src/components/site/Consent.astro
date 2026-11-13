@@ -1,0 +1,105 @@
+---
+/*
+ * Consent for optional analytics (GA4) and ads (AdSense). Renders nothing,
+ * and ships no JavaScript, unless one of them is configured.
+ *
+ * - The choice is stored in localStorage as og:consent = "granted" | "denied".
+ * - A tiny head script sets html.ads-on before first paint when consent was
+ *   already granted, so ad slots reserve their height up front (no layout shift).
+ * - Third-party scripts load only after "granted".
+ */
+import { CONFIG, FEATURES } from '../../data/site';
+
+interface Props {
+  part: 'head' | 'body';
+}
+const { part } = Astro.props;
+const ga4 = CONFIG.ga4Id;
+const adsClient = CONFIG.adsenseClient;
+const parts = [ga4 && 'measure visits with Google Analytics', adsClient && 'show ads from Google AdSense'].filter(Boolean).join(' and ');
+---
+
+{
+  FEATURES.consent && part === 'head' && (
+    <script is:inline>
+      try {
+        if (localStorage.getItem('og:consent') === '"granted"') document.documentElement.classList.add('ads-on');
+      } catch (e) {}
+    </script>
+  )
+}
+{
+  FEATURES.consent && part === 'body' && (
+    <>
+      <div id="consent" class="consent" role="dialog" aria-live="polite" aria-label="Privacy choices" hidden>
+        <p>
+          We would like to {parts}. They use cookies. Your game scores stay on your device either way.{' '}
+          <a href="/privacy/">Privacy</a>
+        </p>
+        <div class="consent-actions">
+          <button type="button" class="btn" data-consent="denied">
+            Decline
+          </button>
+          <button type="button" class="btn btn-primary" data-consent="granted">
+            Accept
+          </button>
+        </div>
+      </div>
+      <script is:inline define:vars={{ ga4, adsClient }}>
+        (function () {
+          var KEY = 'og:consent';
+          var box = document.getElementById('consent');
+          var loaded = false;
+          function get() {
+            try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+          }
+          function add(src) {
+            var s = document.createElement('script');
+            s.async = true;
+            s.src = src;
+            if (src.indexOf('adsbygoogle') > -1) s.crossOrigin = 'anonymous';
+            document.head.appendChild(s);
+          }
+          function load() {
+            if (loaded) return;
+            loaded = true;
+            if (ga4) {
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function () { window.dataLayer.push(arguments); };
+              window.gtag('js', new Date());
+              window.gtag('config', ga4, { anonymize_ip: true });
+              add('https://www.googletagmanager.com/gtag/js?id=' + ga4);
+            }
+            if (adsClient) {
+              document.documentElement.classList.add('ads-on');
+              add('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + adsClient);
+              var slots = document.querySelectorAll('ins.adsbygoogle');
+              window.adsbygoogle = window.adsbygoogle || [];
+              for (var i = 0; i < slots.length; i++) window.adsbygoogle.push({});
+            }
+          }
+          function set(v) {
+            try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {}
+            box.hidden = true;
+            if (v === 'granted') load();
+            else if (loaded) location.reload();
+            else document.documentElement.classList.remove('ads-on');
+          }
+          box.addEventListener('click', function (e) {
+            var v = e.target && e.target.getAttribute && e.target.getAttribute('data-consent');
+            if (v) set(v);
+          });
+          document.addEventListener('click', function (e) {
+            var t = e.target && e.target.closest && e.target.closest('[data-privacy-choices]');
+            if (t) { e.preventDefault(); box.hidden = false; }
+          });
+          var c = get();
+          if (c === 'granted') {
+            if (document.readyState === 'complete') load();
+            else addEventListener('load', load);
+          } else if (c !== 'denied') box.hidden = false;
+        })();
+      </script>
+    </>
+  )
+}

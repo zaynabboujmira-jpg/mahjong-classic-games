@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import Faq from '../components/content/Faq.astro';
+import StatsBoard from '../components/retention/StatsBoard';
+import { SITE } from '../data/site';
+import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, organization, webPage, website } from '../lib/seo/schema';
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const title = 'Your Stats & Achievements';
+const description = `Your results across all 16 ${SITE.name} games: wins, best times and scores, your daily streak and ten achievements to unlock. Stored on your device only.`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Stats', href: '/stats/' },
+];
+const faq = [
+  {
+    q: 'Where do these stats come from?',
+    a: 'From your own browser. Each game saves your best times, scores and results on this device; this page reads them. Nothing is sent to a server.',
+  },
+  {
+    q: 'Why are some wins missing?',
+    a: 'Win counts started with this page, so older wins appear as best times rather than in the win count. Results from another browser or device are not shared.',
+  },
+  {
+    q: 'How do I unlock achievements?',
+    a: 'Each achievement shows what it needs, from a first win to a seven-day daily streak or clearing all six Mahjong layouts. They unlock as soon as the result is saved.',
+  },
+  {
+    q: 'Can I start again?',
+    a: 'Yes. Reset all stats clears every score, streak, setting and unfinished game saved on this device. It cannot be undone.',
+  },
+];
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  faqPage(url, faq),
+);
+---
+
+<BaseLayout title={title} description={description} image={ogImagePath('home')} imageAlt={SITE.name} jsonLd={jsonLd}>
+  <div class="container-page pt-4 max-w-4xl">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Your stats &amp; achievements</h1>
+    <p class="text-muted mt-2 max-w-2xl">
+      Everything here is read from this browser: no account needed. Play the <a class="text-brand font-semibold" href="/daily/">daily challenges</a> to build
+      your streak.
+    </p>
+    <StatsBoard client:load />
+    <Faq items={faq} />
+  </div>
+</BaseLayout>

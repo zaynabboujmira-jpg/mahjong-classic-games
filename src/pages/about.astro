@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../data/site';
+import { FEATURES, SITE } from '../data/site';
 import { ogImagePath, canonicalUrl } from '../lib/seo/meta';
 import { graph, organization, webPage, website } from '../lib/seo/schema';
 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const description = `${SITE.name} is a free collection of 16 classic browser games that load instantly, work on phones and computers, and show no ads.`;
+const description = `${SITE.name} is a free collection of 16 classic browser games that load instantly and work on phones and computers${FEATURES.ads ? ', with daily challenges' : ', with no ads'}.`;
 ---
 
 <BaseLayout
@@ -21,7 +21,7 @@ const description = `${SITE.name} is a free collection of 16 classic browser gam
     <h1 class="text-3xl font-extrabold mb-4">About {SITE.name}</h1>
     <p>
       {SITE.name} is a home for classic games that simply work: open a page and play. There is no landing screen, no sign-up, nothing to
-      install and no advertising. Every game runs in your browser on a phone, tablet or computer.
+      install{FEATURES.ads ? '' : ' and no advertising'}. Every game runs in your browser on a phone, tablet or computer.
     </p>
     <h2>What you can play</h2>
     <ul>

@@ -19,3 +19,10 @@
 # Word lists for Word Guess (fetched on demand)
 /words/*
   Cache-Control: public, max-age=604800
+
+# Service worker and its file list must always be fresh
+/sw.js
+  Cache-Control: no-cache
+
+/precache.json
+  Cache-Control: no-cache

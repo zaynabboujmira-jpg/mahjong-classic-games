@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { randomSeed } from '../../engines/core/rng';
 import { readJson, writeJson } from '../../engines/core/storage';
+import { recordWin } from '../../engines/core/progress';
 import { SudokuGame as Game, type HintResult } from '../../engines/sudoku/game';
 import type { Difficulty, Puzzle } from '../../engines/sudoku/generator';
 import { CELLS, CellName, bit, cellName, colOf, digitsOf, rowOf } from '../../engines/sudoku/grid';
@@ -180,6 +181,7 @@ export default function SudokuGame({ difficulty, levels, otherGame }: Props) {
         setBest(time);
       }
       writeJson(progressKey, null);
+      recordWin('sudoku', puzzle.current?.seed ?? null);
       setWon(true);
       setAnnounce(`Solved in ${fmt(time)}!`);
     } else save();

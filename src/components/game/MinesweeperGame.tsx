@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { randomSeed } from '../../engines/core/rng';
 import { readJson, writeJson } from '../../engines/core/storage';
+import { recordWin } from '../../engines/core/progress';
 import { Cell, LEVELS, Minesweeper, type LevelId } from '../../engines/minesweeper/game';
 import { MinesRenderer, cellAtPoint, displayOf, fitMines, indexAt, type MinesLayout } from '../../engines/minesweeper/render';
 
@@ -114,6 +115,7 @@ export default function MinesweeperGame({ level, levels, otherGame }: Props) {
       setRunning(false);
       setElapsed(timer.current.banked);
       if (g.status === 'won') {
+        recordWin('minesweeper');
         const prev = readJson<number | null>(bestKey, null);
         if (prev === null || timer.current.banked < prev) {
           writeJson(bestKey, timer.current.banked);

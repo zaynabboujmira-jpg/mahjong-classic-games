@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { randomSeed } from '../../engines/core/rng';
 import { readJson, writeJson } from '../../engines/core/storage';
+import { recordWin } from '../../engines/core/progress';
 import { CARD, cardTokens, rankTargets } from '../../engines/mahjong-table/american';
 import { charlestonPass, stepBots, suggestDiscard } from '../../engines/mahjong-table/ai';
 import { FAAN_TABLE } from '../../engines/mahjong-table/classic';
@@ -88,6 +89,7 @@ export default function TableMahjongGame({ variant, variants }: Props) {
       const next = nextHand(rules, g.dealer, g.prevailing, r);
       session.current = { scores: s.scores.map((v, i) => v + r.payments[i]!), dealer: next.dealer, prevailing: next.prevailing, hands: s.hands + 1 };
       writeJson(storageKey, session.current);
+      if (r.kind === 'win' && r.winner === 0) recordWin('mahjong-4p');
       setShowResult(true);
     }
     setVersion((v) => v + 1);

@@ -1,13 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../data/site';
+import { FEATURES, SITE } from '../data/site';
 import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
 import { graph, organization, webPage, website } from '../lib/seo/schema';
 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const description = `How ${SITE.name} handles your data: no accounts, no ads, no tracking cookies. Game settings and scores stay in your own browser.`;
+const description = FEATURES.consent
+  ? `How ${SITE.name} handles your data: no accounts; optional ads and analytics only with your consent. Game settings and scores stay in your own browser.`
+  : `How ${SITE.name} handles your data: no accounts, no ads, no tracking cookies. Game settings and scores stay in your own browser.`;
 ---
 
 <BaseLayout
@@ -22,8 +24,17 @@ const description = `How ${SITE.name} handles your data: no accounts, no ads, no
     <p>Last updated: 13 November 2026.</p>
     <h2>The short version</h2>
     <ul>
-      <li>No accounts, no sign-up and no advertising.</li>
-      <li>No tracking cookies and no third-party analytics.</li>
+      <li>No accounts and no sign-up{FEATURES.ads ? '.' : ', and no advertising.'}</li>
+      {
+        FEATURES.consent ? (
+          <li>
+            {FEATURES.analytics && FEATURES.ads ? 'Google Analytics and Google AdSense load' : FEATURES.analytics ? 'Google Analytics loads' : 'Google AdSense ads load'} only
+            after you accept in the consent banner. You can change your mind at any time with <a href="/privacy/" data-privacy-choices>Privacy choices</a>.
+          </li>
+        ) : (
+          <li>No tracking cookies and no third-party analytics.</li>
+        )
+      }
       <li>Your scores, streaks, settings and saved games stay in your browser on your own device.</li>
     </ul>
     <h2>What is stored on your device</h2>
@@ -36,10 +47,30 @@ const description = `How ${SITE.name} handles your data: no accounts, no ads, no
       {SITE.name} is served by Cloudflare. Like any web host, Cloudflare processes technical data such as IP addresses to deliver pages and
       protect the service from abuse. We do not use this data to identify or profile visitors.
     </p>
+    {
+      FEATURES.consent && (
+        <>
+          <h2>Analytics and advertising</h2>
+          {FEATURES.analytics && (
+            <p>
+              With your consent we use Google Analytics to count visits and see which games are popular. It sets cookies and sends usage data,
+              with IP addresses anonymised, to Google.
+            </p>
+          )}
+          {FEATURES.ads && (
+            <p>
+              With your consent, Google AdSense shows ads that help keep the games free. Google may use cookies to personalise and measure
+              ads; see <a href="https://policies.google.com/technologies/ads">how Google uses data from sites that use its services</a>.
+              If you decline, no ad or analytics script is loaded.
+            </p>
+          )}
+        </>
+      )
+    }
     <h2>Children</h2>
     <p>The games are suitable for all ages. We do not knowingly collect personal information from anyone, including children.</p>
     <h2>Changes</h2>
-    <p>If we ever add analytics or advertising, this page will be updated before that happens.</p>
+    <p>{FEATURES.consent ? 'We will update this page before we change how data is used.' : 'If we ever add analytics or advertising, this page will be updated before that happens.'}</p>
     <p><a href="/terms/">Terms of use</a> · <a href="/about/">About</a></p>
   </div>
 </BaseLayout>

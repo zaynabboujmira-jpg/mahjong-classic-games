@@ -17,6 +17,8 @@ export default function SpiderGame({ defaultSuits, otherGame }: Props) {
       create={(seed, o) => new Spider(createRng(seed), suitsOf(o['suits']))}
       spec={() => SPIDER_SPEC}
       newSeed={randomSeed}
+      seedParam="seed"
+      isValidSeed={(s) => /^[a-z0-9]{1,24}$/i.test(s)}
       optionGroups={[
         {
           id: 'suits',

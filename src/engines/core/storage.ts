@@ -28,3 +28,27 @@ export function writeJson(key: string, value: unknown): void {
     /* storage full or blocked: progress simply is not remembered */
   }
 }
+
+/** Every saved key (without the prefix). */
+export function listKeys(): string[] {
+  const s = store();
+  if (!s) return [];
+  const out: string[] = [];
+  try {
+    for (let i = 0; i < s.length; i++) {
+      const k = s.key(i);
+      if (k?.startsWith(PREFIX)) out.push(k.slice(PREFIX.length));
+    }
+  } catch {
+    /* blocked storage */
+  }
+  return out;
+}
+
+export function removeKey(key: string): void {
+  try {
+    store()?.removeItem(PREFIX + key);
+  } catch {
+    /* blocked storage */
+  }
+}

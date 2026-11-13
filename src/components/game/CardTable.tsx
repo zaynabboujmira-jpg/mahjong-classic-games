@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { readJson, writeJson } from '../../engines/core/storage';
+import { recordWin } from '../../engines/core/progress';
 import { cardLabel } from '../../engines/solitaire/cards';
 import { dropTarget, hitTest, layoutTable, type Scene } from '../../engines/solitaire/layout';
 import { CardRenderer, type CardRef, type Overlay } from '../../engines/solitaire/render';
@@ -156,6 +157,7 @@ export default function CardTable(props: CardTableProps) {
         setBest(time);
       }
       setWon(true);
+      recordWin(storageKey, seed);
       setAnnounce(`You won in ${fmt(time)} with ${g.moves} moves.`);
     }
     const isStuck = !g.isWon && !finishing.current && g.isStuck;
