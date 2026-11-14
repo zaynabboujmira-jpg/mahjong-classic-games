@@ -8,7 +8,7 @@ One row per target domain. Keep it current with `/backlink-growth` (modes: resea
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | | Directory | producthunt.com | Product submission | / | Not started | | | | Launch on a weekday; prepare 5 screenshots |
 | 2 | | Directory | news.ycombinator.com (Show HN) | Submit form | / | Not started | | | | Post as "Show HN"; answer comments yourself |
-| 3 | | Directory | alternativeto.net | Add application | / | Not started | | | | List as alternative to well-known game sites |
+| 3 | 2026-11-14 | Directory | alternativeto.net | alternativeto.net/manage-item/ (needs a signed-in account; reviewed before going live) | / | Submitted | Free Play Classic is a collection of 34 classic games… | | | List as alternative to well-known game sites. Terms bar advertising disguised as recommendations and vote manipulation. Paired with Microsoft Solitaire Collection. Awaiting moderation; once live, record the listing URL here and keep the description accurate (e.g. game count, ads) |
 | 4 | | Directory | indiehackers.com | Product page | / | Not started | | | | |
 | 5 | | Directory | uneed.best | Submit | / | Not started | | | | Check current submission terms |
 | 6 | | Directory | microlaunch.net | Submit | / | Not started | | | | Check current submission terms |
