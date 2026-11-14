@@ -2,6 +2,8 @@
 
 Audit date: 2026-11-13. Phase 1 of the growth plan.
 
+> **Decision (2026-11-14):** the site launched as **Free Play Classic** on **https://freeplayclassic.com** (Cloudflare Pages). The domain shortlist below is kept as research history; none of the other names are in use.
+
 ## Sources and their limits
 
 | Source | What it gave | Limit |

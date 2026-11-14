@@ -1,5 +1,5 @@
 /*
- * Free Play Classic service worker: makes all 16 games playable offline.
+ * Free Play Classic service worker: makes every game playable offline.
  *
  * - On install it caches every page, script, stylesheet and word list listed
  *   in /precache.json (written at build time by scripts/sw-precache.mjs).
