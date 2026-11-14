@@ -4,6 +4,7 @@ import LevelPage from './LevelPage.astro';
 import TableMahjongGame from '../game/TableMahjongGame';
 import type { Variant } from '../../engines/mahjong-table/game';
 import { TABLE_MAHJONG_COMPARE } from '../../data/compare';
+import { GUIDE_PATH, SCORECARD_PDF } from '../../data/american-guide';
 
 /** The playable page for one 4-player rule set; each route file just names its variant. */
 interface Props {
@@ -46,5 +47,20 @@ const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summar
     variant={variant}
     variants={levels.map((l) => ({ id: l.id, name: l.name, href: `/mahjong/${l.id}/` }))}
   />
+  {
+    variant === 'american' && (
+      <section class="guide-callout" aria-labelledby="guide-callout-heading">
+        <h2 id="guide-callout-heading">Free printable: American Mahjong guide &amp; scorecard</h2>
+        <p>
+          All 9 hand categories on one page, X and C hands, the no-joker star and 25 to 75 point values, plus a scorecard PDF to print for
+          your table.
+        </p>
+        <div class="guide-callout-actions">
+          <a class="btn btn-primary" href={GUIDE_PATH}>Open the free guide</a>
+          <a class="btn" href={SCORECARD_PDF} download="printable-mahjong-scorecard.pdf">Download the scorecard (PDF)</a>
+        </div>
+      </section>
+    )
+  }
   <Content />
 </LevelPage>

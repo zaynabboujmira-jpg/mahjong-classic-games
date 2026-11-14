@@ -1,0 +1,256 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import Faq from '../../components/content/Faq.astro';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, webPage, website } from '../../lib/seo/schema';
+import {
+  CATEGORIES,
+  FAQ,
+  GUIDE_DESCRIPTION,
+  GUIDE_TITLE,
+  HOW_TO,
+  NOTATION,
+  POINT_VALUES,
+  SCORECARD_IMAGES,
+  SCORECARD_PDF,
+  SCORECARD_PDF_KB,
+} from '../../data/american-guide';
+import { SITE } from '../../data/site';
+
+/*
+ * A static reference page: no islands, no client scripts. The only script is
+ * the Print button's inline handler, which prints just the scorecard.
+ */
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Mahjong', href: '/mahjong/' },
+  { name: 'American Mahjong', href: '/mahjong/american/' },
+  { name: 'Guide & scorecard', href: Astro.url.pathname },
+];
+const abs = (p: string) => new URL(p, site).href;
+const { small, large } = SCORECARD_IMAGES;
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  { ...webPage(origin, url, GUIDE_TITLE, GUIDE_DESCRIPTION), primaryImageOfPage: abs(large.src) },
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: abs(c.href) }))),
+  {
+    '@type': 'DigitalDocument',
+    '@id': `${url}#scorecard`,
+    name: 'Printable Mahjong Scorecard (PDF)',
+    description: 'A free printable scorecard for American Mahjong: names, four games, totals, a winner box and a 25 to 75 point guide.',
+    url: abs(SCORECARD_PDF),
+    encodingFormat: 'application/pdf',
+    contentSize: `${SCORECARD_PDF_KB} KB`,
+    image: abs(large.src),
+    inLanguage: SITE.lang,
+    isAccessibleForFree: true,
+    license: abs('/terms/'),
+    publisher: { '@id': `${origin}#organization` },
+    isPartOf: { '@id': `${url}#webpage` },
+  },
+  howTo(url, 'How to use the printable Mahjong scorecard', HOW_TO),
+  faqPage(url, FAQ),
+);
+---
+
+<BaseLayout
+  title={GUIDE_TITLE}
+  description={GUIDE_DESCRIPTION}
+  image={ogImagePath('mahjong-american-guide')}
+  imageAlt="American Mahjong guide and printable scorecard"
+  jsonLd={jsonLd}
+>
+  <div class="container-page pt-4 guide-page">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">American Mahjong guide &amp; printable scorecard (2026)</h1>
+    <p class="text-muted mt-2 max-w-3xl">
+      A free one-page reference for the 9 hand categories, exposed and concealed hands, jokers and point values, plus a scorecard you can
+      print for your table. No sign-up, nothing to install.
+    </p>
+
+    <section class="guide-downloads" aria-labelledby="downloads-heading">
+      <h2 id="downloads-heading" class="sr-only">Downloads</h2>
+      <a class="btn btn-primary guide-btn" href={SCORECARD_PDF} download="printable-mahjong-scorecard.pdf" type="application/pdf">
+        <span aria-hidden="true">⬇</span> Download Printable Mahjong Scorecard (PDF, {SCORECARD_PDF_KB} KB)
+      </a>
+      <button
+        type="button"
+        class="btn guide-btn"
+        onclick="var d=document.documentElement;d.classList.add('print-scorecard');addEventListener('afterprint',function(){d.classList.remove('print-scorecard')},{once:true});print()"
+      >
+        <span aria-hidden="true">🖨</span> Print Scorecard
+      </button>
+      <a class="btn guide-btn" href="/mahjong/american/">Play American Mahjong free</a>
+    </section>
+
+    <section class="qa-box" aria-labelledby="qa-guide">
+      <h2 id="qa-guide">Quick answer</h2>
+      <p>
+        American Mahjong hands come from a card with about <strong>9 categories</strong>: 2026 (year), 2468, Any Like Numbers, Quints,
+        Consecutive Run, 13579, Winds &amp; Dragons, 369, and Singles &amp; Pairs. Every hand has exactly 14 tiles. <strong>X</strong> hands may
+        be exposed, <strong>C</strong> hands must stay concealed, a <strong>star</strong> means no joker, and hands are worth
+        <strong>25 to 75 points</strong>.
+      </p>
+      <table class="fact-table">
+        <caption class="sr-only">American Mahjong at a glance</caption>
+        <tbody>
+          <tr><th scope="row">Tiles</th><td>152: three suits, winds, dragons, 8 flowers and 8 jokers</td></tr>
+          <tr><th scope="row">Hand size</th><td>14 tiles, matching one hand on the card exactly</td></tr>
+          <tr><th scope="row">Jokers</th><td>Only in groups of three or more (pungs, kongs, quints), never in a single or a pair</td></tr>
+          <tr><th scope="row">Point range</th><td>25 to 50 for most hands, up to 75 for the rarest concealed hands</td></tr>
+          <tr><th scope="row">Scorecard</th><td>Free PDF, one page, up to 7 players and 4 games</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mt-8" aria-labelledby="preview-heading">
+      <h2 id="preview-heading" class="text-2xl font-bold mb-3">Scorecard preview</h2>
+      <figure class="guide-figure" id="scorecard-print">
+        <a href={SCORECARD_PDF} aria-label="Open the printable Mahjong scorecard PDF">
+          <img
+            src={small.src}
+            srcset={`${small.src} ${small.width}w, ${large.src} ${large.width}w`}
+            sizes="(min-width: 1024px) 900px, 100vw"
+            width={large.width}
+            height={large.height}
+            loading="lazy"
+            decoding="async"
+            alt="Printable Mahjong scorecard: a table with a Name column, Game 1 to Game 4 columns and a Total column, a Winner box, how-to-use notes and a point guide from X25 = 25 points to C75 = 75 points"
+          />
+        </a>
+        <figcaption class="text-sm text-muted mt-2">
+          Name, Game 1–4 and Total columns, a Winner box and a point guide. Prints on one US Letter or A4 sheet.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="mt-10" aria-labelledby="categories-heading">
+      <h2 id="categories-heading" class="text-2xl font-bold mb-2">The 9 American Mahjong hand categories</h2>
+      <p class="text-muted mb-4 max-w-3xl">
+        One example hand per category. The examples show how each section works; they are not the hands on the official card, which changes
+        every year.
+      </p>
+      <div class="table-scroll">
+        <table class="compare-table guide-table">
+          <caption class="sr-only">American Mahjong hand categories with an example hand, suits, exposed or concealed, and points</caption>
+          <thead>
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col">Built from</th>
+              <th scope="col">Example hand</th>
+              <th scope="col">Suits</th>
+              <th scope="col"><abbr title="X = exposed, C = concealed">X / C</abbr></th>
+              <th scope="col">Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              CATEGORIES.map((c) => (
+                <tr id={c.id}>
+                  <th scope="row">{c.name}</th>
+                  <td>{c.idea}</td>
+                  <td><code class="hand">{c.example}</code></td>
+                  <td>{c.suits}</td>
+                  <td class="text-center">{c.exposure}</td>
+                  <td class="tabular-nums text-center">{c.value}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-xl font-bold mt-8 mb-3">Tips for each category</h3>
+      <dl class="guide-tips">
+        {
+          CATEGORIES.map((c) => (
+            <div>
+              <dt>{c.name}</dt>
+              <dd>{c.tip}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="mt-10" aria-labelledby="notation-heading">
+      <h2 id="notation-heading" class="text-2xl font-bold mb-3">How to read a hand: X, C, stars and symbols</h2>
+      <div class="table-scroll">
+        <table class="compare-table">
+          <caption class="sr-only">American Mahjong card notation</caption>
+          <thead>
+            <tr><th scope="col">Symbol</th><th scope="col">Meaning</th></tr>
+          </thead>
+          <tbody>
+            {
+              NOTATION.map((n) => (
+                <tr>
+                  <th scope="row"><code class="hand">{n.term}</code></th>
+                  <td>{n.meaning}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-10" aria-labelledby="points-heading">
+      <h2 id="points-heading" class="text-2xl font-bold mb-3">Point values from 25 to 75</h2>
+      <div class="table-scroll">
+        <table class="compare-table">
+          <caption class="sr-only">Typical American Mahjong hand values</caption>
+          <thead>
+            <tr><th scope="col">Points</th><th scope="col">Typical hands</th></tr>
+          </thead>
+          <tbody>
+            {
+              POINT_VALUES.map((p) => (
+                <tr>
+                  <th scope="row" class="tabular-nums">{p.value}</th>
+                  <td>{p.typical}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 max-w-3xl">
+        <strong>Who pays:</strong> the player who discarded the winning tile pays double the hand's value and the other two pay its value. On a
+        self-drawn win, everyone pays double. A hand completed with no jokers usually doubles again.
+      </p>
+    </section>
+
+    <section class="mt-10 prose-copy max-w-3xl" aria-labelledby="how-to-play">
+      <h2 id="how-to-play">How to use the printable scorecard</h2>
+      <ol>
+        {HOW_TO.map((s) => <li><strong>{s.name}.</strong> {s.text}</li>)}
+      </ol>
+    </section>
+
+    <section class="guide-cta mt-10" aria-labelledby="cta-heading">
+      <h2 id="cta-heading">Practice Now: Play 4-Player American Mahjong Free</h2>
+      <p>
+        Sit down with three computer players and try the Charleston, jokers, exposures and a full hand card in your browser. The game shows
+        which hands are closest to your tiles, so it is a gentle way to learn the card.
+      </p>
+      <a class="btn btn-primary" href="/mahjong/american/">Play American Mahjong</a>
+    </section>
+
+    <Faq items={FAQ} />
+
+    <aside class="guide-disclaimer mt-8" aria-label="Disclaimer">
+      <p>
+        <strong>Educational reference.</strong> This guide and scorecard are independent and are not affiliated with, endorsed by or
+        sponsored by the National Mah Jongg League. The League publishes the official card every year and owns its copyright; none of its
+        hands are reproduced here. Please buy the official card to play in clubs and tournaments.
+      </p>
+    </aside>
+  </div>
+</BaseLayout>

@@ -4,6 +4,7 @@ import { FAMOUS_DEALS } from '../data/freecell';
 import { HOW_TO_STEPS } from '../data/mahjong';
 import { FEATURES, FREE_LINE, SITE } from '../data/site';
 import { layoutPages } from './mahjong-pages';
+import { CATEGORIES as GUIDE_CATEGORIES, FAQ as GUIDE_FAQ, GUIDE_PATH, GUIDE_SUMMARY, GUIDE_TITLE, HOW_TO as GUIDE_HOW_TO, NOTATION, SCORECARD_PDF } from '../data/american-guide';
 
 /**
  * Builds llms.txt (a structured index) and llms-full.txt (every page's facts,
@@ -100,6 +101,12 @@ export async function llmsTxt(site: URL): Promise<string> {
     }
   }
   lines.push(
+    '## Free printables and guides',
+    '',
+    `- [${GUIDE_TITLE}](${abs(GUIDE_PATH)}): ${GUIDE_SUMMARY} Direct PDF: ${abs(SCORECARD_PDF)}`,
+    '',
+  );
+  lines.push(
     '## Daily challenges and stats',
     '',
     `- [Daily challenges](${abs('/daily/')}): the same four puzzles for everyone each day (Word Guess, medium Sudoku, Klondike draw-1 and the Turtle Mahjong layout), a daily streak and a spoiler-free result to share. New puzzles at local midnight.`,
@@ -127,6 +134,27 @@ export async function llmsFullTxt(site: URL): Promise<string> {
     `Stats and achievements: ${abs('/stats/')} lists wins and best results across all 34 games plus ten achievements.`,
     '',
   ];
+  lines.push(
+    `## ${GUIDE_TITLE}`,
+    '',
+    `URL: ${abs(GUIDE_PATH)}`,
+    `Printable scorecard (PDF): ${abs(SCORECARD_PDF)}`,
+    '',
+    GUIDE_SUMMARY,
+    '',
+    'The 9 hand categories (one example hand each; examples are illustrations, not the National Mah Jongg League card):',
+    ...GUIDE_CATEGORIES.map((c) => `- ${c.name}: ${c.idea}. Example: ${c.example} (${c.suits}; ${c.exposure === 'X' ? 'exposed, X' : 'concealed, C'}; ${c.value} points). ${c.tip}`),
+    '',
+    'Reading a hand:',
+    ...NOTATION.map((n) => `- ${n.term}: ${n.meaning}`),
+    '',
+    'How to use the scorecard:',
+    ...GUIDE_HOW_TO.map((h, i) => `${i + 1}. ${h.name}: ${h.text}`),
+    '',
+    'FAQ:',
+    ...GUIDE_FAQ.flatMap((f) => [`- Q: ${f.q}`, `  A: ${f.a}`]),
+    '',
+  );
   for (const g of CATALOG) {
     lines.push(`## ${g.name}`, '', `URL: ${abs(g.play)}`, '', g.hook, ...factLines(g), '');
     for (const s of pages[g.id] ?? []) {

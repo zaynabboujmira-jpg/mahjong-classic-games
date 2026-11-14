@@ -9,6 +9,7 @@ import Faq from '../../components/content/Faq.astro';
 import LayoutCard from '../../components/content/LayoutCard.astro';
 import { layoutPages } from '../../lib/mahjong-pages';
 import { GENERAL_FAQ, HOW_TO_STEPS } from '../../data/mahjong';
+import { GUIDE_PATH, SCORECARD_PDF } from '../../data/american-guide';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
 import { breadcrumbs, faqPage, graph, howTo, organization, webPage, website } from '../../lib/seo/schema';
 
@@ -89,6 +90,18 @@ const jsonLd = graph(
           ))
         }
       </ul>
+    </section>
+
+    <section class="guide-callout" aria-labelledby="guide-heading">
+      <h2 id="guide-heading">Free American Mahjong guide &amp; printable scorecard</h2>
+      <p>
+        Learning American Mahjong? Our free guide explains the 9 hand categories, exposed (X) and concealed (C) hands, the no-joker star and
+        point values from 25 to 75, with a scorecard you can print for your group.
+      </p>
+      <div class="guide-callout-actions">
+        <a class="btn btn-primary" href={GUIDE_PATH}>Open the free guide</a>
+        <a class="btn" href={SCORECARD_PDF} download="printable-mahjong-scorecard.pdf">Download the scorecard (PDF)</a>
+      </div>
     </section>
 
     <HowToPlay />

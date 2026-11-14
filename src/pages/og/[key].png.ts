@@ -78,6 +78,14 @@ export const getStaticPaths = (async () => {
       props: { title: TABLE_ART[v].title, subtitle: TABLE_ART[v].subtitle, art: tileHandArt(TABLE_ART[v].tiles) },
     })),
     {
+      params: { key: 'mahjong-american-guide' },
+      props: {
+        title: 'American Mahjong Guide',
+        subtitle: '9 hand types · Free printable scorecard',
+        art: tileHandArt([{ dots: 3 }, { dots: 6 }, { dots: 9 }, 'joker', { bamboo: 2 }, { bamboo: 4 }, 'flower']),
+      },
+    },
+    {
       params: { key: 'word-4' },
       props: { title: '4-Letter Word Guess', subtitle: 'Daily word · Unlimited play', art: wordArt(solve('name', 'lake', 'cane')) },
     },

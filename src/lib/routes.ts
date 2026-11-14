@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import { FAMOUS_DEALS } from '../data/freecell';
+import { GUIDE_PATH, GUIDE_UPDATED } from '../data/american-guide';
 
 export type SitemapSection = 'pages' | 'mahjong' | 'solitaire' | 'sudoku' | 'minesweeper' | 'word' | 'arcade' | 'puzzles' | 'board' | 'cards';
 export interface SitemapEntry {
@@ -44,6 +45,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       lastmod: l.data.updated,
     })),
     ...table.map((t) => ({ path: `/mahjong/${t.data.level}/`, section: 'mahjong' as const, priority: 0.9, lastmod: t.data.updated })),
+    { path: GUIDE_PATH, section: 'mahjong', priority: 0.8, lastmod: GUIDE_UPDATED },
     { path: '/solitaire/', section: 'solitaire', priority: 0.8, ...(newestVariant ? { lastmod: newestVariant } : {}) },
     ...variants.map((v) => ({
       path: `/solitaire/${v.id}/`,

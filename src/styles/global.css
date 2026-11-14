@@ -2878,3 +2878,155 @@
     opacity: 0.55;
   }
 }
+
+/* ---------- American Mahjong guide & printable scorecard ---------- */
+@layer components {
+  .guide-downloads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+  }
+  .guide-btn {
+    min-height: 2.9rem;
+    font-size: 1rem;
+    white-space: normal;
+    text-align: center;
+  }
+  .table-scroll {
+    max-width: 60rem;
+    overflow-x: auto;
+  }
+  .guide-figure {
+    max-width: 56rem;
+  }
+  .guide-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: #fff;
+  }
+  .hand {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--fg);
+  }
+  .guide-table {
+    min-width: 46rem;
+  }
+  .guide-table .hand {
+    font-size: 0.95rem;
+  }
+  .guide-tips {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 60rem;
+  }
+  @media (min-width: 768px) {
+    .guide-tips {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .guide-tips > div {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--card);
+  }
+  .guide-tips dt {
+    font-weight: 800;
+  }
+  .guide-tips dd {
+    margin-top: 0.2rem;
+    color: var(--muted);
+  }
+  .guide-cta {
+    max-width: 52rem;
+    padding: 1.4rem 1.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--felt-1), var(--felt-2));
+    color: #fff;
+  }
+  .guide-cta h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+  .guide-cta p {
+    margin: 0.5rem 0 1rem;
+    max-width: 44rem;
+  }
+  .guide-cta .btn-primary {
+    background: #fff;
+    border-color: #fff;
+    color: #0b4738;
+  }
+  .guide-disclaimer {
+    max-width: 52rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+}
+
+/* "Print Scorecard": print only the scorecard image, as large as the page allows. */
+@media print {
+  @page {
+    margin: 10mm;
+  }
+  .print-scorecard body * {
+    visibility: hidden;
+  }
+  .print-scorecard #scorecard-print,
+  .print-scorecard #scorecard-print * {
+    visibility: visible;
+  }
+  .print-scorecard #scorecard-print {
+    position: absolute;
+    inset: 0;
+    max-width: none;
+  }
+  .print-scorecard #scorecard-print img {
+    border: 0;
+  }
+  .print-scorecard #scorecard-print figcaption {
+    display: none;
+  }
+}
+
+/* Link to the American Mahjong guide from the hub and the American game page. */
+@layer components {
+  .guide-callout {
+    margin-top: 2rem;
+    max-width: 52rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    background: var(--card);
+  }
+  .guide-callout h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+  .guide-callout p {
+    margin: 0.4rem 0 0.9rem;
+    color: var(--muted);
+  }
+  .guide-callout-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  /* The callout can sit inside .prose-copy, whose link colour would hide the button text. */
+  .guide-callout a.btn {
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .guide-callout a.btn-primary {
+    color: var(--brand-fg);
+  }
+}
