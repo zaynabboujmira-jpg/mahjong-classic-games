@@ -22,23 +22,27 @@ interface Props {
 const { quickSwitch = true, ...props } = Astro.props;
 const path = Astro.url.pathname;
 const nav = [
-  { href: '/mahjong/', label: 'Mahjong' },
-  { href: '/mahjong/hong-kong/', label: '4-Player Mahjong' },
-  { href: '/solitaire/', label: 'Solitaire' },
-  { href: '/sudoku/', label: 'Sudoku' },
-  { href: '/minesweeper/', label: 'Minesweeper' },
-  { href: '/word-guess/', label: 'Word Guess' },
-  { href: '/puzzles/', label: 'Puzzles' },
-  { href: '/board/', label: 'Board games' },
+  { href: '/cards/', label: 'Mahjong & Cards' },
+  { href: '/board/', label: 'Board Games' },
+  { href: '/puzzles/', label: 'Puzzles & Word' },
   { href: '/arcade/', label: 'Arcade' },
   { href: '/games/', label: 'All games' },
 ];
 const year = new Date().getFullYear();
-/** The nav item for this page: the 4-player tables share one item; otherwise the longest matching prefix. */
-const tableVariants = ['/mahjong/hong-kong/', '/mahjong/american/', '/mahjong/chinese/'];
-const current = tableVariants.some((v) => path.startsWith(v))
-  ? '/mahjong/hong-kong/'
-  : nav.filter((i) => path.startsWith(i.href)).sort((a, b) => b.href.length - a.href.length)[0]?.href;
+/** Which hub a page belongs to, so the menu shows where you are. */
+const HUB_OF: [string, string][] = [
+  ['/cards/', '/cards/'],
+  ['/mahjong/', '/cards/'],
+  ['/solitaire/', '/cards/'],
+  ['/board/', '/board/'],
+  ['/puzzles/', '/puzzles/'],
+  ['/sudoku/', '/puzzles/'],
+  ['/minesweeper/', '/puzzles/'],
+  ['/word-guess/', '/puzzles/'],
+  ['/arcade/', '/arcade/'],
+  ['/games/', '/games/'],
+];
+const current = HUB_OF.find(([prefix]) => path.startsWith(prefix))?.[1];
 ---
 
 <!doctype html>
@@ -71,7 +75,7 @@ const current = tableVariants.some((v) => path.startsWith(v))
           <span aria-hidden="true">★</span> Daily
         </a>
         <nav aria-label="Main" class="relative">
-          <details class="nav-menu xl:hidden">
+          <details class="nav-menu lg:hidden">
             <summary class="btn">Games</summary>
             <ul class="nav-menu-list">
               {
@@ -85,7 +89,7 @@ const current = tableVariants.some((v) => path.startsWith(v))
               }
             </ul>
           </details>
-          <ul class="hidden xl:flex items-center gap-1 text-base">
+          <ul class="hidden lg:flex items-center gap-1 text-base">
             {
               nav.map((item) => (
                 <li>
@@ -117,33 +121,33 @@ const current = tableVariants.some((v) => path.startsWith(v))
           <a href="/" class="no-underline text-fg" aria-label={`${SITE.name} home`}>
             <Logo size={28} />
           </a>
-          <p class="text-muted mt-3 max-w-xs">28 classic games that play instantly in your browser. {FEATURES.ads ? 'No sign-up, no download.' : 'No ads, no sign-up, no download.'}</p>
+          <p class="text-muted mt-3 max-w-xs">34 classic games that play instantly in your browser. {FEATURES.ads ? 'No sign-up, no download.' : 'No ads, no sign-up, no download.'}</p>
         </div>
-        <nav aria-label="Games">
+        <nav aria-label="Game hubs">
           <p class="footer-head">Games</p>
           <ul>
-            <li><a href="/mahjong/">Mahjong Solitaire</a></li>
-            <li><a href="/mahjong/hong-kong/">4-Player Mahjong</a></li>
-            <li><a href="/solitaire/">Solitaire</a></li>
-            <li><a href="/sudoku/">Sudoku</a></li>
-            <li><a href="/minesweeper/">Minesweeper</a></li>
-          </ul>
-        </nav>
-        <nav aria-label="More games">
-          <p class="footer-head">More</p>
-          <ul>
-            <li><a href="/word-guess/">Word Guess</a></li>
-            <li><a href="/puzzles/">Puzzle games</a></li>
+            <li><a href="/cards/">Mahjong &amp; card games</a></li>
             <li><a href="/board/">Board games</a></li>
+            <li><a href="/puzzles/">Puzzles &amp; word games</a></li>
             <li><a href="/arcade/">Arcade games</a></li>
             <li><a href="/games/">All games</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Popular games">
+          <p class="footer-head">Popular</p>
+          <ul>
+            <li><a href="/mahjong/">Mahjong Solitaire</a></li>
+            <li><a href="/solitaire/">Solitaire</a></li>
+            <li><a href="/board/chess/">Chess</a></li>
+            <li><a href="/sudoku/">Sudoku</a></li>
+            <li><a href="/word-guess/">Word Guess</a></li>
             <li><a href="/daily/">Daily challenges</a></li>
-            <li><a href="/stats/">Your stats</a></li>
           </ul>
         </nav>
         <nav aria-label="About this site">
           <p class="footer-head">Site</p>
           <ul>
+            <li><a href="/stats/">Your stats</a></li>
             <li><a href="/about/">About</a></li>
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms of use</a></li>

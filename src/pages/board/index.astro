@@ -11,9 +11,9 @@ const games = CATALOG.filter((g) => g.category === 'board');
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Board Games – Chess, Checkers, Dominoes';
+const title = 'Free Board Games – Chess, Backgammon, Checkers';
 const description =
-  'Free board games for any screen: Chess, Checkers, Dominoes and Four in a Row against computer opponents at several levels, or a friend on the same device.';
+  'Free board games for any screen: Chess, Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against computer opponents, or a friend.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Board games', href: '/board/' },

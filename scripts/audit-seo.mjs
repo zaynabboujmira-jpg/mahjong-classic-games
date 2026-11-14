@@ -7,7 +7,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const DIST = 'dist';
-const HUBS = ['/', '/games/', '/mahjong/', '/solitaire/', '/sudoku/', '/minesweeper/', '/arcade/', '/puzzles/', '/board/'];
+const HUBS = ['/', '/games/', '/mahjong/', '/solitaire/', '/sudoku/', '/minesweeper/', '/arcade/', '/puzzles/', '/board/', '/cards/'];
 const GAME_TYPES = ['VideoGame', 'SoftwareApplication', 'HowTo', 'FAQPage', 'BreadcrumbList'];
 
 const walk = (dir) =>

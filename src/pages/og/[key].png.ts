@@ -56,7 +56,7 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `28 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `34 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
     { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong' }, props: { title: 'Mahjong Solitaire Layouts', subtitle: `${pages.length} layouts · Play free`, art: butterfly } },
     ...pages.map((p) => ({
@@ -100,10 +100,17 @@ export const getStaticPaths = (async () => {
     { params: { key: 'arcade-ocean-grow' }, props: { title: 'Ocean Grow', subtitle: 'Eat & grow · Play free', art: arcadeArt('ocean-grow') } },
     { params: { key: 'arcade-snake' }, props: { title: 'Snake', subtitle: 'Walls or wrap · 3 speeds', art: newGameArt('snake') } },
     { params: { key: 'arcade-brick-breaker' }, props: { title: 'Brick Breaker', subtitle: 'Power-ups · 5 layouts', art: newGameArt('brick-breaker') } },
-    { params: { key: 'puzzles' }, props: { title: 'Puzzle Games', subtitle: 'Logic, words, numbers, memory', art: newGameArt('nonogram', nonogram(10, 'og').solution) } },
+    { params: { key: 'puzzles' }, props: { title: 'Puzzle & Word Games', subtitle: 'Logic, words, numbers, memory', art: newGameArt('nonogram', nonogram(10, 'og').solution) } },
     { params: { key: 'puzzles-number-merge' }, props: { title: 'Number Merge', subtitle: 'Slide & join to reach 2048', art: newGameArt('number-merge') } },
     { params: { key: 'puzzles-memory-match' }, props: { title: 'Memory Match', subtitle: 'Find every pair · 3 sizes', art: newGameArt('memory-match') } },
     { params: { key: 'puzzles-nonogram' }, props: { title: 'Nonogram', subtitle: 'Picture logic · 5×5 to 15×15', art: newGameArt('nonogram', nonogram(10, 'og').solution) } },
+    { params: { key: 'cards' }, props: { title: 'Mahjong & Card Games', subtitle: 'Mahjong · Solitaire · Hearts · Spades', art: newGameArt('hearts') } },
+    { params: { key: 'cards-hearts' }, props: { title: 'Hearts', subtitle: '4 players · Shoot the moon', art: newGameArt('hearts') } },
+    { params: { key: 'cards-spades' }, props: { title: 'Spades', subtitle: 'Partners · Bids · Nil', art: newGameArt('spades') } },
+    { params: { key: 'solitaire-pyramid' }, props: { title: 'Pyramid Solitaire', subtitle: 'Pairs of 13 · Play free', art: newGameArt('pyramid') } },
+    { params: { key: 'board-backgammon' }, props: { title: 'Backgammon', subtitle: '3 computer levels or a friend', art: newGameArt('backgammon') } },
+    { params: { key: 'board-tic-tac-toe' }, props: { title: 'Tic Tac Toe', subtitle: 'Unbeatable AI · Five in a Row', art: newGameArt('tic-tac-toe') } },
+    { params: { key: 'puzzles-word-builder' }, props: { title: 'Word Builder', subtitle: 'Letter wheel · Daily', art: newGameArt('word-builder') } },
     { params: { key: 'board' }, props: { title: 'Board Games', subtitle: 'Chess · Checkers · Dominoes', art: newGameArt('chess') } },
     { params: { key: 'board-four-in-a-row' }, props: { title: 'Four in a Row', subtitle: 'vs computer or a friend', art: newGameArt('four-in-a-row') } },
     { params: { key: 'board-chess' }, props: { title: 'Chess', subtitle: '3 computer levels or a friend', art: newGameArt('chess') } },

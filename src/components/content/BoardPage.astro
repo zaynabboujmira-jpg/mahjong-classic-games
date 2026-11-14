@@ -7,6 +7,8 @@ import ChessGame from '../game/ChessGame';
 import CheckersGame from '../game/CheckersGame';
 import DominoesGame from '../game/DominoesGame';
 import FourInRowGame from '../game/FourInRowGame';
+import BackgammonGame from '../game/BackgammonGame';
+import TicTacToeGame from '../game/TicTacToeGame';
 
 /** A board game page under /board/. */
 interface Props {
@@ -22,12 +24,16 @@ const GENRES: Record<string, string[]> = {
   checkers: ['Board game', 'Strategy', 'Two-player'],
   dominoes: ['Tile game', 'Board game', 'Multiplayer'],
   'four-in-a-row': ['Board game', 'Strategy', 'Two-player'],
+  backgammon: ['Board game', 'Dice game', 'Strategy'],
+  'tic-tac-toe': ['Board game', 'Casual', 'Two-player'],
 };
 const ALT: Record<string, string> = {
   chess: 'A chess board with original piece drawings',
   checkers: 'Red and white checkers on a green and cream board',
   dominoes: 'A line of double-six dominoes with a hand of tiles',
   'four-in-a-row': 'Red and gold discs in a blue upright grid with four in a diagonal',
+  backgammon: 'A backgammon board with white and black checkers and two dice',
+  'tic-tac-toe': 'A tic tac toe grid with three crosses in a row',
 };
 ---
 
@@ -57,5 +63,7 @@ const ALT: Record<string, string> = {
   {data.level === 'checkers' && <CheckersGame slot="game" client:load />}
   {data.level === 'dominoes' && <DominoesGame slot="game" client:load />}
   {data.level === 'four-in-a-row' && <FourInRowGame slot="game" client:load />}
+  {data.level === 'backgammon' && <BackgammonGame slot="game" client:load />}
+  {data.level === 'tic-tac-toe' && <TicTacToeGame slot="game" client:load />}
   <Content />
 </LevelPage>

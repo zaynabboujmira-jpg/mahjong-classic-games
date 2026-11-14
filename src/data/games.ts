@@ -149,5 +149,11 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'dominoes', name: 'Dominoes', status: 'live', href: '/board/dominoes/', blurb: 'The Draw and Block games with a double-six set against computer players.' },
   { slug: 'word-search', name: 'Word Search', status: 'live', href: '/puzzles/word-search/', blurb: 'Find the hidden words in themed 10×10, 12×12 and 15×15 grids.' },
   { slug: 'mini-crossword', name: 'Mini Crossword', status: 'live', href: '/puzzles/mini-crossword/', blurb: 'A daily 5×5 and 7×7 crossword plus unlimited puzzles.' },
+  { slug: 'backgammon', name: 'Backgammon', status: 'live', href: '/board/backgammon/', blurb: 'Race fifteen checkers home against three computer levels or a friend.' },
+  { slug: 'hearts', name: 'Hearts', status: 'live', href: '/cards/hearts/', blurb: 'Four-player Hearts against three computer players.' },
+  { slug: 'spades', name: 'Spades', status: 'live', href: '/cards/spades/', blurb: 'Partnership Spades with bids, Nil and bags.' },
+  { slug: 'pyramid', name: 'Pyramid Solitaire', status: 'live', href: '/solitaire/pyramid/', blurb: 'Pair cards that add up to 13 to clear the pyramid.' },
+  { slug: 'tic-tac-toe', name: 'Tic Tac Toe', status: 'live', href: '/board/tic-tac-toe/', blurb: 'Noughts and crosses plus Five in a Row.' },
+  { slug: 'word-builder', name: 'Word Builder', status: 'live', href: '/puzzles/word-builder/', blurb: 'Make words from a wheel of seven letters.' },
   { slug: 'bubble-shooter', name: 'Bubble Shooter', status: 'live', href: '/arcade/bubble-shooter/', blurb: 'Aim, bounce and match three bubbles of a colour to pop them.' },
 ];

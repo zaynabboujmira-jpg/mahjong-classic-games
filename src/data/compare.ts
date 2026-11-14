@@ -49,6 +49,7 @@ export const SOLITAIRE_COMPARE: Comparison = {
     { cells: ['Klondike', '52', '7', 'Yes', 'Draw 1 or Draw 3', 'Skill and luck'], href: '/solitaire/klondike/' },
     { cells: ['Spider', '104 (two decks)', '10', 'Yes', '1, 2 or 4 suits', 'Skill and luck'], href: '/solitaire/spider/' },
     { cells: ['FreeCell', '52', '8 + 4 free cells', 'No, all face up', 'Numbered deals', 'Skill'], href: '/solitaire/freecell/' },
+    { cells: ['Pyramid', '52', '7 rows (28 cards) + stock', 'No, but covered', '3 passes or unlimited', 'Luck and planning'], href: '/solitaire/pyramid/' },
   ],
 };
 
@@ -74,7 +75,7 @@ export const ARCADE_COMPARE: Comparison = {
 };
 
 export const PUZZLE_COMPARE: Comparison = {
-  title: 'Puzzle games compared',
+  title: 'Puzzle and word games compared',
   head: ['Game', 'Type', 'Modes', 'Controls'],
   rows: CATALOG.filter((g) => g.category === 'puzzles').map((g) => ({
     cells: [g.name, g.facts.type, g.facts.modes, g.facts.controls],
@@ -87,6 +88,15 @@ export const BOARD_COMPARE: Comparison = {
   head: ['Game', 'Type', 'Modes', 'Controls'],
   rows: CATALOG.filter((g) => g.category === 'board').map((g) => ({
     cells: [g.name, g.facts.type, g.facts.modes, g.facts.controls],
+    href: g.play,
+  })),
+};
+
+export const CARDS_COMPARE: Comparison = {
+  title: 'Mahjong and card games compared',
+  head: ['Game', 'Type', 'Modes', 'Players'],
+  rows: CATALOG.filter((g) => g.category === 'mahjong-cards').map((g) => ({
+    cells: [g.name, g.facts.type, g.facts.modes, g.facts.players],
     href: g.play,
   })),
 };

@@ -10,9 +10,9 @@ import { breadcrumbs, graph, itemList, organization, webPage, website } from '..
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'All 28 Free Classic Games';
+const title = 'All 34 Free Classic Games';
 const description =
-  'Every game on Free Play Classic: Mahjong, 4-player Mahjong, Klondike, Spider, FreeCell, Sudoku, Chess, Checkers, Dominoes, Mini Crossword, Word Search, Bubble Shooter and more.';
+  'Every game on Free Play Classic: Mahjong, 4-player Mahjong, Klondike, Spider, FreeCell, Hearts, Spades, Chess, Backgammon, Sudoku, Mini Crossword, Word Builder and more.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'All games', href: '/games/' },
@@ -30,7 +30,7 @@ const jsonLd = graph(
   <div class="container-page pt-4">
     <Breadcrumbs items={crumbs} />
     <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">All games</h1>
-    <p class="text-muted mt-2 max-w-2xl">All 28 games play instantly in your browser, with {FEATURES.ads ? 'no download' : 'no ads'} and no sign-up.</p>
+    <p class="text-muted mt-2 max-w-2xl">All 34 games play instantly in your browser, with {FEATURES.ads ? 'no download' : 'no ads'} and no sign-up.</p>
     <GameCatalog />
   </div>
 </BaseLayout>

@@ -285,7 +285,7 @@ ${([['#a855f7', 300], ['#f97316', 360]] as const).map(([c, x]) => `<path d="M${x
 
 /** Art for the six newer games, each an original scene in a 460 × 300 frame. */
 export function newGameArt(
-  kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row' | 'chess' | 'checkers' | 'dominoes' | 'word-search' | 'mini-crossword' | 'bubble-shooter',
+  kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row' | 'chess' | 'checkers' | 'dominoes' | 'word-search' | 'mini-crossword' | 'bubble-shooter' | 'hearts' | 'spades' | 'pyramid' | 'backgammon' | 'tic-tac-toe' | 'word-builder',
   picture: readonly (readonly boolean[])[] = []): OgArt {
   const frame = (bg: string, inner: string) => `<g transform="translate(40 0)"><rect width="460" height="300" rx="16" fill="${bg}"/>${inner}</g>`;
   let svg = '';
@@ -487,6 +487,67 @@ export function newGameArt(
       for (let i = 1; i < 9; i++) out += `<circle cx="${230 - i * 9}" cy="${260 - i * 16}" r="3" fill="#fff" opacity=".6"/>`;
       out += `<circle cx="230" cy="268" r="22" fill="#1e293b"/><circle cx="230" cy="268" r="16" fill="#3b82f6"/><circle cx="225" cy="262" r="5" fill="#fff" opacity=".55"/>`;
       svg = frame('#0f2a3f', out);
+      break;
+    }
+    case 'hearts':
+    case 'spades':
+    case 'pyramid': {
+      const cardSvg = (x: number, y: number, rank: string, suit: string, red: boolean, rot = 0, w = 74) => {
+        const h = w * 1.4;
+        return `<g transform="translate(${x} ${y}) rotate(${rot})"><rect x="${-w / 2}" y="${-h / 2}" width="${w}" height="${h}" rx="8" fill="#fffdf8" stroke="#bfb6a3" stroke-width="2"/><text x="${-w / 2 + 8}" y="${-h / 2 + 24}" font-size="22" font-weight="700" fill="${red ? '#c2272d' : '#1b2823'}">${rank}</text><text x="${-w / 2 + 9}" y="${-h / 2 + 44}" font-size="18" fill="${red ? '#c2272d' : '#1b2823'}">${suit}</text><text x="${w / 2 - 10}" y="${h / 2 - 10}" font-size="${w * 0.5}" text-anchor="end" fill="${red ? '#c2272d' : '#1b2823'}">${suit}</text></g>`;
+      };
+      const back = (x: number, y: number, rot = 0) => `<g transform="translate(${x} ${y}) rotate(${rot})"><rect x="-37" y="-52" width="74" height="104" rx="8" fill="#0f5c4a" stroke="#fffdf8" stroke-width="4"/></g>`;
+      let out = '';
+      if (kind === 'pyramid') {
+        const ranks = ['K', '7', '6', 'Q', 'A', '4', '9', '3', '10', 'J', '2', '8', '5', '6', 'K'];
+        let k = 0;
+        for (let r = 0; r < 5; r++)
+          for (let i = 0; i <= r; i++) {
+            const red = (r + i) % 2 === 0;
+            out += cardSvg(230 + (i - r / 2) * 64, 50 + r * 50, ranks[k++ % ranks.length]!, red ? '♥' : '♠', red, 0, 58);
+          }
+      } else {
+        out += back(80, 150, -8) + back(380, 150, 8) + back(230, 40, 0);
+        if (kind === 'hearts') out += cardSvg(200, 165, 'Q', '♠', false, -10) + cardSvg(262, 172, 'A', '♥', true, 8) + cardSvg(232, 230, '10', '♥', true, 0);
+        else out += cardSvg(200, 165, 'K', '♦', true, -10) + cardSvg(262, 172, '3', '♠', false, 8) + cardSvg(232, 230, 'A', '♦', true, 0);
+      }
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'backgammon': {
+      let out = '<rect x="20" y="10" width="420" height="280" rx="12" fill="#6b4226"/><rect x="30" y="20" width="400" height="260" fill="#e9d8b4"/><rect x="222" y="20" width="16" height="260" fill="#4a2c17"/>';
+      for (let i = 0; i < 12; i++) {
+        const x = 30 + (i < 6 ? i : i + 0.5) * 32;
+        const c = i % 2 ? '#9a3412' : '#1f4e46';
+        out += `<path d="M${x} 20 L${x + 32} 20 L${x + 16} 135z" fill="${c}"/><path d="M${x} 280 L${x + 32} 280 L${x + 16} 165z" fill="${i % 2 ? '#1f4e46' : '#9a3412'}"/>`;
+      }
+      const chk = (x: number, y: number, w: boolean) => `<circle cx="${x}" cy="${y}" r="13" fill="${w ? '#f5f5f4' : '#1f2937'}" stroke="rgba(0,0,0,.35)" stroke-width="2"/>`;
+      for (let k = 0; k < 5; k++) out += chk(46, 36 + k * 26, true) + chk(46 + 12.5 * 32, 264 - k * 26, false);
+      for (let k = 0; k < 3; k++) out += chk(46 + 4 * 32, 264 - k * 26, true) + chk(46 + 7.5 * 32 + 16, 36 + k * 26, false);
+      out += `<rect x="290" y="132" width="32" height="32" rx="6" fill="#fffdf8"/><circle cx="298" cy="140" r="3.5" fill="#1f2937"/><circle cx="314" cy="156" r="3.5" fill="#1f2937"/><rect x="332" y="132" width="32" height="32" rx="6" fill="#fffdf8"/><circle cx="340" cy="140" r="3.5" fill="#1f2937"/><circle cx="348" cy="148" r="3.5" fill="#1f2937"/><circle cx="356" cy="156" r="3.5" fill="#1f2937"/>`;
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'tic-tac-toe': {
+      let out = '<path d="M180 30V270M280 30V270M130 80H330M130 180H330" stroke="#f5ecd2" stroke-width="8" stroke-linecap="round"/>';
+      const x = (cx: number, cy: number) => `<path d="M${cx - 26} ${cy - 26}L${cx + 26} ${cy + 26}M${cx + 26} ${cy - 26}L${cx - 26} ${cy + 26}" stroke="#fda4af" stroke-width="12" stroke-linecap="round"/>`;
+      const o = (cx: number, cy: number) => `<circle cx="${cx}" cy="${cy}" r="28" fill="none" stroke="#fde68a" stroke-width="11"/>`;
+      out += x(155, 55) + o(230, 55) + x(230, 130) + o(305, 130) + x(305, 230) + o(155, 230);
+      out += '<path d="M135 35L325 250" stroke="#86efac" stroke-width="7" stroke-linecap="round" opacity=".9"/>';
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'word-builder': {
+      const letters = ['P', 'L', 'A', 'N', 'E', 'T', 'S'];
+      let out = '<circle cx="230" cy="160" r="120" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.2)" stroke-width="3"/>';
+      letters.forEach((l, i) => {
+        const a = (i / 7) * Math.PI * 2 - Math.PI / 2;
+        const x = 230 + Math.cos(a) * 82;
+        const y = 160 + Math.sin(a) * 82;
+        out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="30" fill="${i < 4 ? '#facc15' : '#fffdf8'}"/><text x="${x.toFixed(1)}" y="${(y + 11).toFixed(1)}" font-size="30" font-weight="700" text-anchor="middle" fill="#1b2823">${l}</text>`;
+      });
+      out += '<text x="230" y="40" font-size="30" font-weight="700" text-anchor="middle" fill="#fffdf8" letter-spacing="6">PLAN</text>';
+      svg = frame('#123f33', out);
       break;
     }
     case 'four-in-a-row': {

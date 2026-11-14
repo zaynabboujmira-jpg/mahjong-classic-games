@@ -1,5 +1,5 @@
 /**
- * The 28 games of Free Play Classic, grouped for the portal. One source for
+ * The 34 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -11,14 +11,16 @@ export interface Category {
   name: string;
   /** Short label for the jump links on phones. */
   short: string;
+  /** The hub page that lists the whole category. */
+  hub: string;
   blurb: string;
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: 'mahjong-cards', name: 'Mahjong & Card Classics', short: 'Mahjong & Cards', blurb: 'Tile matching, four-player Mahjong against computer opponents, and the three great solitaire games.' },
-  { id: 'puzzles', name: 'Brain, Logic & Word Puzzles', short: 'Puzzles', blurb: 'Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
-  { id: 'board', name: 'Board Games', short: 'Board', blurb: 'Chess, Checkers, Dominoes and Four in a Row against computer opponents at several levels, or a friend.' },
-  { id: 'arcade', name: 'Retro Arcade', short: 'Arcade', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
+  { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts and Spades against computer players.' },
+  { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against computer opponents at several levels, or a friend.' },
+  { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
+  { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
 
 export interface CatalogGame {
@@ -128,6 +130,57 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'Classic numbered deals, shareable by link; deal #11982 is the famous unsolvable one',
       controls: 'Tap, drag and drop, or keyboard; unlimited undo; hints from a built-in solver',
       players: '1',
+    },
+  },
+  {
+    id: 'pyramid',
+    name: 'Pyramid Solitaire',
+    category: 'mahjong-cards',
+    play: '/solitaire/pyramid/',
+    hub: '/solitaire/',
+    hook: 'Pair cards that add up to 13 to clear a pyramid of 28 cards.',
+    badges: ['Pairs of 13', 'Undo + Hints', 'Shareable Deals'],
+    icon: `<rect x="9" y="3" width="6" height="7" rx="1" ${S}/><rect x="5" y="8" width="6" height="7" rx="1" ${S}/><rect x="13" y="8" width="6" height="7" rx="1" ${S}/><rect x="2" y="14" width="6" height="7" rx="1" ${S}/><rect x="16" y="14" width="6" height="7" rx="1" ${S}/>`,
+    facts: {
+      type: 'Adding (pairing) patience card game',
+      goal: 'Remove all 28 pyramid cards by pairing exposed cards that total 13; kings are removed alone',
+      modes: 'Three passes through the stock (classic) or unlimited; numbered, shareable deals',
+      controls: 'Tap two cards to pair them, tap the stock to draw; D draws, Z undoes; hints',
+      players: '1',
+    },
+  },
+  {
+    id: 'hearts',
+    name: 'Hearts',
+    category: 'mahjong-cards',
+    play: '/cards/hearts/',
+    hub: '/cards/',
+    hook: 'Dodge the hearts and the queen of spades, or shoot the moon.',
+    badges: ['3 Smart Bots', 'Card Passing', 'Shoot the Moon'],
+    icon: `<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" ${S}/>`,
+    facts: {
+      type: 'Four-player trick-taking card game',
+      goal: 'Take as few points as possible (1 per heart, 13 for the queen of spades); lowest score when someone reaches 100 wins',
+      modes: 'You against three computer players; pass three cards left, right, across or not at all; shooting the moon',
+      controls: 'Tap cards to pass or play; only legal cards are lit',
+      players: '1 against 3 computer players',
+    },
+  },
+  {
+    id: 'spades',
+    name: 'Spades',
+    category: 'mahjong-cards',
+    play: '/cards/spades/',
+    hub: '/cards/',
+    hook: 'Bid your tricks with a partner; spades are always trumps.',
+    badges: ['Partner Play', 'Nil Bids', 'Bags'],
+    icon: `<path d="M12 3s7 5.5 7 10a3.5 3.5 0 0 1-6 2.4L14 20h-4l1-4.6A3.5 3.5 0 0 1 5 13c0-4.5 7-10 7-10z" ${S}/>`,
+    facts: {
+      type: 'Four-player partnership trick-taking card game',
+      goal: 'Win at least the number of tricks your team bid; first team to 500 points wins',
+      modes: 'You and a computer partner against two computer opponents; Nil bids, bags (10 bags cost 100)',
+      controls: 'Tap a number to bid, then tap cards to play; only legal cards are lit',
+      players: '1 with a computer partner against 2 computer players',
     },
   },
   {
@@ -267,6 +320,23 @@ export const CATALOG: readonly CatalogGame[] = [
     },
   },
   {
+    id: 'word-builder',
+    name: 'Word Builder',
+    category: 'puzzles',
+    play: '/puzzles/word-builder/',
+    hub: '/puzzles/',
+    hook: 'Spell as many words as you can from a wheel of seven letters.',
+    badges: ['Daily + Unlimited', 'Ranks', 'Drag or Type'],
+    icon: `<circle cx="12" cy="12" r="9" ${S}/><path d="M12 5.5v0M17.6 9v0M17.6 15v0M12 18.5v0M6.4 15v0M6.4 9v0" ${S} stroke-width="3"/>`,
+    facts: {
+      type: 'Letter wheel word game',
+      goal: 'Make words of four or more letters from the seven wheel letters, including the one word that uses all seven',
+      modes: 'A daily wheel (the same for everyone) and unlimited wheels; ranks from Beginner to Genius',
+      controls: 'Tap or drag across letters, or type; Enter to submit, Shuffle, Give up',
+      players: '1',
+    },
+  },
+  {
     id: 'chess',
     name: 'Chess',
     category: 'board',
@@ -315,6 +385,40 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'Draw game or Block game; against 1, 2 or 3 computer players',
       controls: 'Tap a glowing tile to play it; ◀ or ▶ when it fits both ends; Draw and Pass buttons',
       players: '1 against 1-3 computer players',
+    },
+  },
+  {
+    id: 'backgammon',
+    name: 'Backgammon',
+    category: 'board',
+    play: '/board/backgammon/',
+    hub: '/board/',
+    hook: 'Race your fifteen checkers home, hit blots and bear off first.',
+    badges: ['3 AI Levels', 'Dice + Undo', '2 Players'],
+    icon: `<path d="M3 4l2.5 8L8 4M10.5 4l2.5 8 2.5-8M18 4l1.5 5 1.5-5M3 20l2.5-8L8 20M16 20l2.5-8L21 20" ${S}/>`,
+    facts: {
+      type: 'Two-player race board game with dice',
+      goal: 'Move all fifteen checkers into your home board and bear them off before your opponent',
+      modes: 'Against the computer (Easy, Medium, Hard with a one-roll lookahead) or 2 players; gammons and backgammons count double and triple',
+      controls: 'Roll, tap a checker, then a highlighted point; undo moves until you press Done',
+      players: '1 against the computer, or 2 on one device',
+    },
+  },
+  {
+    id: 'tic-tac-toe',
+    name: 'Tic Tac Toe',
+    category: 'board',
+    play: '/board/tic-tac-toe/',
+    hub: '/board/',
+    hook: 'Noughts and crosses against an unbeatable computer, plus Five in a Row.',
+    badges: ['Unbeatable AI', 'Five in a Row', '2 Players'],
+    icon: `<path d="M9 3v18M15 3v18M3 9h18M3 15h18" ${S}/><path d="M4.5 4.5l3 3M7.5 4.5l-3 3" ${S}/><circle cx="18" cy="12" r="1.8" ${S}/>`,
+    facts: {
+      type: 'Two-player line-up game (noughts and crosses; Five in a Row / Gomoku)',
+      goal: 'Line up three marks on 3×3, or five on the 15×15 Five in a Row board',
+      modes: '3×3 against Easy, Medium or Unbeatable (full minimax) or 2 players; 15×15 Five in a Row against Easy or Hard',
+      controls: 'Tap a square; arrow keys and Enter; keys 1-9 on 3×3',
+      players: '1 against the computer, or 2 on one device',
     },
   },
   {

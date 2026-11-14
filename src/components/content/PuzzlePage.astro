@@ -8,6 +8,7 @@ import MemoryMatchGame from '../game/MemoryMatchGame';
 import NonogramGame from '../game/NonogramGame';
 import WordSearchGame from '../game/WordSearchGame';
 import MiniCrosswordGame from '../game/MiniCrosswordGame';
+import WordBuilderGame from '../game/WordBuilderGame';
 
 /** A puzzle page under /puzzles/. */
 interface Props {
@@ -24,6 +25,7 @@ const GENRES: Record<string, string[]> = {
   nonogram: ['Puzzle', 'Logic puzzle', 'Picture puzzle'],
   'word-search': ['Word game', 'Puzzle', 'Casual'],
   'mini-crossword': ['Word game', 'Crossword', 'Puzzle'],
+  'word-builder': ['Word game', 'Puzzle', 'Casual'],
 };
 const ALT: Record<string, string> = {
   'number-merge': 'A 4×4 board of number tiles up to 2048',
@@ -31,6 +33,7 @@ const ALT: Record<string, string> = {
   nonogram: 'A nonogram grid with number clues and a filled picture',
   'word-search': 'A letter grid with found words marked in colour',
   'mini-crossword': 'A small crossword grid with numbered squares',
+  'word-builder': 'Seven letters on a wheel with a word being spelled',
 };
 const more = {
   heading: 'Like logic puzzles?',
@@ -51,7 +54,7 @@ const more = {
   imageKey={`puzzles-${data.level}`}
   qa={data.level}
   compare={PUZZLE_COMPARE}
-  levelsHeading="More puzzles"
+  levelsHeading="More puzzles and word games"
   levelTitle={(name) => name}
   howToName={`How to play ${data.name}`}
   more={more}
@@ -61,5 +64,6 @@ const more = {
   {data.level === 'nonogram' && <NonogramGame slot="game" client:load />}
   {data.level === 'word-search' && <WordSearchGame slot="game" client:load />}
   {data.level === 'mini-crossword' && <MiniCrosswordGame slot="game" client:load />}
+  {data.level === 'word-builder' && <WordBuilderGame slot="game" client:load />}
   <Content />
 </LevelPage>

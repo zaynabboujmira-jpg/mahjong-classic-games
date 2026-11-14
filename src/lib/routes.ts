@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import { FAMOUS_DEALS } from '../data/freecell';
 
-export type SitemapSection = 'pages' | 'mahjong' | 'solitaire' | 'sudoku' | 'minesweeper' | 'word' | 'arcade' | 'puzzles' | 'board';
+export type SitemapSection = 'pages' | 'mahjong' | 'solitaire' | 'sudoku' | 'minesweeper' | 'word' | 'arcade' | 'puzzles' | 'board' | 'cards';
 export interface SitemapEntry {
   path: string;
   section: SitemapSection;
@@ -20,6 +20,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const arcade = (await getCollection('arcade')).sort((a, b) => a.data.order - b.data.order);
   const puzzles = (await getCollection('puzzles')).sort((a, b) => a.data.order - b.data.order);
   const board = (await getCollection('board')).sort((a, b) => a.data.order - b.data.order);
+  const cards = (await getCollection('cards')).sort((a, b) => a.data.order - b.data.order);
   const newestOf = (entries: { data: { updated: Date } }[]) =>
     entries.reduce<Date | undefined>((d, e) => (!d || e.data.updated > d ? e.data.updated : d), undefined);
   const newestVariant = variants.reduce<Date | undefined>((d, v) => (!d || v.data.updated > d ? v.data.updated : d), undefined);
@@ -63,6 +64,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...levelEntries('/arcade/', 'arcade', arcade, newestOf(arcade)),
     ...levelEntries('/puzzles/', 'puzzles', puzzles, newestOf(puzzles)),
     ...levelEntries('/board/', 'board', board, newestOf(board)),
+    ...levelEntries('/cards/', 'cards', cards, newestOf(cards)),
   ];
 }
 
@@ -79,7 +81,7 @@ function levelEntries(
   ];
 }
 
-export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong', 'solitaire', 'sudoku', 'minesweeper', 'word', 'arcade', 'puzzles', 'board'];
+export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong', 'solitaire', 'sudoku', 'minesweeper', 'word', 'arcade', 'puzzles', 'board', 'cards'];
 
 export function sitemapXml(entries: readonly SitemapEntry[], site: URL): string {
   const urls = entries

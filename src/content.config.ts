@@ -32,7 +32,7 @@ const layouts = defineCollection({
 const solitaire = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/solitaire' }),
   schema: z.object({
-    engine: z.enum(['klondike', 'spider', 'freecell']),
+    engine: z.enum(['klondike', 'spider', 'freecell', 'pyramid']),
     order: z.number().int(),
     title: z.string().min(10).max(48),
     h1: z.string().min(10).max(70),
@@ -99,13 +99,19 @@ const arcade = defineCollection({
 /** Puzzle games (/puzzles/[game]/). */
 const puzzles = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/puzzles' }),
-  schema: levelPage(['number-merge', 'memory-match', 'nonogram', 'word-search', 'mini-crossword'] as const),
+  schema: levelPage(['number-merge', 'memory-match', 'nonogram', 'word-search', 'mini-crossword', 'word-builder'] as const),
 });
 
 /** Board games (/board/[game]/). */
 const board = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/board' }),
-  schema: levelPage(['chess', 'checkers', 'dominoes', 'four-in-a-row'] as const),
+  schema: levelPage(['chess', 'checkers', 'dominoes', 'four-in-a-row', 'backgammon', 'tic-tac-toe'] as const),
 });
 
-export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade, puzzles, board };
+/** Multiplayer card games (/cards/[game]/). */
+const cards = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/cards' }),
+  schema: levelPage(['hearts', 'spades'] as const),
+});
+
+export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade, puzzles, board, cards };

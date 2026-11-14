@@ -12,9 +12,9 @@ const variants = (await getCollection('solitaire')).sort((a, b) => a.data.order 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Solitaire Card Games';
+const title = 'Free Solitaire Card Games – 4 Classics';
 const description =
-  'Play free solitaire card games online: Klondike in Draw 1 or Draw 3, Spider with 1, 2 or 4 suits, and FreeCell with numbered deals. No download.';
+  'Play free solitaire online: Klondike in Draw 1 or Draw 3, Spider with 1, 2 or 4 suits, FreeCell with numbered deals, and Pyramid. No download.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Solitaire', href: '/solitaire/' },

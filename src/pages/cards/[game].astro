@@ -1,0 +1,18 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import CardPage from '../../components/content/CardPage.astro';
+
+/** One page per multiplayer card game in src/content/cards. */
+export const getStaticPaths = (async () => {
+  const entries = (await getCollection('cards')).sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry) => ({ params: { game: entry.data.level }, props: { entry, entries } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entry: CollectionEntry<'cards'>;
+  entries: CollectionEntry<'cards'>[];
+}
+---
+
+<CardPage {...Astro.props} />

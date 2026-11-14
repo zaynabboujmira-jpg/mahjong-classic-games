@@ -146,6 +146,10 @@ describe('summarize', () => {
       'wordsearch:best:12': 95_000,
       'crossword:best:5': 48_000,
       'dominoes:matches': 1,
+      'backgammon:record:hard': { won: 1, lost: 0, points: 2 },
+      'hearts:games': 3,
+      'hearts:wins': 1,
+      'wheel:best': 42,
     });
     recordWin('klondike', null, at(10), kv);
     const s = summarize(kv, 10);
@@ -168,8 +172,11 @@ describe('summarize', () => {
     expect(g('mini-crossword').best).toBe('0:48 (5×5)');
     expect(g('dominoes').best).toBe('1 match won');
     expect(g('checkers').played).toBe(false);
+    expect(g('backgammon').best).toBe('1 of 1 won vs computer');
+    expect(g('hearts').best).toBe('1 of 3 games won');
+    expect(g('word-builder').best).toBe('42 points');
     expect(g('spider').played).toBe(false);
-    expect(s.gamesPlayed).toBe(17);
+    expect(s.gamesPlayed).toBe(20);
     expect(s.totalWins).toBe(1 + 3 + 2);
     expect(unlocked(kv)).toEqual(['first-win']);
   });

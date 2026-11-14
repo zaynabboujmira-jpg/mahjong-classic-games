@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import LevelPage from './LevelPage.astro';
+import { CARDS_COMPARE } from '../../data/compare';
+import HeartsGame from '../game/HeartsGame';
+import SpadesGame from '../game/SpadesGame';
+
+/** A multiplayer card game page under /cards/. */
+interface Props {
+  entry: CollectionEntry<'cards'>;
+  entries: CollectionEntry<'cards'>[];
+}
+const { entry, entries } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
+const ALT: Record<string, string> = {
+  hearts: 'Four hands of cards around a trick with the queen of spades',
+  spades: 'A trick of four cards with a spade trumping',
+};
+---
+
+<LevelPage
+  game="Card Games"
+  base="/cards/"
+  hubCrumb="Card games"
+  level={{ id: data.level, name: data.name, summary: data.summary }}
+  levels={levels}
+  data={data}
+  genre={['Card game', 'Trick-taking', 'Multiplayer']}
+  imageAlt={ALT[data.level]!}
+  imageKey={`cards-${data.level}`}
+  qa={data.level}
+  compare={CARDS_COMPARE}
+  levelsHeading="More card games"
+  levelTitle={(name) => name}
+  howToName={`How to play ${data.name}`}
+  more={{
+    heading: 'Prefer to play alone?',
+    text: 'Klondike, Spider, FreeCell and Pyramid are the classic solitaire games, with undo and hints.',
+    href: '/solitaire/',
+    label: 'Play Solitaire',
+  }}
+>
+  {data.level === 'hearts' && <HeartsGame slot="game" client:load />}
+  {data.level === 'spades' && <SpadesGame slot="game" client:load />}
+  <Content />
+</LevelPage>

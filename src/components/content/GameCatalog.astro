@@ -1,7 +1,7 @@
 ---
 import { CATALOG, CATEGORIES } from '../../data/catalog';
 
-/** All 28 games in their four categories (H2 per category, H3 per game); used by the homepage and /games/. */
+/** All the games in their four categories (H2 per category, H3 per game); used by the homepage and /games/. */
 ---
 
 {
@@ -10,7 +10,12 @@ import { CATALOG, CATEGORIES } from '../../data/catalog';
       <h2 id={`${c.id}-title`} class="portal-title">
         {c.name}
       </h2>
-      <p class="text-muted mb-4 max-w-2xl">{c.blurb}</p>
+      <p class="text-muted mb-4 max-w-2xl">
+        {c.blurb}{' '}
+        <a class="text-brand font-semibold whitespace-nowrap" href={c.hub}>
+          All {c.name.toLowerCase()} →
+        </a>
+      </p>
       <ul class="game-grid">
         {CATALOG.filter((g) => g.category === c.id).map((g) => (
           <li>

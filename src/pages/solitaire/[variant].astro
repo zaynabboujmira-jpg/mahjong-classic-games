@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import KlondikeGame from '../../components/game/KlondikeGame';
 import SpiderGame from '../../components/game/SpiderGame';
 import FreeCellGame from '../../components/game/FreeCellGame';
+import PyramidGame from '../../components/game/PyramidGame';
 import { FAMOUS_DEALS } from '../../data/freecell';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import Faq from '../../components/content/Faq.astro';
@@ -65,6 +66,7 @@ const jsonLd = graph(
     {data.engine === 'klondike' && <KlondikeGame client:load defaultDraw={data.defaultDraw ?? 1} otherGame={other} />}
     {data.engine === 'spider' && <SpiderGame client:load defaultSuits={data.defaultSuits ?? 1} otherGame={other} />}
     {data.engine === 'freecell' && <FreeCellGame client:load otherGame={other} />}
+    {data.engine === 'pyramid' && <PyramidGame client:load />}
   </div>
 
   <div class="container-page mt-2">

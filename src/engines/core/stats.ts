@@ -116,6 +116,23 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
     const played = recs.reduce((n, r) => n + (r ? r.won + r.lost + r.drawn : 0), 0);
     add(id, played > 0 || keys.includes(setting), played ? `${recs.reduce((n, r) => n + (r?.won ?? 0), 0)} of ${played} won vs computer` : null);
   }
+  for (const [id, prefix, setting] of [
+    ['backgammon', 'backgammon:record:', 'backgammon:opponent'],
+    ['tic-tac-toe', 'ttt:record:', 'ttt:settings'],
+  ] as const) {
+    const recs = withPrefix(prefix).map((k) => kv.get<{ won: number; lost: number; drawn?: number } | null>(k, null));
+    const played = recs.reduce((n, r) => n + (r ? r.won + r.lost + (r.drawn ?? 0) : 0), 0);
+    add(id, played > 0 || keys.includes(setting), played ? `${recs.reduce((n, r) => n + (r?.won ?? 0), 0)} of ${played} won vs computer` : null);
+  }
+  for (const id of ['hearts', 'spades'] as const) {
+    const played = num(`${id}:games`) ?? 0;
+    const won = id === 'hearts' ? (num('hearts:wins') ?? 0) : (num('spades:wins') ?? 0);
+    add(id, played > 0, played ? `${won} of ${played} games won` : null);
+  }
+  const pyramidBest = maxOf(withPrefix('pyramid:best:').map(num));
+  add('pyramid', pyramidBest !== null || keys.includes('pyramid:mode'), pyramidBest ? `${pyramidBest.toLocaleString('en-US')} points` : null);
+  const wheelBest = num('wheel:best');
+  add('word-builder', wheelBest !== null || keys.includes('wheel:kind'), wheelBest ? `${wheelBest} points` : null);
   const matches = num('dominoes:matches') ?? 0;
   add('dominoes', matches > 0 || keys.includes('dominoes:settings'), matches ? `${matches} match${matches > 1 ? 'es' : ''} won` : null);
   for (const [id, prefix, setting] of [

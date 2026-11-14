@@ -11,12 +11,12 @@ const games = CATALOG.filter((g) => g.category === 'puzzles');
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Puzzle Games – Logic, Words, Numbers';
+const title = 'Free Puzzle & Word Games – Logic and Words';
 const description =
-  'Free puzzle games for any screen: Sudoku, Minesweeper, Word Guess, Mini Crossword, Word Search, Number Merge, Nonogram and Memory Match. No sign-up.';
+  'Free puzzle and word games: Sudoku, Minesweeper, Word Guess, Mini Crossword, Word Search, Word Builder, Number Merge, Nonogram and Memory Match.';
 const crumbs = [
   { name: 'Home', href: '/' },
-  { name: 'Puzzles', href: '/puzzles/' },
+  { name: 'Puzzles & word', href: '/puzzles/' },
 ];
 const jsonLd = graph(
   organization(origin),
@@ -35,7 +35,7 @@ const jsonLd = graph(
 <BaseLayout title={title} description={description} image={ogImagePath('puzzles')} imageAlt="Puzzle games" jsonLd={jsonLd}>
   <div class="container-page pt-4">
     <Breadcrumbs items={crumbs} />
-    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Puzzle games</h1>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Puzzle &amp; word games</h1>
     <p class="text-muted mt-2 max-w-2xl">
       Games for a thinking break: pure logic, words, numbers and memory. Every one plays instantly in your browser on a phone or computer, with no
       sign-up.
