@@ -20,7 +20,7 @@ One row per target domain. Keep it current with `/backlink-growth` (modes: resea
 | 12 | | Game portal | reddit.com/r/WebGames | Post | one game page | Not started | | | | Read sidebar rules; one game per post |
 | 13 | | Game portal | crazygames.com (developer portal) | Developer sign-up | arcade games | Not started | | | | Needs their SDK; check exclusivity terms first |
 | 14 | | Game portal | Weekly "free games" round-up blogs/newsletters | Editor contact | /blog/ or a new game | Not started | | | | Research specific titles with /backlink-growth |
-| 15 | | GitHub list | astro.build/showcase | GitHub submission | / | Not started | | | | Built with Astro: a natural fit |
+| 15 | 2026-11-14 | GitHub list | astro.build/showcase | Comment on github.com/withastro/roadmap/discussions/521 (astro.build/showcase/submit redirects there) | / | Pitched | 34 free classic browser games (Mahjong solitaire, 4-player Mahjong… | | | Posted as a comment in the showcase discussion. The comment link is nofollow; the win is a listing on astro.build/showcase, added at the Astro team's discretion. Check the showcase around 2026-12-14; no follow-up needed in the thread |
 | 16 | | GitHub list | "awesome PWA" lists | PR per CONTRIBUTING | / | Not started | | | | Site works offline; check if closed-source is allowed |
 | 17 | | GitHub list | Game-specific awesome lists (sudoku, chess, mahjong) | PR | game hub | Not started | | | | Many require open source |
 | 18 | | GitHub list | "awesome browser games" / HTML5 games lists | PR | /games/ | Not started | | | | Usually open source only |
