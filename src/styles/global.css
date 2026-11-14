@@ -16,8 +16,9 @@
   --felt-2: #175443;
   --header-h: 3.5rem;
 }
+/* Dark tokens: from the system setting unless the visitor picked light, or always when they picked dark (html[data-theme]). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #0e1613;
     --fg: #e7eee9;
     --muted: #9fb0a7;
@@ -30,6 +31,23 @@
     --felt-1: #1b5646;
     --felt-2: #0e3127;
   }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0e1613;
+  --fg: #e7eee9;
+  --muted: #9fb0a7;
+  --card: #16221d;
+  --border: #2a3a33;
+  --brand: #3fae8b;
+  --brand-strong: #5cc6a3;
+  --brand-fg: #08130f;
+  --accent: #f59e0b;
+  --felt-1: #1b5646;
+  --felt-2: #0e3127;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
 }
 
 @theme inline {
@@ -3283,4 +3301,151 @@
 .embedded .game-shell {
   height: 100svh;
   min-height: 0;
+}
+
+/* ---------- Site header: bold pills with icons, Daily badge, theme toggle ---------- */
+@layer components {
+  .nav-icon {
+    flex-shrink: 0;
+  }
+  .nav-pills {
+    align-items: center;
+    gap: 0.15rem;
+  }
+  .nav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.5rem;
+    padding: 0 0.7rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    color: var(--fg);
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .nav-pill .nav-icon {
+    color: var(--brand);
+  }
+  .nav-pill:hover {
+    background: color-mix(in srgb, var(--brand) 12%, transparent);
+    color: var(--brand);
+  }
+  .nav-pill[aria-current='page'] {
+    background: var(--brand);
+    color: var(--brand-fg);
+  }
+  .nav-pill[aria-current='page'] .nav-icon {
+    color: currentColor;
+  }
+  .header-daily {
+    white-space: nowrap;
+  }
+  .header-daily:hover {
+    filter: brightness(1.08);
+  }
+  .header-daily[aria-current='page'] {
+    box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--accent);
+  }
+  .nav-menu-btn {
+    gap: 0.4rem;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 0 0.85rem;
+    min-height: 2.5rem;
+  }
+  .nav-menu[open] > .nav-menu-btn {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  .nav-menu-list {
+    min-width: 14.5rem;
+  }
+  .nav-menu-list a,
+  .theme-row {
+    gap: 0.6rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .nav-menu-list a .nav-icon {
+    color: var(--brand);
+  }
+  .nav-menu-list a[aria-current='page'] {
+    background: var(--brand);
+    color: var(--brand-fg);
+  }
+  .nav-menu-list a[aria-current='page'] .nav-icon {
+    color: currentColor;
+  }
+  .nav-menu-theme {
+    margin-top: 0.3rem;
+    padding-top: 0.3rem;
+    border-top: 1px solid var(--border);
+  }
+  .theme-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--fg);
+    cursor: pointer;
+  }
+  .theme-row:hover {
+    background: var(--bg);
+    color: var(--brand);
+  }
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .theme-toggle:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  /* Show the moon (go dark) in light mode and the sun (go light) in dark mode. */
+  .theme-sun,
+  .theme-label-light {
+    display: none;
+  }
+  :root[data-theme='dark'] .theme-sun,
+  :root[data-theme='dark'] .theme-label-light {
+    display: inline;
+  }
+  :root[data-theme='dark'] .theme-moon,
+  :root[data-theme='dark'] .theme-label-dark {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .theme-sun,
+    :root:not([data-theme='light']) .theme-label-light {
+      display: inline;
+    }
+    :root:not([data-theme='light']) .theme-moon,
+    :root:not([data-theme='light']) .theme-label-dark {
+      display: none;
+    }
+  }
+  /* Phones: keep logo, Daily, Games and the toggle on one line. */
+  @media (max-width: 379px) {
+    .header-daily {
+      padding: 0 0.65rem;
+    }
+    .nav-menu-btn {
+      padding: 0 0.7rem;
+    }
+  }
 }

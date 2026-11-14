@@ -29,10 +29,21 @@ const EXPECTED: Record<string, string> = {
   'nonogram-picross-logic-guide': 'nonogram',
   'number-merge-2048-corner-strategy': 'number-merge',
   'four-in-a-row-winning-strategy': 'four-in-a-row',
+  // Second batch (2026-11-14): common rules and how-to questions (docs/blog-topic-research.md).
+  'klondike-solitaire-odds-of-winning': 'klondike',
+  'how-to-play-backgammon-beginners': 'backgammon',
+  'mahjong-scoring-faan-explained': 'mahjong-4p',
+  'mahjong-tiles-meaning-guide': 'mahjong-solitaire',
+  'hearts-rules-and-shooting-the-moon': 'hearts',
+  'spades-bidding-nil-and-bags-explained': 'spades',
+  'chess-special-moves-castling-en-passant': 'chess',
+  'how-to-play-dominoes-draw-and-block': 'dominoes',
+  'pyramid-solitaire-rules-and-strategy': 'pyramid',
+  'tic-tac-toe-how-to-never-lose': 'tic-tac-toe',
 };
 
 describe('strategy guides (/blog/)', () => {
-  it('has the 12 planned guides, each mapped to its game', () => {
+  it('has the 22 planned guides, each mapped to its game', () => {
     expect(posts.map((p) => p.slug).sort()).toEqual(Object.keys(EXPECTED).sort());
     for (const p of posts) expect(p.front.relatedGameId, p.slug).toBe(EXPECTED[p.slug]);
   });
@@ -70,6 +81,11 @@ describe('strategy guides (/blog/)', () => {
     for (const p of posts)
       for (const [, href] of p.body.matchAll(/\]\((\/[^)]*)\)/g))
         expect(known.some((re) => re.test(href!)), `${p.slug}: ${href}`).toBe(true);
+  });
+
+  it('titles and descriptions are unique', () => {
+    expect(new Set(posts.map((p) => p.front.title)).size).toBe(posts.length);
+    expect(new Set(posts.map((p) => p.front.description)).size).toBe(posts.length);
   });
 
   it('the American rules guide links the printable scorecard guide', () => {

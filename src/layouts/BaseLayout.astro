@@ -2,6 +2,7 @@
 import Seo from '../components/seo/Seo.astro';
 import QuickSwitch from '../components/content/QuickSwitch.astro';
 import Logo from '../components/Logo.astro';
+import NavIcon, { type NavIconName } from '../components/site/NavIcon.astro';
 import AdSlot from '../components/site/AdSlot.astro';
 import Consent from '../components/site/Consent.astro';
 import { CONFIG, FEATURES, SITE } from '../data/site';
@@ -24,13 +25,13 @@ interface Props {
 
 const { quickSwitch = true, embeddable = false, ...props } = Astro.props;
 const path = Astro.url.pathname;
-const nav = [
-  { href: '/cards/', label: 'Mahjong & Cards' },
-  { href: '/board/', label: 'Board Games' },
-  { href: '/puzzles/', label: 'Puzzles & Word' },
-  { href: '/arcade/', label: 'Arcade' },
-  { href: '/games/', label: 'All games' },
-  { href: '/blog/', label: 'Guides' },
+const nav: { href: string; label: string; icon: NavIconName }[] = [
+  { href: '/cards/', label: 'Mahjong & Cards', icon: 'cards' },
+  { href: '/board/', label: 'Board Games', icon: 'board' },
+  { href: '/puzzles/', label: 'Puzzles & Word', icon: 'puzzles' },
+  { href: '/arcade/', label: 'Arcade', icon: 'arcade' },
+  { href: '/games/', label: 'All Games', icon: 'all' },
+  { href: '/blog/', label: 'Guides', icon: 'guides' },
 ];
 const year = new Date().getFullYear();
 /** Which hub a page belongs to, so the menu shows where you are. */
@@ -55,6 +56,8 @@ const current = HUB_OF.find(([prefix]) => path.startsWith(prefix))?.[1];
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- Saved theme before first paint (no flash); with nothing saved the CSS follows the system setting. -->
+    <script is:inline>try{var t=localStorage.getItem('og:theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
     <Seo {...props} />
     <meta name="theme-color" content={SITE.themeColor} />
     <meta name="color-scheme" content="light dark" />
@@ -71,46 +74,55 @@ const current = HUB_OF.find(([prefix]) => path.startsWith(prefix))?.[1];
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-card focus:px-3 focus:py-2 focus:rounded-md">
       Skip to content
     </a>
-    <header class="h-(--header-h) border-b border-border bg-card">
-      <div class="container-page h-full flex items-center justify-between gap-4">
-        <a href="/" class="no-underline text-fg" aria-label={`${SITE.name} home`}>
-          <Logo size={32} />
+    <header class="site-header h-(--header-h) border-b border-border bg-card">
+      <div class="container-page h-full flex items-center justify-between gap-2">
+        <a href="/" class="no-underline text-fg shrink-0" aria-label={`${SITE.name} home`}>
+          <Logo size={32} compact />
         </a>
-        <div class="flex items-center gap-2">
-        <a href="/daily/" class="header-daily" aria-current={path.startsWith('/daily/') ? 'page' : undefined}>
-          <span aria-hidden="true">★</span> Daily
-        </a>
-        <nav aria-label="Main" class="relative">
-          <details class="nav-menu lg:hidden">
-            <summary class="btn">Games</summary>
-            <ul class="nav-menu-list">
+        <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <a href="/daily/" class="header-daily" aria-current={path.startsWith('/daily/') ? 'page' : undefined}>
+            <NavIcon name="daily" /> Daily
+          </a>
+          <nav aria-label="Main" class="relative">
+            <details class="nav-menu xl:hidden">
+              <summary class="btn nav-menu-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+                Games
+              </summary>
+              <ul class="nav-menu-list">
+                {
+                  nav.map((item) => (
+                    <li>
+                      <a href={item.href} aria-current={item.href === current ? 'page' : undefined}>
+                        <NavIcon name={item.icon} /> {item.label}
+                      </a>
+                    </li>
+                  ))
+                }
+                <li class="nav-menu-theme">
+                  <button type="button" class="theme-row" data-theme-toggle aria-pressed="false">
+                    <NavIcon name="moon" class="theme-moon" /><NavIcon name="sun" class="theme-sun" />
+                    <span class="theme-label-dark">Dark mode</span><span class="theme-label-light">Light mode</span>
+                  </button>
+                </li>
+              </ul>
+            </details>
+            <ul class="nav-pills hidden xl:flex">
               {
                 nav.map((item) => (
                   <li>
-                    <a href={item.href} aria-current={item.href === current ? 'page' : undefined}>
+                    <a href={item.href} class="nav-pill" aria-current={item.href === current ? 'page' : undefined}>
+                      <NavIcon name={item.icon} />
                       {item.label}
                     </a>
                   </li>
                 ))
               }
             </ul>
-          </details>
-          <ul class="hidden lg:flex items-center gap-1 text-base">
-            {
-              nav.map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class="px-2 py-2 rounded-md hover:text-brand"
-                    aria-current={item.href === current ? 'page' : undefined}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
+          </nav>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Dark mode" title="Switch light / dark mode">
+            <NavIcon name="moon" size={18} class="theme-moon" /><NavIcon name="sun" size={18} class="theme-sun" />
+          </button>
         </div>
       </div>
     </header>
@@ -165,6 +177,23 @@ const current = HUB_OF.find(([prefix]) => path.startsWith(prefix))?.[1];
       <p class="container-page pb-8 text-xs text-muted">© {year} {SITE.name} · {SITE.domain}</p>
     </footer>
     <Consent part="body" />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, mq = matchMedia('(prefers-color-scheme: dark)');
+        var dark = function () { return (d.dataset.theme || (mq.matches ? 'dark' : 'light')) === 'dark'; };
+        var sync = function () { document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-pressed', dark()); }); };
+        document.querySelectorAll('[data-theme-toggle]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var t = dark() ? 'light' : 'dark';
+            d.dataset.theme = t;
+            try { localStorage.setItem('og:theme', t); } catch (e) {}
+            sync();
+          });
+        });
+        mq.addEventListener('change', sync);
+        sync();
+      })();
+    </script>
     {
       import.meta.env.PROD && (
         <script is:inline>
