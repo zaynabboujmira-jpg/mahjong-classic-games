@@ -8,6 +8,7 @@ import HowToPlay from '../../components/content/HowToPlay.astro';
 import Faq from '../../components/content/Faq.astro';
 import LayoutCard from '../../components/content/LayoutCard.astro';
 import QuickAnswer from '../../components/content/QuickAnswer.astro';
+import EmbedGame from '../../components/content/EmbedGame.astro';
 import CompareTable from '../../components/content/CompareTable.astro';
 import { mahjongLayoutCompare } from '../../lib/mahjong-pages';
 import { layoutPages, type LayoutPage } from '../../lib/mahjong-pages';
@@ -62,6 +63,7 @@ const jsonLd = graph(
   image={image}
   imageAlt={`The ${page.name} Mahjong layout seen from above`}
   jsonLd={jsonLd}
+  embeddable
 >
   <GameShell engineId={page.id} layoutName={page.name} next={page.next}>
     <Breadcrumbs items={crumbs} />
@@ -69,6 +71,7 @@ const jsonLd = graph(
   </GameShell>
 
   <div class="container-page mt-2">
+    <EmbedGame name={`${page.name} Mahjong Solitaire`} />
     <QuickAnswer id="mahjong-solitaire" extra={[{ label: 'This page', value: `${page.name} layout: ${page.tiles} tiles in ${page.layers} layers, ${data.difficulty.toLowerCase()} difficulty` }]} />
     <CompareTable table={mahjongLayoutCompare(all)} current={Astro.url.pathname} />
     <div class="mt-8"></div>

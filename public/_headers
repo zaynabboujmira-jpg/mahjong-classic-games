@@ -6,6 +6,27 @@
   X-Frame-Options: SAMEORIGIN
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
+# Game pages may be embedded on other sites ("Embed this game"): drop the
+# site-wide SAMEORIGIN rule there. Framed pages show only the game.
+/mahjong/*
+  ! X-Frame-Options
+/solitaire/*
+  ! X-Frame-Options
+/sudoku/*
+  ! X-Frame-Options
+/minesweeper/*
+  ! X-Frame-Options
+/word-guess/*
+  ! X-Frame-Options
+/puzzles/*
+  ! X-Frame-Options
+/board/*
+  ! X-Frame-Options
+/cards/*
+  ! X-Frame-Options
+/arcade/*
+  ! X-Frame-Options
+
 # Fingerprinted build assets never change
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

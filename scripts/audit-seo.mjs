@@ -3,11 +3,13 @@
 //  - a canonical URL and a meta description
 //  - pages with a playable game: VideoGame + SoftwareApplication + HowTo + FAQPage + BreadcrumbList JSON-LD
 //  - the homepage and hubs: CollectionPage + ItemList JSON-LD
+//  - strategy guides (/blog/[slug]/): BlogPosting + FAQPage + BreadcrumbList JSON-LD
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const DIST = 'dist';
-const HUBS = ['/', '/games/', '/mahjong/', '/solitaire/', '/sudoku/', '/minesweeper/', '/arcade/', '/puzzles/', '/board/', '/cards/'];
+const HUBS = ['/', '/games/', '/mahjong/', '/solitaire/', '/sudoku/', '/minesweeper/', '/arcade/', '/puzzles/', '/board/', '/cards/', '/blog/'];
+const POST_TYPES = ['BlogPosting', 'FAQPage', 'BreadcrumbList'];
 const GAME_TYPES = ['VideoGame', 'SoftwareApplication', 'HowTo', 'FAQPage', 'BreadcrumbList'];
 
 const walk = (dir) =>
@@ -52,6 +54,7 @@ for (const file of walk(DIST).filter((f) => f.endsWith('.html'))) {
   }
   const hasGame = /<astro-island[^>]+component-url="[^"]*Game/.test(html);
   if (hasGame) for (const t of GAME_TYPES) if (!types.has(t)) fail(`game page without ${t} JSON-LD`);
+  if (/^\/blog\/[^/]+\/$/.test(path)) for (const t of POST_TYPES) if (!types.has(t)) fail(`guide without ${t} JSON-LD`);
   if (HUBS.includes(path)) for (const t of ['CollectionPage', 'ItemList']) if (!types.has(t)) fail(`hub without ${t} JSON-LD`);
 }
 

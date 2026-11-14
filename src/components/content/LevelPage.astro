@@ -4,6 +4,7 @@ import Breadcrumbs from '../seo/Breadcrumbs.astro';
 import Faq from './Faq.astro';
 import QuickAnswer from './QuickAnswer.astro';
 import CompareTable from './CompareTable.astro';
+import EmbedGame from './EmbedGame.astro';
 import type { Comparison } from '../../data/compare';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
 import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
@@ -86,7 +87,7 @@ const jsonLd = graph(
 );
 ---
 
-<BaseLayout title={data.title} description={data.description} image={image} imageAlt={imageAlt} jsonLd={jsonLd}>
+<BaseLayout title={data.title} description={data.description} image={image} imageAlt={imageAlt} jsonLd={jsonLd} embeddable>
   <div class="game-shell">
     <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
@@ -96,6 +97,7 @@ const jsonLd = graph(
   </div>
 
   <div class="container-page mt-2">
+    <EmbedGame name={data.h1.split(/ [–—:-] /)[0]!} />
     <QuickAnswer id={qa} extra={qaExtra ?? []} />
     {compare && <CompareTable table={compare} current={Astro.url.pathname} />}
     <article class="prose-copy max-w-3xl mt-6">

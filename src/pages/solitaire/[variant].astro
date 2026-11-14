@@ -9,6 +9,7 @@ import PyramidGame from '../../components/game/PyramidGame';
 import { FAMOUS_DEALS } from '../../data/freecell';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import Faq from '../../components/content/Faq.astro';
+import EmbedGame from '../../components/content/EmbedGame.astro';
 import QuickAnswer from '../../components/content/QuickAnswer.astro';
 import CompareTable from '../../components/content/CompareTable.astro';
 import { SOLITAIRE_COMPARE } from '../../data/compare';
@@ -57,7 +58,7 @@ const jsonLd = graph(
 );
 ---
 
-<BaseLayout title={data.title} description={data.description} image={image} imageAlt={`${data.title} cards on a green table`} jsonLd={jsonLd}>
+<BaseLayout title={data.title} description={data.description} image={image} imageAlt={`${data.title} cards on a green table`} jsonLd={jsonLd} embeddable>
   <div class="game-shell">
     <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
@@ -70,6 +71,7 @@ const jsonLd = graph(
   </div>
 
   <div class="container-page mt-2">
+    <EmbedGame name={data.h1.split(/ [–—:-] /)[0]!} />
     <QuickAnswer id={data.engine} />
     <CompareTable table={SOLITAIRE_COMPARE} current={Astro.url.pathname} />
     <article class="prose-copy max-w-3xl mt-6">

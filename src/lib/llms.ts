@@ -4,6 +4,7 @@ import { FAMOUS_DEALS } from '../data/freecell';
 import { HOW_TO_STEPS } from '../data/mahjong';
 import { FEATURES, FREE_LINE, SITE } from '../data/site';
 import { layoutPages } from './mahjong-pages';
+import { allPosts, BLOG_PATH, postGame, postPath } from './blog';
 import { CATEGORIES as GUIDE_CATEGORIES, FAQ as GUIDE_FAQ, GUIDE_PATH, GUIDE_SUMMARY, GUIDE_TITLE, HOW_TO as GUIDE_HOW_TO, NOTATION, SCORECARD_PDF } from '../data/american-guide';
 
 /**
@@ -106,6 +107,15 @@ export async function llmsTxt(site: URL): Promise<string> {
     `- [${GUIDE_TITLE}](${abs(GUIDE_PATH)}): ${GUIDE_SUMMARY} Direct PDF: ${abs(SCORECARD_PDF)}`,
     '',
   );
+  const posts = await allPosts();
+  lines.push(
+    '## Strategy guides',
+    '',
+    `Index: ${abs(BLOG_PATH)}`,
+    '',
+    ...posts.map((p) => `- [${p.data.title}](${abs(postPath(p))}): ${p.data.description}`),
+    '',
+  );
   lines.push(
     '## Daily challenges and stats',
     '',
@@ -155,6 +165,24 @@ export async function llmsFullTxt(site: URL): Promise<string> {
     ...GUIDE_FAQ.flatMap((f) => [`- Q: ${f.q}`, `  A: ${f.a}`]),
     '',
   );
+  for (const p of await allPosts()) {
+    const game = postGame(p);
+    lines.push(
+      `## Guide: ${p.data.title}`,
+      '',
+      `URL: ${abs(postPath(p))}`,
+      `Play: ${game.name} at ${abs(game.href)}`,
+      '',
+      p.data.description,
+      '',
+      'Key takeaways:',
+      ...p.data.takeaways.map((t) => `- ${t}`),
+      '',
+      'FAQ:',
+      ...p.data.faqs.flatMap((f) => [`- Q: ${f.q}`, `  A: ${f.a}`]),
+      '',
+    );
+  }
   for (const g of CATALOG) {
     lines.push(`## ${g.name}`, '', `URL: ${abs(g.play)}`, '', g.hook, ...factLines(g), '');
     for (const s of pages[g.id] ?? []) {

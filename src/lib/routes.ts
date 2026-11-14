@@ -1,8 +1,9 @@
 import { getCollection } from 'astro:content';
 import { FAMOUS_DEALS } from '../data/freecell';
 import { GUIDE_PATH, GUIDE_UPDATED } from '../data/american-guide';
+import { allPosts, BLOG_PATH, postPath, postUpdated } from './blog';
 
-export type SitemapSection = 'pages' | 'mahjong' | 'solitaire' | 'sudoku' | 'minesweeper' | 'word' | 'arcade' | 'puzzles' | 'board' | 'cards';
+export type SitemapSection = 'pages' | 'mahjong' | 'solitaire' | 'sudoku' | 'minesweeper' | 'word' | 'arcade' | 'puzzles' | 'board' | 'cards' | 'blog';
 export interface SitemapEntry {
   path: string;
   section: SitemapSection;
@@ -22,6 +23,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const puzzles = (await getCollection('puzzles')).sort((a, b) => a.data.order - b.data.order);
   const board = (await getCollection('board')).sort((a, b) => a.data.order - b.data.order);
   const cards = (await getCollection('cards')).sort((a, b) => a.data.order - b.data.order);
+  const posts = await allPosts();
   const newestOf = (entries: { data: { updated: Date } }[]) =>
     entries.reduce<Date | undefined>((d, e) => (!d || e.data.updated > d ? e.data.updated : d), undefined);
   const newestVariant = variants.reduce<Date | undefined>((d, v) => (!d || v.data.updated > d ? v.data.updated : d), undefined);
@@ -67,6 +69,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     ...levelEntries('/puzzles/', 'puzzles', puzzles, newestOf(puzzles)),
     ...levelEntries('/board/', 'board', board, newestOf(board)),
     ...levelEntries('/cards/', 'cards', cards, newestOf(cards)),
+    { path: BLOG_PATH, section: 'blog', priority: 0.7, ...(posts[0] ? { lastmod: postUpdated(posts[0]) } : {}) },
+    ...posts.map((p) => ({ path: postPath(p), section: 'blog' as const, priority: 0.7, lastmod: postUpdated(p) })),
   ];
 }
 
@@ -83,7 +87,7 @@ function levelEntries(
   ];
 }
 
-export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong', 'solitaire', 'sudoku', 'minesweeper', 'word', 'arcade', 'puzzles', 'board', 'cards'];
+export const SITEMAP_SECTIONS: readonly SitemapSection[] = ['pages', 'mahjong', 'solitaire', 'sudoku', 'minesweeper', 'word', 'arcade', 'puzzles', 'board', 'cards', 'blog'];
 
 export function sitemapXml(entries: readonly SitemapEntry[], site: URL): string {
   const urls = entries

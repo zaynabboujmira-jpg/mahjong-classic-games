@@ -10,7 +10,7 @@ import { score } from '../../engines/word/game';
 const solve = (answer: string, ...guesses: string[]) =>
   [...guesses, answer].map((g) => ({ word: g.toUpperCase(), marks: score(g, answer).map((m) => m[0]).join('') }));
 import { generate as nonogram } from '../../engines/puzzles/nonogram';
-import { arcadeArt, newGameArt, cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
+import { arcadeArt, guideArt, newGameArt, cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
 
 const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese', { title: string; subtitle: string; tiles: ArtTile[] }> = {
   american: {
@@ -57,6 +57,7 @@ export const getStaticPaths = (async () => {
   const pages = await layoutPages();
   return [
     { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `34 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'blog' }, props: { title: 'Strategy Guides', subtitle: 'Tactics for classic games · Free', art: guideArt('<path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>') } },
     { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong' }, props: { title: 'Mahjong Solitaire Layouts', subtitle: `${pages.length} layouts · Play free`, art: butterfly } },
     ...pages.map((p) => ({

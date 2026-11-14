@@ -566,13 +566,28 @@ export function newGameArt(
   return { svg, width: 540, height: 300 };
 }
 
+/** Strategy guides: the game's catalog icon (24 x 24 line art) drawn large on a cream tile. */
+export function guideArt(icon: string): OgArt {
+  // Browsers keep the first of a repeated attribute (some icons repeat fill); resvg rejects repeats, so drop the later ones.
+  const inner = icon
+    .replace(/<[a-z]+[^>]*>/g, (tag) => {
+      const seen = new Set<string>();
+      return tag.replace(/\s([a-z-]+)="[^"]*"/g, (attr, name: string) => (seen.has(name) ? '' : (seen.add(name), attr)));
+    })
+    .replaceAll('currentColor', '#0f5c4a');
+  const svg = `<g transform="translate(110 0)"><rect x="12" y="14" width="320" height="320" rx="44" fill="#0b4738"/><rect width="320" height="320" rx="44" fill="#fbf6e9"/><g transform="translate(40 40) scale(10)">${inner}</g></g>`;
+  return { svg, width: 540, height: 334 };
+}
+
 /** 1200x630 social card: title on the left, artwork on the right. */
-export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt }): string {
-  const titleLines = wrap(opts.title, 16).slice(0, 3);
+export function ogCardSvg(opts: { title: string; subtitle: string; art: OgArt; long?: boolean }): string {
+  // Long titles (articles) get a smaller font so up to four lines fit beside the art.
+  const [chars, size, step, top] = opts.long ? [21, 54, 64, 150] : [16, 76, 84, 200];
+  const titleLines = wrap(opts.title, chars).slice(0, opts.long ? 4 : 3);
   const titleSvg = titleLines
-    .map((l, i) => `<text x="72" y="${200 + i * 84}" font-size="76" font-weight="700" fill="#ffffff">${esc(l)}</text>`)
+    .map((l, i) => `<text x="72" y="${top + i * step}" font-size="${size}" font-weight="700" fill="#ffffff">${esc(l)}</text>`)
     .join('');
-  const subY = 200 + titleLines.length * 84 + 20;
+  const subY = top + titleLines.length * step + 20;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs><radialGradient id="felt" cx="0.6" cy="0.35" r="0.9"><stop offset="0" stop-color="#2b7a62"/><stop offset="1" stop-color="#123f33"/></radialGradient></defs>
   <rect width="1200" height="630" fill="url(#felt)"/>

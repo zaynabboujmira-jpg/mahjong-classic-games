@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, graph, itemList, organization, webPage, website } from '../../lib/seo/schema';
+import { allPosts, BLOG_PATH, POST_CATEGORIES, postGame, postPath } from '../../lib/blog';
+import { GUIDE_PATH, GUIDE_TITLE, GUIDE_SUMMARY } from '../../data/american-guide';
+
+/** The strategy guides hub: jump links per category, then the guides in each. No client JS. */
+const posts = await allPosts();
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(BLOG_PATH, site);
+const title = 'Game Strategy Guides & Rules';
+const description =
+  'Free strategy guides for classic games: Mahjong, Spider and FreeCell solitaire, Sudoku, Minesweeper, chess, checkers, word games and more, with tips you can try at once.';
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Guides', href: BLOG_PATH },
+];
+const sections = POST_CATEGORIES.map((c) => ({ ...c, posts: posts.filter((p) => p.data.category === c.id) })).filter((c) => c.posts.length);
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, title, description, 'CollectionPage', `${url}#guides`),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  itemList(
+    url,
+    `${title}`,
+    posts.map((p) => ({ name: p.data.title, url: new URL(postPath(p), site).href, description: p.data.description })),
+    'guides',
+  ),
+);
+---
+
+<BaseLayout title={title} description={description} image={ogImagePath('blog')} imageAlt="Free Play Classic strategy guides" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Strategy guides &amp; rules</h1>
+    <p class="text-muted mt-2 max-w-3xl">
+      Practical tactics for the games on this site, written to be tried straight away. Each guide ends with a link to play the game free in
+      your browser.
+    </p>
+
+    <nav class="blog-filter" aria-label="Guide categories">
+      <a class="btn" href="#all-guides">All ({posts.length})</a>
+      {sections.map((c) => <a class="btn" href={`#${c.slug}`}>{c.id} ({c.posts.length})</a>)}
+    </nav>
+
+    <div id="all-guides">
+      {
+        sections.map((c) => (
+          <section id={c.slug} class="portal-section" aria-labelledby={`${c.slug}-title`}>
+            <h2 id={`${c.slug}-title`} class="portal-title">{c.id}</h2>
+            <p class="text-muted mb-4">{c.blurb}</p>
+            <ul class="blog-grid">
+              {c.posts.map((p) => (
+                <li>
+                  <a class="blog-card" href={postPath(p)}>
+                    <span class="blog-card-top">
+                      <span class="blog-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" set:html={postGame(p).icon} />
+                      </span>
+                      <span class="blog-cat">{postGame(p).name}</span>
+                    </span>
+                    <h3>{p.data.title}</h3>
+                    <p>{p.data.description}</p>
+                    <span class="blog-card-meta">{p.data.readingTime} min read</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+    <section class="guide-callout" aria-labelledby="printables-heading">
+      <h2 id="printables-heading">Free printable</h2>
+      <p><strong>{GUIDE_TITLE}.</strong> {GUIDE_SUMMARY}</p>
+      <div class="guide-callout-actions">
+        <a class="btn btn-primary" href={GUIDE_PATH}>Open the guide</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -4,6 +4,7 @@ import { z } from 'astro/zod';
 import { LAYOUTS } from './engines/mahjong/layouts';
 import { LEVEL_IDS } from './engines/minesweeper/game';
 import { DIFFICULTIES } from './engines/sudoku/generator';
+import { blogSchema } from './data/blog';
 
 const layoutIds = LAYOUTS.map((l) => l.id) as [string, ...string[]];
 
@@ -114,4 +115,10 @@ const cards = defineCollection({
   schema: levelPage(['hearts', 'spades'] as const),
 });
 
-export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade, puzzles, board, cards };
+/** Strategy and rules guides (/blog/[slug]/); the schema lives in src/data/blog.ts so tests can use it. */
+const blog = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/blog' }),
+  schema: blogSchema,
+});
+
+export const collections = { layouts, solitaire, sudoku, minesweeper, tableMahjong, word, arcade, puzzles, board, cards, blog };

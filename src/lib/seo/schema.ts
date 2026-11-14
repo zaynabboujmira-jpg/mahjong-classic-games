@@ -142,6 +142,43 @@ export function itemList(url: string, name: string, items: readonly { name: stri
   };
 }
 
+export interface PostInfo {
+  url: string;
+  headline: string;
+  description: string;
+  image: string;
+  datePublished: Date;
+  dateModified: Date;
+  section: string;
+  keywords: readonly string[];
+  wordCount: number;
+  /** The game the article is about. */
+  about: { name: string; url: string };
+}
+
+/** A strategy or rules article, published by the Organization. */
+export function blogPosting(origin: string, p: PostInfo): JsonLd {
+  return {
+    '@type': 'BlogPosting',
+    '@id': id(p.url, 'article'),
+    headline: p.headline,
+    description: p.description,
+    image: p.image,
+    url: p.url,
+    datePublished: p.datePublished.toISOString().slice(0, 10),
+    dateModified: p.dateModified.toISOString().slice(0, 10),
+    articleSection: p.section,
+    keywords: p.keywords.join(', '),
+    wordCount: p.wordCount,
+    inLanguage: SITE.lang,
+    author: { '@id': id(origin, 'organization') },
+    publisher: { '@id': id(origin, 'organization') },
+    mainEntityOfPage: { '@id': id(p.url, 'webpage') },
+    isPartOf: { '@id': id(origin, 'website') },
+    about: { '@type': 'VideoGame', name: p.about.name, url: p.about.url },
+  };
+}
+
 export function graph(...nodes: (JsonLd | null | undefined | false)[]): JsonLd {
   return { '@context': 'https://schema.org', '@graph': nodes.filter(Boolean) };
 }

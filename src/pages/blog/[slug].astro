@@ -1,0 +1,141 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import Faq from '../../components/content/Faq.astro';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { blogPosting, breadcrumbs, faqPage, graph, organization, webPage, website } from '../../lib/seo/schema';
+import { allPosts, BLOG_PATH, formatDate, postGame, postPath, postUpdated, wordCount, type Post } from '../../lib/blog';
+
+/*
+ * One strategy guide: key takeaways, a "Play … free" card, a table of
+ * contents built from the H2s, the article, FAQ and related guides.
+ * Static HTML only: no islands and no scripts.
+ */
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, posts } }));
+}
+
+interface Props {
+  post: Post;
+  posts: Post[];
+}
+const { post, posts } = Astro.props;
+const { data } = post;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+const game = postGame(post);
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const image = ogImagePath(`blog/${post.id}`);
+const updated = postUpdated(post);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Guides', href: BLOG_PATH },
+  { name: data.title, href: postPath(post) },
+];
+// Same game first, then the same category, then the rest.
+const related = posts
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => score(b) - score(a))
+  .slice(0, 3);
+function score(p: Post) {
+  return (p.data.relatedGameId === data.relatedGameId ? 2 : 0) + (p.data.category === data.category ? 1 : 0);
+}
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  { ...webPage(origin, url, data.title, data.description), primaryImageOfPage: new URL(image, site).href },
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  blogPosting(origin, {
+    url,
+    headline: data.title,
+    description: data.description,
+    image: new URL(image, site).href,
+    datePublished: data.pubDate,
+    dateModified: updated,
+    section: data.category,
+    keywords: data.keywords,
+    wordCount: wordCount(post.body ?? ''),
+    about: { name: game.name, url: new URL(game.href, site).href },
+  }),
+  faqPage(url, data.faqs),
+);
+---
+
+<BaseLayout title={data.title} description={data.description} image={image} imageAlt={`${data.title}: a ${game.name} guide`} jsonLd={jsonLd} type="article">
+  <div class="container-page pt-4">
+    <article class="blog-post">
+      <Breadcrumbs items={crumbs} />
+      <header class="mt-3">
+        <a class="blog-cat" href={`${BLOG_PATH}#${data.category.toLowerCase()}`}>{data.category}</a>
+        <h1 class="blog-title">{data.title}</h1>
+        <p class="blog-meta">
+          <time datetime={updated.toISOString().slice(0, 10)}>{data.updatedDate ? 'Updated' : 'Published'} {formatDate(updated)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{data.readingTime} min read</span>
+        </p>
+      </header>
+
+      <section class="qa-box blog-takeaways" aria-labelledby="takeaways">
+        <h2 id="takeaways">Quick answer: key takeaways</h2>
+        <ul>{data.takeaways.map((t) => <li>{t}</li>)}</ul>
+      </section>
+
+      <aside class="play-card" aria-label={`Play ${game.name}`}>
+        <span class="play-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="36" height="36" set:html={game.icon} /></span>
+        <span class="play-card-body">
+          <strong>Play {game.name} Free — Instant Browser Play</strong>
+          <span>No download, no sign-up. Try these tactics right away.</span>
+        </span>
+        <a class="btn btn-primary" href={game.href}>Play now</a>
+      </aside>
+
+      {
+        toc.length > 1 && (
+          <nav class="blog-toc" aria-labelledby="toc-heading">
+            <h2 id="toc-heading">On this page</h2>
+            <ol>
+              {toc.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+
+      <div class="prose-copy blog-body">
+        <Content />
+      </div>
+
+      <p class="blog-play-again">
+        Ready to practise? <a href={game.href}>Play {game.name} free</a>, or browse <a href={BLOG_PATH}>more strategy guides</a>.
+      </p>
+
+      <Faq items={data.faqs} />
+    </article>
+
+    <section class="blog-related" aria-labelledby="related-heading">
+      <h2 id="related-heading">More guides</h2>
+      <ul class="blog-grid">
+        {
+          related.map((p) => (
+            <li>
+              <a class="blog-card" href={postPath(p)}>
+                <span class="blog-cat">{p.data.category}</span>
+                <h3>{p.data.title}</h3>
+                <p>{p.data.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

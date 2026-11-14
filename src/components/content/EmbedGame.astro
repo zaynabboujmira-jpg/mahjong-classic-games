@@ -1,0 +1,31 @@
+---
+import { embedCode } from '../../lib/embed';
+import { canonicalUrl } from '../../lib/seo/meta';
+
+/**
+ * "Embed this game on your site": a native <details> box with a ready-made
+ * iframe snippet plus a credit link to the canonical game page. No script;
+ * the textarea selects itself on focus. Inside the iframe the page shows only
+ * the game (html.embedded, see BaseLayout and global.css), and _headers lets
+ * the game paths be framed.
+ */
+interface Props {
+  /** Game name for the iframe title and the credit link, e.g. "Spider Solitaire". */
+  name: string;
+}
+const { name } = Astro.props;
+const site = Astro.site!;
+const url = canonicalUrl(Astro.url.pathname, site);
+const home = new URL('/', site).href;
+const code = embedCode(name, url, home);
+const id = 'embed-code';
+---
+
+<details class="embed-box">
+  <summary>Embed this game on your site</summary>
+  <p>
+    Free for blogs, schools, libraries and clubs. Paste this HTML where you want the game to appear; please keep the credit link.
+  </p>
+  <label class="sr-only" for={id}>Embed code for {name}</label>
+  <textarea id={id} readonly rows="5" spellcheck="false" onfocus="this.select()">{code}</textarea>
+</details>

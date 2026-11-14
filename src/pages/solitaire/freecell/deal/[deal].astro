@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import { getEntry } from 'astro:content';
+import EmbedGame from '../../../../components/content/EmbedGame.astro';
 import QuickAnswer from '../../../../components/content/QuickAnswer.astro';
 import Faq from '../../../../components/content/Faq.astro';
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
@@ -64,7 +65,7 @@ const others = FAMOUS_DEALS.filter((d) => d.deal !== deal);
 const short = (rank: number) => RANK_LABELS[rank];
 ---
 
-<BaseLayout title={title} description={description} image={image} imageAlt="FreeCell cards on a green table" jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} image={image} imageAlt="FreeCell cards on a green table" jsonLd={jsonLd} embeddable>
   <div class="game-shell">
     <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
@@ -74,6 +75,7 @@ const short = (rank: number) => RANK_LABELS[rank];
   </div>
 
   <div class="container-page mt-2 max-w-4xl">
+    <EmbedGame name={`FreeCell deal #${deal}`} />
     <QuickAnswer id="freecell" extra={[{ label: 'This page', value: `Deal #${deal}: ${note}` }]} />
     <section class="prose-copy mt-6">
       <h2>About deal #{deal}</h2>

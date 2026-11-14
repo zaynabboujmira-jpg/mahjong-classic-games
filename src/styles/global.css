@@ -3030,3 +3030,257 @@
     color: var(--brand-fg);
   }
 }
+
+/* ---------- Strategy guides (/blog/) ---------- */
+@layer components {
+  .blog-post {
+    max-width: 72ch;
+    margin-inline: auto;
+  }
+  .blog-title {
+    font-size: clamp(1.75rem, 4vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-top: 0.35rem;
+  }
+  .blog-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .blog-cat {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .blog-takeaways {
+    margin-top: 1.5rem;
+  }
+  .blog-takeaways ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .blog-takeaways li {
+    margin: 0.35rem 0;
+  }
+  .play-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-top: 1.25rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--felt-1), var(--felt-2));
+    color: #fff;
+  }
+  .play-card-icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 0.8rem;
+    background: #fbf6e9;
+    color: #0f5c4a;
+    flex-shrink: 0;
+  }
+  .play-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 14rem;
+    line-height: 1.35;
+  }
+  .play-card-body strong {
+    font-size: 1.1rem;
+  }
+  .play-card-body span {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+  .play-card .btn-primary {
+    background: #fff;
+    border-color: #fff;
+    color: #0b4738;
+  }
+  .blog-toc {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--card);
+  }
+  .blog-toc h2 {
+    font-size: 1rem;
+    font-weight: 800;
+  }
+  .blog-toc ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+    margin-top: 0.4rem;
+  }
+  .blog-toc li {
+    margin: 0.2rem 0;
+  }
+  .blog-toc a {
+    color: var(--brand);
+  }
+  .blog-body {
+    margin-top: 1.5rem;
+  }
+  .prose-copy h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .prose-copy h2[id],
+  .prose-copy h3[id] {
+    scroll-margin-top: 1rem;
+  }
+  .prose-copy strong {
+    font-weight: 700;
+  }
+  .prose-copy table {
+    width: 100%;
+    margin: 0 0 1rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .prose-copy th,
+  .prose-copy td {
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  .prose-copy th {
+    background: var(--card);
+  }
+  .blog-play-again {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .blog-play-again a {
+    color: var(--brand);
+    font-weight: 600;
+  }
+  .blog-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+  .blog-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+  .blog-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0.35rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    background: var(--card);
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .blog-card:hover,
+  .blog-card:focus-visible {
+    border-color: var(--brand);
+    transform: translateY(-2px);
+  }
+  .blog-card h3 {
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .blog-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .blog-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .blog-card-icon {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: var(--bg);
+    color: var(--brand);
+  }
+  .blog-card-meta {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .blog-related {
+    max-width: 72rem;
+    margin: 3rem auto 0;
+  }
+  .blog-related h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .guide-link {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+  }
+  .guide-link a {
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  /* ---------- "Embed this game" box below the game ---------- */
+  .embed-box {
+    margin-top: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--card);
+    padding: 0.6rem 1rem;
+  }
+  .embed-box summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .embed-box p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .embed-box textarea {
+    width: 100%;
+    font: 0.8rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--bg);
+    color: var(--fg);
+    resize: vertical;
+  }
+}
+
+/* Inside another site's iframe (html.embedded, set by BaseLayout on game pages): show only the game. */
+.embedded body > :not(main):not(#consent),
+.embedded main > :not(.game-shell),
+.embedded .game-head nav[aria-label='Breadcrumb'] {
+  display: none !important;
+}
+.embedded .game-shell {
+  height: 100svh;
+  min-height: 0;
+}

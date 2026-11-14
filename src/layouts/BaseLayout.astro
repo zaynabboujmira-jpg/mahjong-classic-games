@@ -17,9 +17,12 @@ interface Props {
   jsonLd?: JsonLd;
   /** Show the "More classic games" bar (off on pages that already list every game). */
   quickSwitch?: boolean;
+  type?: 'website' | 'article';
+  /** A game page that others may embed: inside an iframe it shows only the game (see .embedded in global.css). */
+  embeddable?: boolean;
 }
 
-const { quickSwitch = true, ...props } = Astro.props;
+const { quickSwitch = true, embeddable = false, ...props } = Astro.props;
 const path = Astro.url.pathname;
 const nav = [
   { href: '/cards/', label: 'Mahjong & Cards' },
@@ -27,6 +30,7 @@ const nav = [
   { href: '/puzzles/', label: 'Puzzles & Word' },
   { href: '/arcade/', label: 'Arcade' },
   { href: '/games/', label: 'All games' },
+  { href: '/blog/', label: 'Guides' },
 ];
 const year = new Date().getFullYear();
 /** Which hub a page belongs to, so the menu shows where you are. */
@@ -41,6 +45,7 @@ const HUB_OF: [string, string][] = [
   ['/word-guess/', '/puzzles/'],
   ['/arcade/', '/arcade/'],
   ['/games/', '/games/'],
+  ['/blog/', '/blog/'],
 ];
 const current = HUB_OF.find(([prefix]) => path.startsWith(prefix))?.[1];
 ---
@@ -60,6 +65,7 @@ const current = HUB_OF.find(([prefix]) => path.startsWith(prefix))?.[1];
     {CONFIG.gscVerification && <meta name="google-site-verification" content={CONFIG.gscVerification} />}
     {CONFIG.bingVerification && <meta name="msvalidate.01" content={CONFIG.bingVerification} />}
     <Consent part="head" />
+    {embeddable && <script is:inline>if (self !== top) document.documentElement.classList.add('embedded');</script>}
   </head>
   <body class="min-h-screen flex flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-card focus:px-3 focus:py-2 focus:rounded-md">
@@ -131,6 +137,7 @@ const current = HUB_OF.find(([prefix]) => path.startsWith(prefix))?.[1];
             <li><a href="/puzzles/">Puzzles &amp; word games</a></li>
             <li><a href="/arcade/">Arcade games</a></li>
             <li><a href="/games/">All games</a></li>
+            <li><a href="/blog/">Strategy guides</a></li>
           </ul>
         </nav>
         <nav aria-label="Popular games">

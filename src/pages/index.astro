@@ -7,6 +7,7 @@ import { CATALOG, CATEGORIES } from '../data/catalog';
 import { FEATURES, SITE } from '../data/site';
 import { canonicalUrl, ogImagePath } from '../lib/seo/meta';
 import { faqPage, graph, itemList, organization, webPage, website } from '../lib/seo/schema';
+import { allPosts, BLOG_PATH, postGame, postPath } from '../lib/blog';
 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
@@ -14,6 +15,8 @@ const url = canonicalUrl('/', site);
 const title = `${SITE.name} – 34 Classic Browser Games`;
 const description = SITE.description;
 const image = ogImagePath('home');
+
+const latest = (await allPosts()).slice(0, 6);
 
 const faq = [
   {
@@ -80,6 +83,32 @@ const jsonLd = graph(
   <div class="container-page">
     <GameCatalog />
     <AdSlot />
+
+    <section class="portal-section" aria-labelledby="guides-title">
+      <h2 id="guides-title" class="portal-title">Latest strategy guides</h2>
+      <p class="text-muted mb-4 max-w-2xl">
+        Tactics you can try in your next game.{' '}
+        <a class="text-brand font-semibold whitespace-nowrap" href={BLOG_PATH}>All guides →</a>
+      </p>
+      <ul class="blog-grid">
+        {
+          latest.map((p) => (
+            <li>
+              <a class="blog-card" href={postPath(p)}>
+                <span class="blog-card-top">
+                  <span class="blog-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" set:html={postGame(p).icon} />
+                  </span>
+                  <span class="blog-cat">{p.data.category}</span>
+                </span>
+                <h3>{p.data.title}</h3>
+                <span class="blog-card-meta">{p.data.readingTime} min read</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
     <section class="portal-section" aria-labelledby="why-title">
       <h2 id="why-title" class="portal-title">Why {SITE.name}</h2>
