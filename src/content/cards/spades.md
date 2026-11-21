@@ -2,9 +2,9 @@
 level: spades
 order: 2
 name: Spades
-title: Spades Card Game – Play Free with a Partner
-h1: Spades – the partnership card game with bids, Nil and bags
-description: "Play Spades free online with a computer partner against two computer opponents. Bid your tricks, try a Nil, watch the bags. First team to 500 wins."
+title: Free Online Spades – Card Game with a Partner
+h1: Spades – free online card game with a computer partner
+description: Play the game of Spades free online with a computer partner against two computer players. Bid your tricks, try Nil and watch the bags. No sign-up.
 summary: Bid and win tricks with a partner; spades are always trumps. Nil bids, bags, first to 500.
 keywords: [spades card game, play spades online, spades free, spades with partner, nil bid spades]
 updated: 2026-11-13
@@ -32,7 +32,7 @@ faq:
 
 ## The classic partnership trick-taking game
 
-Spades is played by four players in two teams. Spades are always trumps. Before each round, every player bids the number of tricks they think they can win, and the team then tries to make its combined bid, no more and no less.
+The game of Spades is played by four players in two teams. Spades are always trumps. Before each round, every player bids the number of tricks they think they can win, and the team then tries to make its combined bid, no more and no less.
 
 ## Strategy for winning partnerships
 

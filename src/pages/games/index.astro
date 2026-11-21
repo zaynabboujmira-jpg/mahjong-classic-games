@@ -1,18 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { HUB_FAQ } from '../../data/hub-faq';
+import Faq from '../../components/content/Faq.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import GameCatalog from '../../components/content/GameCatalog.astro';
 import { CATALOG } from '../../data/catalog';
 import { FEATURES, SITE } from '../../data/site';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
-import { breadcrumbs, graph, itemList, organization, webPage, website } from '../../lib/seo/schema';
+import { breadcrumbs, faqPage, graph, itemList, organization, webPage, website } from '../../lib/seo/schema';
 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
 const title = 'All 34 Free Classic Games';
 const description =
-  'Every game on Free Play Classic: Mahjong, 4-player Mahjong, Klondike, Spider, FreeCell, Hearts, Spades, Chess, Backgammon, Sudoku, Mini Crossword, Word Builder and more.';
+  'All 34 free classic games: Mahjong, solitaire, Hearts, Spades, chess, checkers, backgammon, Sudoku, word puzzles and arcade games. No sign-up.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'All games', href: '/games/' },
@@ -23,6 +25,7 @@ const jsonLd = graph(
   webPage(origin, url, title, description, 'CollectionPage', `${url}#games`),
   breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
   itemList(url, `All ${SITE.name} games`, CATALOG.map((g) => ({ name: g.name, url: new URL(g.play, site).href, description: g.hook }))),
+  faqPage(url, HUB_FAQ.games),
 );
 ---
 
@@ -32,5 +35,7 @@ const jsonLd = graph(
     <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">All games</h1>
     <p class="text-muted mt-2 max-w-2xl">All 34 games play instantly in your browser, with {FEATURES.ads ? 'no download' : 'no ads'} and no sign-up.</p>
     <GameCatalog />
+
+    <Faq items={HUB_FAQ.games} />
   </div>
 </BaseLayout>

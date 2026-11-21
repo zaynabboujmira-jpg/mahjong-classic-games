@@ -1,12 +1,12 @@
 ---
 engine: klondike
-title: Klondike Solitaire
-h1: Klondike Solitaire – free, Draw 1 or Draw 3
-description: Play Klondike Solitaire free online in Draw 1 or Draw 3. Drag or tap to move, unlimited undo, hints and auto-finish. No download and no sign-up needed.
+title: Klondike Solitaire Online – Free, Turn 1 or 3
+h1: Klondike Solitaire – free online, Turn 1 or Turn 3
+description: "Play Klondike Solitaire online free: Turn 1 (Draw 1) or Turn 3, unlimited passes, hints and undo. The classic patience game, no download or sign-up."
 summary: The classic patience game. Build four foundations from Ace to King, in Draw 1 or Draw 3.
 defaultDraw: 1
 order: 1
-keywords: [klondike solitaire, solitaire, free solitaire, solitaire draw 3, solitaire draw 1]
+keywords: [klondike solitaire, klondike solitaire online, klondike solitaire turn 3, klondike solitaire turn one, free klondike solitaire]
 updated: 2026-11-11
 howTo:
   - name: Know the goal
@@ -20,6 +20,8 @@ howTo:
 faq:
   - q: What is the difference between Draw 1 and Draw 3?
     a: In Draw 1 you turn one card from the stock at a time and can reach every card. In Draw 3 you turn three at once and can only play the top one, which makes the game noticeably harder.
+  - q: Is Turn 1 the same as Draw 1?
+    a: Yes. Turn 1 and Turn 3 are other names for Draw 1 and Draw 3, the number of cards you turn from the stock each time. Choose Draw 1 or Draw 3 under "Cards per draw" in the game.
   - q: How many times can I go through the stock?
     a: As many times as you like. When the stock is empty, tap it to turn the waste pile back over.
   - q: Is every Klondike deal winnable?

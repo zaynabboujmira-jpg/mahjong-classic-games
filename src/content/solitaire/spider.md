@@ -1,9 +1,9 @@
 ---
 engine: spider
 order: 2
-title: Spider Solitaire
-h1: Spider Solitaire – 1, 2 or 4 suits, free to play
-description: Play Spider Solitaire free online with 1, 2 or 4 suits. Ten columns, unlimited undo, hints and automatic clearing of finished runs. No download.
+title: Spider Solitaire Online – Free, 1, 2 or 4 Suits
+h1: Spider Solitaire – free online with 1, 2 or 4 suits
+description: Play Spider Solitaire online free with 1, 2 or 4 suits. Build King-to-Ace runs across ten columns, with hints and undo. No download or sign-up.
 summary: Build eight full runs from King to Ace across ten columns. Choose one, two or four suits.
 defaultSuits: 1
 keywords: [spider solitaire, spider solitaire 2 suits, spider solitaire 4 suits, free spider solitaire, spider solitaire 1 suit]

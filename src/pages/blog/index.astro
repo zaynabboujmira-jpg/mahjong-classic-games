@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { HUB_FAQ } from '../../data/hub-faq';
+import Faq from '../../components/content/Faq.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
-import { breadcrumbs, graph, itemList, organization, webPage, website } from '../../lib/seo/schema';
+import { breadcrumbs, faqPage, graph, itemList, organization, webPage, website } from '../../lib/seo/schema';
 import { allPosts, BLOG_PATH, POST_CATEGORIES, postGame, postPath } from '../../lib/blog';
 import { GUIDE_PATH, GUIDE_TITLE, GUIDE_SUMMARY } from '../../data/american-guide';
 
@@ -13,7 +15,7 @@ const origin = new URL('/', site).href;
 const url = canonicalUrl(BLOG_PATH, site);
 const title = 'Game Strategy Guides & Rules';
 const description =
-  'Free strategy guides for classic games: Mahjong, Spider and FreeCell solitaire, Sudoku, Minesweeper, chess, checkers, word games and more, with tips you can try at once.';
+  'Free rules and strategy guides for classic games: Mahjong, solitaire, Sudoku, Minesweeper, chess, checkers, backgammon, Hearts and Spades.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Guides', href: BLOG_PATH },
@@ -31,13 +33,14 @@ const jsonLd = graph(
     posts.map((p) => ({ name: p.data.title, url: new URL(postPath(p), site).href, description: p.data.description })),
     'guides',
   ),
+  faqPage(url, HUB_FAQ.blog),
 );
 ---
 
 <BaseLayout title={title} description={description} image={ogImagePath('blog')} imageAlt="Free Play Classic strategy guides" jsonLd={jsonLd}>
   <div class="container-page pt-4">
     <Breadcrumbs items={crumbs} />
-    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Strategy guides &amp; rules</h1>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Rules &amp; strategy guides</h1>
     <p class="text-muted mt-2 max-w-3xl">
       Practical tactics for the games on this site, written to be tried straight away. Each guide ends with a link to play the game free in
       your browser.
@@ -83,5 +86,7 @@ const jsonLd = graph(
         <a class="btn btn-primary" href={GUIDE_PATH}>Open the guide</a>
       </div>
     </section>
+
+    <Faq items={HUB_FAQ.blog} />
   </div>
 </BaseLayout>

@@ -1,11 +1,11 @@
 ---
 title: "Advanced Sudoku Techniques: Pairs, X-Wing and Swordfish"
-description: "Solve hard and expert Sudoku without guessing: pencil marks, hidden singles, naked and hidden pairs, pointing pairs, X-Wing, XY-Wing and Swordfish explained."
+description: "Advanced Sudoku solving techniques for hard and expert puzzles: pencil marks, hidden singles, pairs, pointing pairs, X-Wing, XY-Wing and Swordfish."
 pubDate: 2026-11-14
 category: Strategy
 relatedGameId: sudoku
 readingTime: 4
-keywords: [advanced sudoku techniques, sudoku x-wing, sudoku swordfish, xy-wing sudoku, how to solve hard sudoku]
+keywords: [sudoku solving techniques advanced, advanced sudoku techniques, advanced sudoku strategies, sudoku x-wing, sudoku swordfish, xy-wing sudoku, how to solve hard sudoku]
 takeaways:
   - "A well-made Sudoku never needs guessing: every hard puzzle on this site can be solved by logic, and the techniques below are the toolkit."
   - "Pencil marks (candidates) are essential beyond medium level; most advanced techniques work by removing candidates, not by placing digits directly."

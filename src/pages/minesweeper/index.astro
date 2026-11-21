@@ -5,6 +5,8 @@ import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import CompareTable from '../../components/content/CompareTable.astro';
 import { MINESWEEPER_COMPARE } from '../../data/compare';
 import Faq from '../../components/content/Faq.astro';
+import EmbedGame from '../../components/content/EmbedGame.astro';
+import MinesweeperGame from '../../components/game/MinesweeperGame';
 import { LEVELS } from '../../engines/minesweeper/game';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
 import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
@@ -13,9 +15,11 @@ const levels = (await getCollection('minesweeper')).sort((a, b) => a.data.order 
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Minesweeper Online – 3 Classic Levels';
+const title = 'Minesweeper Online – Free, 3 Classic Levels';
 const description =
-  'Play free Minesweeper online: Beginner 9×9, Intermediate 16×16 and Expert 30×16. The first click is always safe. Flags, chording, works on phones.';
+  'Play Minesweeper online free: Beginner, Intermediate and Expert boards, a safe first click, flags and chording. No download, on phone or desktop.';
+/** The board at the top of the hub: the same Beginner field as /minesweeper/beginner/. */
+const HUB_LEVEL = 'beginner' as const;
 const image = ogImagePath('minesweeper');
 const crumbs = [
   { name: 'Home', href: '/' },
@@ -28,6 +32,10 @@ const steps = [
   { name: 'Clear the field', text: 'Open every cell that is not a mine to win. Double-click a satisfied number to open its neighbours at once.' },
 ];
 const faq = [
+  {
+    q: 'Can I play Minesweeper online for free?',
+    a: 'Yes. All three levels are free to play online, with no download and no account. The board at the top of this page is Beginner; choose Intermediate or Expert whenever you are ready.',
+  },
   {
     q: 'How do I play Minesweeper on a phone?',
     a: 'Tap to open a cell and long-press to place a flag. If you prefer, turn on Flag mode so taps place flags. Double-tap a number, or tap it with two fingers, to chord.',
@@ -75,25 +83,38 @@ const jsonLd = graph(
 );
 ---
 
-<BaseLayout title={title} description={description} image={image} imageAlt="A Minesweeper field with numbers and flags" jsonLd={jsonLd}>
-  <div class="container-page pt-4">
-    <Breadcrumbs items={crumbs} />
-    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Free Minesweeper</h1>
-    <p class="text-muted mt-2 max-w-2xl">
-      The three classic boards, with a safe first click, flags, chording and your best time saved. Play with a mouse, a keyboard or a
-      touch screen.
+<BaseLayout title={title} description={description} image={image} imageAlt="A Minesweeper field with numbers and flags" jsonLd={jsonLd} embeddable>
+  <div class="game-shell">
+    <div class="container-page pt-2 pb-1 game-head">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">Minesweeper online – free, 3 classic levels</h1>
+    </div>
+    <MinesweeperGame
+      client:load
+      level={HUB_LEVEL}
+      levels={levels.map((l) => ({ id: l.data.level, name: l.data.name }))}
+      otherGame={{ name: 'Play Sudoku', href: '/sudoku/' }}
+    />
+  </div>
+
+  <div class="container-page mt-2">
+    <EmbedGame name="Minesweeper" />
+    <p class="text-muted mt-6 max-w-2xl">
+      The board above is Beginner. All three classic boards have a safe first click, flags, chording and your best time saved. Play with
+      a mouse, a keyboard or a touch screen.
     </p>
-    <ul class="grid gap-4 sm:grid-cols-3 mt-6">
+    <h2 class="text-2xl font-bold mt-6">Choose a level</h2>
+    <ul class="grid gap-4 sm:grid-cols-3 mt-3">
       {
         levels.map((l) => {
           const spec = LEVELS[l.data.level];
           return (
             <li class="rounded-xl border border-border bg-card p-5 flex flex-col">
-              <h2 class="font-bold text-lg">
+              <h3 class="font-bold text-lg">
                 <a class="hover:text-brand" href={`/minesweeper/${l.data.level}/`}>
-                  {l.data.name}
+                  {l.data.name} Minesweeper
                 </a>
-              </h2>
+              </h3>
               <p class="text-sm font-semibold mt-1">
                 {spec.width}×{spec.height} · {spec.mines} mines
               </p>

@@ -2,10 +2,11 @@
 title: "How to Play Backgammon: Rules for Beginners"
 description: "Learn backgammon in one read: the board and setup, how checkers move, doubles, hitting and the bar, bearing off, gammons and a simple first strategy."
 pubDate: 2026-11-14
+updatedDate: 2026-11-21
 category: Rules
 relatedGameId: backgammon
 readingTime: 4
-keywords: [how to play backgammon, backgammon rules, backgammon for beginners, backgammon setup, bearing off backgammon]
+keywords: [how to play backgammon, backgammon rules, backgammon set up, how to set up a backgammon board, backgammon for beginners, bearing off backgammon]
 takeaways:
   - "Each player has 15 checkers and races them around 24 points into their own home board, then removes them (bears off); the first to bear off all 15 wins."
   - "Roll two dice and move one checker by each number, or one checker by both; doubles are played four times."
@@ -31,7 +32,7 @@ The board has **24 narrow triangles called points**, in four quarters of six. Ea
 
 A raised strip down the middle is called **the bar**. Checkers that are hit wait there.
 
-## Setup
+## How to set up a backgammon board
 
 Each player has 15 checkers, placed like this (counting from your own side):
 
@@ -43,6 +44,16 @@ Each player has 15 checkers, placed like this (counting from your own side):
 | 6-point (your home board) | 5 |
 
 The two players move in opposite directions, each from their 24-point toward their 1-point.
+
+### Setup checklist
+
+1. Put **2 checkers** on your 24-point, the deepest point of your opponent's home board.
+2. Put **5 checkers** on your 13-point, called the **midpoint**, at the outer edge of your opponent's outer board.
+3. Put **3 checkers** on your 8-point, the second point from the bar in your own outer board.
+4. Put **5 checkers** on your 6-point, the point in your home board next to the bar.
+5. Your opponent sets up the mirror image from their side, so the two armies face each other.
+
+An easy way to remember it is **2-5-3-5**: two at the back, five on the midpoint, three on the 8-point and five on the 6-point. Count to 15 before the first roll, because a missing checker is the most common setup mistake.
 
 ## Moving
 

@@ -2,9 +2,9 @@
 level: checkers
 order: 2
 name: Checkers
-title: Checkers Online – Free Draughts vs Computer
-h1: Checkers – jump, crown your kings and clear the board
-description: "Play checkers (draughts) free online against Easy, Medium or Hard computer opponents or a friend. Forced jumps, multi-jump chains, kings and undo."
+title: Checkers Online – Free vs Computer or 2 Player
+h1: Checkers – play online vs the computer or 2 players, free
+description: Play checkers online free against the computer (Easy, Medium, Hard) or 2 players on one board. American rules with forced jumps; no download.
 summary: Classic 8×8 checkers with forced jumps and kings, against three computer levels or a friend.
 keywords: [checkers online, play checkers free, draughts game, checkers vs computer, two player checkers]
 updated: 2026-11-13

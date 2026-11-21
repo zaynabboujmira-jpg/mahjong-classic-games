@@ -2,10 +2,11 @@
 title: "Spider Solitaire 4 Suits Strategy: How to Win More"
 description: "Beat 4-suit Spider Solitaire: empty columns early, build in suit when it counts, never deal blind, and use same-rank cards to untangle mixed runs."
 pubDate: 2026-11-14
+updatedDate: 2026-11-21
 category: Strategy
 relatedGameId: spider
-readingTime: 4
-keywords: [spider solitaire 4 suits strategy, how to win spider solitaire, spider solitaire tips, 4 suit spider, spider solitaire empty column]
+readingTime: 5
+keywords: [how to play spider solitaire, spider solitaire rules, spider solitaire 4 suits strategy, how to win spider solitaire, spider solitaire tips, 4 suit spider, spider solitaire empty column]
 takeaways:
   - "An empty column is the most powerful thing in Spider Solitaire: it lets you move runs, unpack mixed piles and rescue buried cards."
   - "In 4-suit Spider, a same-suit build can be moved as a unit later; a mixed-suit build is often a dead weight, so prefer in-suit moves whenever there is a choice."
@@ -24,6 +25,12 @@ faqs:
 ---
 
 Spider Solitaire with four suits is one of the hardest patience games most people ever play. You have 104 cards in ten columns, five deals left in the stock, and a goal that sounds simple: build eight runs from King down to Ace in a single suit. With one suit almost any move helps. With four suits, every card you place can either open the game or quietly lock it. Here is how to stay on the right side.
+
+## How to play Spider Solitaire (rules and setup)
+
+Spider uses two full decks, **104 cards**. Ten columns are dealt: the first four get six cards and the other six get five, 54 cards in all, with only the top card of each column face up. The other 50 cards form the stock, which deals **one new card onto every column, five times**. You cannot deal while any column is empty.
+
+The goal is to build **eight runs from King down to Ace in one suit**. Each finished run leaves the table, and you win when all eight are gone. The number of suits sets the difficulty: 1 suit uses only spades, 2 suits use spades and hearts, and 4 suits use the whole deck twice over.
 
 ## How Spider rules shape the strategy
 

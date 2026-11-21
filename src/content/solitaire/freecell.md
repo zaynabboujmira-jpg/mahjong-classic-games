@@ -1,9 +1,9 @@
 ---
 engine: freecell
 order: 3
-title: FreeCell Solitaire
-h1: FreeCell – free online, with the classic numbered deals
-description: Play FreeCell free online with the classic Microsoft numbered deals. Four free cells, smart auto-moves, unlimited undo and hints. No download needed.
+title: FreeCell Solitaire Online – Free Numbered Deals
+h1: FreeCell Solitaire – free online, with the classic numbered deals
+description: "Play FreeCell Solitaire online free: every card face up, four free cells and the classic numbered deals, shareable by link. No download or sign-up."
 summary: Four free cells, eight columns and every card face up. Play any of the classic numbered deals.
 keywords: [freecell, freecell solitaire, free freecell, freecell online, freecell deal numbers]
 updated: 2026-11-11

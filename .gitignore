@@ -7,3 +7,5 @@ dist/
 !.env.example
 *.log
 .DS_Store
+# Private SEO working notes (built from paid keyword exports)
+seo-action-plan.md

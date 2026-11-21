@@ -1,11 +1,12 @@
 ---
 title: "Minesweeper Patterns and Probability: Solve Without Guessing"
-description: "Learn the Minesweeper patterns that solve most boards: 1-1, 1-2, 1-2-1, 1-2-2-1, safe chording, and how to pick the safest cell when you have to guess."
+description: "How to play Minesweeper, what the numbers mean, and the patterns that solve most boards: 1-1, 1-2, 1-2-1, 1-2-2-1, chording and the safest guess."
 pubDate: 2026-11-14
+updatedDate: 2026-11-21
 category: Strategy
 relatedGameId: minesweeper
 readingTime: 4
-keywords: [minesweeper patterns, minesweeper strategy, minesweeper 1-2-1 pattern, minesweeper probability, how to win minesweeper expert]
+keywords: [how to play minesweeper, what do the numbers mean in minesweeper, minesweeper rules, minesweeper patterns, minesweeper strategy, minesweeper 1-2-1 pattern, minesweeper probability, how to win minesweeper expert]
 takeaways:
   - "Most Minesweeper boards are solved by a handful of patterns along a straight edge: 1-1, 1-2, 1-2-1 and 1-2-2-1."
   - "Subtracting one number from its neighbour tells you how many mines sit in the cells only one of them touches; this one idea explains every pattern."
@@ -24,6 +25,14 @@ faqs:
 ---
 
 Minesweeper looks like luck to people who have not played it much. Good players open huge parts of an Expert board without ever pausing to guess. The difference is a small set of patterns and one simple idea about counting. Learn them and you will solve most boards by logic, then handle the true guesses with probability instead of hope.
+
+## How to play Minesweeper: what the numbers mean
+
+The board is a grid of covered cells, and some of them hide mines. Click or tap a cell to open it. If it hides a mine, the game is over. If not, it shows a number from 1 to 8, or opens a blank area.
+
+**A number tells you how many mines touch that cell**, counting all eight neighbours: above, below, left, right and the four diagonals. A blank cell has no mines around it, so the game opens its neighbours for you. Mark a cell you know is a mine with a flag (right-click, long-press or Flag mode). You win when every safe cell is open; you do not have to flag every mine.
+
+On this site the first click is always safe, so start anywhere and let the numbers do the work. Everything below is about reading those numbers well.
 
 ## The one idea: subtract neighbours
 

@@ -7,20 +7,32 @@ import { mahjongLayoutCompare } from '../../lib/mahjong-pages';
 import HowToPlay from '../../components/content/HowToPlay.astro';
 import Faq from '../../components/content/Faq.astro';
 import LayoutCard from '../../components/content/LayoutCard.astro';
+import GameShell from '../../components/game/GameShell.astro';
+import EmbedGame from '../../components/content/EmbedGame.astro';
 import { layoutPages } from '../../lib/mahjong-pages';
 import { GENERAL_FAQ, HOW_TO_STEPS } from '../../data/mahjong';
 import { GUIDE_PATH, SCORECARD_PDF } from '../../data/american-guide';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
-import { breadcrumbs, faqPage, graph, howTo, organization, webPage, website } from '../../lib/seo/schema';
+import { breadcrumbs, faqPage, graph, howTo, organization, videoGame, webPage, website } from '../../lib/seo/schema';
 
 const pages = await layoutPages();
 const tableRules = (await getCollection('tableMahjong')).sort((a, b) => a.data.order - b.data.order);
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Mahjong Solitaire Layouts';
+const title = 'Mahjong Online – Free Mahjong Solitaire Game';
 const description =
-  'Choose from six free Mahjong Solitaire layouts: Turtle, Dragon, Pyramid, Fortress, Butterfly and Fish. Every deal is solvable. Play instantly, no download.';
+  'Play Mahjong Solitaire online free: six layouts from Turtle to Fish, every deal solvable, with hints and undo. No download or sign-up, on phone or PC.';
+/** The board at the top of the hub: Turtle, the classic and most searched layout. */
+const hubPage = pages.find((p) => p.id === 'turtle')!;
+const image = ogImagePath('mahjong');
+const faq = [
+  {
+    q: 'Is Mahjong Solitaire free to play online?',
+    a: 'Yes. Every layout is free to play online, with no download, no account and no limit on games. The board at the top of this page is the classic Turtle; pick any other layout below.',
+  },
+  ...GENERAL_FAQ,
+];
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Mahjong', href: '/mahjong/' },
@@ -34,7 +46,7 @@ const jsonLd = graph(
   {
     '@type': 'ItemList',
     '@id': `${url}#layouts`,
-    name: title,
+    name: 'Mahjong Solitaire layouts',
     itemListElement: pages.map((p, i) => ({
       '@type': 'ListItem',
       position: i + 1,
@@ -42,17 +54,29 @@ const jsonLd = graph(
       name: p.entry.data.title,
     })),
   },
+  videoGame(origin, {
+    url,
+    name: 'Mahjong Solitaire',
+    description,
+    image: new URL(image, site).href,
+    genre: ['Puzzle', 'Tile-matching', 'Mahjong Solitaire'],
+    keywords: ['mahjong online', 'mahjong game', 'mahjong solitaire', 'free mahjong'],
+  }),
   howTo(url, 'How to play Mahjong Solitaire', HOW_TO_STEPS),
-  faqPage(url, GENERAL_FAQ),
+  faqPage(url, faq),
 );
 ---
 
-<BaseLayout title={title} description={description} image={ogImagePath('mahjong')} imageAlt="Six Mahjong Solitaire layouts" jsonLd={jsonLd}>
-  <div class="container-page pt-4">
+<BaseLayout title={title} description={description} image={image} imageAlt="Six Mahjong Solitaire layouts" jsonLd={jsonLd} embeddable>
+  <GameShell engineId={hubPage.id} layoutName={hubPage.name} next={hubPage.next}>
     <Breadcrumbs items={crumbs} />
-    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Mahjong Solitaire layouts</h1>
-    <p class="text-muted mt-2 max-w-2xl">
-      Pick a layout and start playing straight away. Every deal is generated with a guaranteed solution, tiles stay large on phones,
+    <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">Mahjong online – free Mahjong Solitaire</h1>
+  </GameShell>
+
+  <div class="container-page mt-2">
+    <EmbedGame name="Mahjong Solitaire" />
+    <p class="text-muted mt-6 max-w-2xl">
+      The board above is the classic Turtle. Pick another layout below and start playing straight away. Every deal is generated with a guaranteed solution, tiles stay large on phones,
       and your best time for each layout is saved on your device.
     </p>
 
@@ -105,6 +129,6 @@ const jsonLd = graph(
     </section>
 
     <HowToPlay />
-    <Faq items={GENERAL_FAQ} />
+    <Faq items={faq} />
   </div>
 </BaseLayout>

@@ -2,11 +2,11 @@
 level: expert
 order: 4
 name: Expert
-title: Expert Sudoku – Free Online Puzzles
-h1: Expert Sudoku – X-Wing, XY-Wing and Swordfish puzzles
-description: Play expert Sudoku free online. Every puzzle needs an X-Wing, XY-Wing or Swordfish, has one solution and never needs guessing. Free, no download.
+title: Expert Sudoku – Evil & Extreme Puzzles, Free
+h1: Expert Sudoku – evil, extreme puzzles with X-Wing and Swordfish
+description: Evil, extreme Sudoku puzzles for experts, free online. Each needs advanced logic such as X-Wing, XY-Wing or Swordfish, yet never a guess. No sign-up.
 summary: The hardest level. Each puzzle needs an X-Wing, XY-Wing or Swordfish, and still never a guess.
-keywords: [expert sudoku, extreme sudoku, very hard sudoku, x-wing sudoku, sudoku expert online]
+keywords: [expert sudoku, evil sudoku, sudoku evil, extreme sudoku, sudoku expert online]
 updated: 2026-11-11
 howTo:
   - name: Fill in candidates

@@ -2,9 +2,9 @@
 level: chess
 order: 1
 name: Chess
-title: Chess Online – Play Free vs Computer or a Friend
-h1: Chess – play the computer at three levels, or a friend
-description: "Play chess free online against the computer (Beginner, Club or Tactician) or a friend. Full rules: castling, en passant, promotion, check and draws."
+title: Chess Online – Free vs Computer or 2 Player
+h1: Chess – play online vs the computer, or 2 players on one device
+description: Play chess online free against the computer at three levels, or 2 player on one device. Castling, en passant and promotion included; no sign-up.
 summary: The full game of chess against three computer levels or a friend, with move hints and undo.
 keywords: [chess online, play chess free, chess vs computer, chess for beginners, two player chess]
 updated: 2026-11-13
@@ -24,7 +24,7 @@ faq:
     a: Yes. Castling (not through or out of check), en passant, promotion to queen, rook, bishop or knight, check, checkmate, stalemate, threefold repetition, the fifty-move rule and draws with too little material.
   - q: Can I play as Black?
     a: Yes. Press Play Black and the board turns so your pieces are at the bottom; the computer opens as White.
-  - q: Can two people play on one device?
+  - q: Can I play 2 player chess on one device?
     a: Choose 2 players and take turns on the same board. The board stays with White at the bottom.
   - q: Can I take back a move?
     a: Yes. Undo takes back your last move and the computer's reply, as many times as you like.

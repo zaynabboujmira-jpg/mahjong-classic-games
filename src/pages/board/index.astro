@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { HUB_FAQ } from '../../data/hub-faq';
+import Faq from '../../components/content/Faq.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import CompareTable from '../../components/content/CompareTable.astro';
 import { CATALOG } from '../../data/catalog';
 import { BOARD_COMPARE } from '../../data/compare';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
-import { breadcrumbs, graph, organization, webPage, website } from '../../lib/seo/schema';
+import { breadcrumbs, faqPage, graph, organization, webPage, website } from '../../lib/seo/schema';
 
 const games = CATALOG.filter((g) => g.category === 'board');
 const site = Astro.site!;
@@ -29,6 +31,7 @@ const jsonLd = graph(
     name: title,
     itemListElement: games.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(g.play, site).href, name: g.name })),
   },
+  faqPage(url, HUB_FAQ.board),
 );
 ---
 
@@ -58,5 +61,7 @@ const jsonLd = graph(
       }
     </ul>
     <CompareTable table={BOARD_COMPARE} />
+
+    <Faq items={HUB_FAQ.board} />
   </div>
 </BaseLayout>

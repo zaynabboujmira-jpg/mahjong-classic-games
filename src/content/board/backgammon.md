@@ -2,9 +2,9 @@
 level: backgammon
 order: 5
 name: Backgammon
-title: Backgammon Online – Play Free vs Computer
-h1: Backgammon – race your checkers home and bear them off
-description: "Play backgammon free online against an Easy, Medium or Hard computer or a friend. Dice rolls, legal move highlights, hitting, the bar, bearing off and undo."
+title: Backgammon Online – Free Games vs Computer
+h1: Backgammon – free online games vs the computer or a friend
+description: Play free backgammon games online against the computer (Easy, Medium, Hard) or a friend. Gammons and backgammons count; no download or sign-up.
 summary: Race all fifteen checkers home and bear them off first. Three computer levels or a friend.
 keywords: [backgammon online, play backgammon free, backgammon vs computer, backgammon game, two player backgammon]
 updated: 2026-11-13

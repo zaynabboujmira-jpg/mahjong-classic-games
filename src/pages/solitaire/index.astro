@@ -1,20 +1,22 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { HUB_FAQ } from '../../data/hub-faq';
+import Faq from '../../components/content/Faq.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import CompareTable from '../../components/content/CompareTable.astro';
 import { SOLITAIRE_COMPARE } from '../../data/compare';
 import { GAMES } from '../../data/games';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
-import { breadcrumbs, graph, organization, webPage, website } from '../../lib/seo/schema';
+import { breadcrumbs, faqPage, graph, organization, webPage, website } from '../../lib/seo/schema';
 
 const variants = (await getCollection('solitaire')).sort((a, b) => a.data.order - b.data.order);
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Solitaire Card Games – 4 Classics';
+const title = 'Classic Solitaire Games – Play Free Online';
 const description =
-  'Play free solitaire online: Klondike in Draw 1 or Draw 3, Spider with 1, 2 or 4 suits, FreeCell with numbered deals, and Pyramid. No download.';
+  'Play classic solitaire free online: Klondike, Spider, FreeCell and Pyramid, with hints and undo on every deal. No download, on phone or desktop.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Solitaire', href: '/solitaire/' },
@@ -37,13 +39,14 @@ const jsonLd = graph(
       name: v.data.title,
     })),
   },
+  faqPage(url, HUB_FAQ.solitaire),
 );
 ---
 
 <BaseLayout title={title} description={description} image={ogImagePath('solitaire')} imageAlt="Playing cards on a green table" jsonLd={jsonLd}>
   <div class="container-page pt-4">
     <Breadcrumbs items={crumbs} />
-    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Solitaire card games</h1>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Classic solitaire card games – free online</h1>
     <p class="text-muted mt-2 max-w-2xl">Classic patience games with unlimited undo, hints and large, readable cards on any screen.</p>
     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
       {
@@ -74,5 +77,7 @@ const jsonLd = graph(
       }
     </ul>
     <CompareTable table={SOLITAIRE_COMPARE} />
+
+    <Faq items={HUB_FAQ.solitaire} />
   </div>
 </BaseLayout>

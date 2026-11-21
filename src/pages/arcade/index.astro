@@ -1,11 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { HUB_FAQ } from '../../data/hub-faq';
+import Faq from '../../components/content/Faq.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import CompareTable from '../../components/content/CompareTable.astro';
 import { ARCADE_COMPARE } from '../../data/compare';
 import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
-import { breadcrumbs, graph, organization, webPage, website } from '../../lib/seo/schema';
+import { breadcrumbs, faqPage, graph, organization, webPage, website } from '../../lib/seo/schema';
 
 const games = (await getCollection('arcade')).sort((a, b) => a.data.order - b.data.order);
 const site = Astro.site!;
@@ -29,6 +31,7 @@ const jsonLd = graph(
     name: title,
     itemListElement: games.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/arcade/${g.data.level}/`, site).href, name: g.data.title })),
   },
+  faqPage(url, HUB_FAQ.arcade),
 );
 ---
 
@@ -57,5 +60,7 @@ const jsonLd = graph(
       }
     </ul>
     <CompareTable table={ARCADE_COMPARE} />
+
+    <Faq items={HUB_FAQ.arcade} />
   </div>
 </BaseLayout>
