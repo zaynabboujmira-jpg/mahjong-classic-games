@@ -60,10 +60,12 @@ const EXPECTED: Record<string, string> = {
   'killer-sudoku-rules-and-tips': 'killer-sudoku',
   // Sixth batch (2026-11-21): the Chinese Checkers rules guide (Batch 3 #4).
   'how-to-play-chinese-checkers': 'chinese-checkers',
+  // The chess tactics guide, paired with the chess puzzles (Batch 3 #5).
+  'chess-tactics-for-beginners': 'chess-puzzles',
 };
 
 describe('strategy guides (/blog/)', () => {
-  it('has the 38 planned guides, each mapped to its game', () => {
+  it('has the 39 planned guides, each mapped to its game', () => {
     expect(posts.map((p) => p.slug).sort()).toEqual(Object.keys(EXPECTED).sort());
     for (const p of posts) expect(p.front.relatedGameId, p.slug).toBe(EXPECTED[p.slug]);
   });
@@ -128,6 +130,7 @@ describe('strategy guides (/blog/)', () => {
     expect(links('backgammon-strategy-for-beginners')).toContain('/board/backgammon/');
     expect(links('killer-sudoku-rules-and-tips')).toContain('/sudoku/killer/');
     expect(links('how-to-play-chinese-checkers')).toContain('/board/chinese-checkers/');
+    expect(links('chess-tactics-for-beginners')).toEqual(expect.arrayContaining(['/board/chess-puzzles/', '/board/chess/']));
   });
 
   it('rules guides and deep-dives on the same game link to each other and do not share keywords', () => {
@@ -143,6 +146,7 @@ describe('strategy guides (/blog/)', () => {
       ['who-invented-chess-history', 'chess-pieces-names-and-moves'],
       ['chess-vs-checkers', 'how-to-play-checkers-rules'],
       ['how-to-play-chinese-checkers', 'how-to-play-checkers-rules'],
+      ['chess-tactics-for-beginners', 'chess-strategies-for-beginners'],
     ]) {
       expect(post(a).body, a).toContain(`/blog/${b}/`);
       expect(post(b).body, b).toContain(`/blog/${a}/`);

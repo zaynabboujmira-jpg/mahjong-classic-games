@@ -66,7 +66,7 @@ Most games between beginners are won by one of these:
 - **Skewer:** the reverse of a pin. A valuable piece is attacked, moves away, and the piece behind it is taken.
 - **Discovered attack:** moving one piece uncovers an attack by another. If the moving piece also attacks something, your opponent cannot answer both.
 
-Look for these in every position, for yourself and against yourself.
+Look for these in every position, for yourself and against yourself. [Chess Tactics for Beginners](/blog/chess-tactics-for-beginners/) explains each one with examples, plus the checkmate patterns worth knowing.
 
 ## 6. Make a simple plan
 
