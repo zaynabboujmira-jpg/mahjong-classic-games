@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import { PRINTABLE, PRINTABLE_PATH } from '../data/sudoku-printable';
 import { KILLER, KILLER_PATH } from '../data/killer-sudoku';
-import { SAMURAI, SAMURAI_PATH } from '../data/samurai-sudoku';
+import { SAMURAI, SAMURAI_PATH, SAMURAI_PRINTABLE, SAMURAI_PRINTABLE_PATH } from '../data/samurai-sudoku';
 import { CATALOG, CATEGORIES, type CatalogGame } from '../data/catalog';
 import { FAMOUS_DEALS } from '../data/freecell';
 import { HOW_TO_STEPS } from '../data/mahjong';
@@ -62,7 +62,10 @@ async function subPages(): Promise<Record<string, SubPage[]>> {
       ...sudoku.map((e) => fromLevel('/sudoku/', e)),
       { title: PRINTABLE.title, path: PRINTABLE_PATH, summary: PRINTABLE.summary, howTo: PRINTABLE.howTo, faq: PRINTABLE.faq },
     ],
-    'samurai-sudoku': [{ title: SAMURAI.title, path: SAMURAI_PATH, summary: SAMURAI.summary, howTo: SAMURAI.howTo, faq: SAMURAI.faq }],
+    'samurai-sudoku': [
+      { title: SAMURAI.title, path: SAMURAI_PATH, summary: SAMURAI.summary, howTo: SAMURAI.howTo, faq: SAMURAI.faq },
+      { title: SAMURAI_PRINTABLE.title, path: SAMURAI_PRINTABLE_PATH, summary: SAMURAI_PRINTABLE.summary, howTo: SAMURAI_PRINTABLE.howTo, faq: SAMURAI_PRINTABLE.faq },
+    ],
     'killer-sudoku': [{ title: KILLER.title, path: KILLER_PATH, summary: KILLER.summary, howTo: KILLER.howTo, faq: KILLER.faq }],
     minesweeper: mines.map((e) => fromLevel('/minesweeper/', e)),
     'word-guess': word.map((e) => fromLevel('/word-guess/', e, e.data.level === '5-letters' ? '/word-guess/' : undefined)),

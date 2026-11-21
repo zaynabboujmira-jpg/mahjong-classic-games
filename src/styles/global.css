@@ -3932,6 +3932,44 @@ html.game-max .game-head nav[aria-label='Breadcrumb'] {
   color: #333;
 }
 
+/* Printable Samurai Sudoku: a 21×21 table with gaps; thick lines on every third row and column. */
+.sp-wrap {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+}
+.sp-grid {
+  --c: min(1.9rem, calc((100vw - 5.75rem) / 21));
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.sp-grid td {
+  width: var(--c);
+  height: var(--c);
+  padding: 0;
+  border: 1px solid #888;
+  text-align: center;
+  vertical-align: middle;
+  font-size: calc(var(--c) * 0.62);
+  font-weight: 600;
+  line-height: 1;
+}
+.sp-grid td.sp-x {
+  border: none;
+}
+.sp-grid td.sp-l {
+  border-left: 2.5px solid #111;
+}
+.sp-grid td.sp-r {
+  border-right: 2.5px solid #111;
+}
+.sp-grid td.sp-t {
+  border-top: 2.5px solid #111;
+}
+.sp-grid td.sp-b {
+  border-bottom: 2.5px solid #111;
+}
+
 @media print {
   html:has(.printable),
   html:has(.printable) body {
@@ -3992,5 +4030,11 @@ html.game-max .game-head nav[aria-label='Breadcrumb'] {
   .ps-footer {
     margin-top: 6mm;
     font-size: 8pt;
+  }
+  .sp-wrap {
+    overflow: visible;
+  }
+  .sp-grid {
+    --c: 8.6mm;
   }
 }

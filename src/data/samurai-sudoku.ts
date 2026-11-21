@@ -39,8 +39,45 @@ export const SAMURAI = {
       a: 'About five ordinary Sudokus: from half an hour on Easy to well over an hour on Hard. Your progress and time are saved after every move, so you can stop and come back.',
     },
     {
+      q: 'Can I print a Samurai Sudoku?',
+      a: 'Yes. The printable Samurai page makes a puzzle in Easy, Medium or Hard that fills one page of Letter or A4 paper, with an optional answer key on a second page.',
+    },
+    {
       q: 'Is it playable on a phone?',
       a: 'Yes, though the board is large. Use the full screen button for bigger cells. On small screens, notes appear as a dot in the cell and are listed under the board when you select it.',
+    },
+  ],
+} as const;
+
+/** Copy and FAQ for /sudoku/samurai/printable/. */
+export const SAMURAI_PRINTABLE_PATH = '/sudoku/samurai/printable/';
+export const SAMURAI_PRINTABLE = {
+  title: 'Printable Samurai Sudoku – Free, Easy to Hard',
+  h1: 'Printable Samurai Sudoku – free puzzles to print, Easy to Hard',
+  description:
+    'Free printable Samurai Sudoku: five overlapping grids on one page, in Easy, Medium or Hard, with an optional answer key. Every puzzle has one solution.',
+  summary: 'Free Samurai Sudoku sheets to print: one large puzzle per page, three levels and an answer key.',
+  howTo: [
+    { name: 'Choose a level', text: 'Pick Easy, Medium or Hard. A new Samurai is made for that level straight away.' },
+    { name: 'Add the answers', text: 'Tick Include answer key to add a second page with the full solution.' },
+    { name: 'Print', text: 'Press Print and choose your printer, or save the sheet as a PDF. The puzzle fills one page of Letter or A4 paper.' },
+  ],
+  faq: [
+    {
+      q: 'Is printable Samurai Sudoku free?',
+      a: 'Yes. Print as many as you like. Press New puzzle for a fresh Samurai at any time.',
+    },
+    {
+      q: 'Does every printable Samurai Sudoku have one solution?',
+      a: 'Yes. Each of the five grids can be solved on its own by logic from its clues, so the whole puzzle has exactly one solution and never needs a guess.',
+    },
+    {
+      q: 'What paper size should I use?',
+      a: 'Letter or A4, in portrait. The 21-square grid prints about 18 cm wide with cells large enough to write in, and the answer key prints on its own page.',
+    },
+    {
+      q: 'Which level should I print first?',
+      a: 'Easy. Every Easy grid can be finished by finding cells with only one possible digit. Medium needs hidden singles, and Hard needs locked candidates or pairs.',
     },
   ],
 } as const;

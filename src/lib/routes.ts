@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import { PRINTABLE_PATH, PRINTABLE_UPDATED } from '../data/sudoku-printable';
 import { KILLER_PATH, KILLER_UPDATED } from '../data/killer-sudoku';
-import { SAMURAI_PATH, SAMURAI_UPDATED } from '../data/samurai-sudoku';
+import { SAMURAI_PATH, SAMURAI_PRINTABLE_PATH, SAMURAI_UPDATED } from '../data/samurai-sudoku';
 import { FAMOUS_DEALS } from '../data/freecell';
 import { GUIDE_PATH, GUIDE_UPDATED } from '../data/american-guide';
 import { allPosts, BLOG_PATH, postPath, postUpdated } from './blog';
@@ -63,6 +63,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { path: PRINTABLE_PATH, section: 'sudoku', priority: 0.8, lastmod: PRINTABLE_UPDATED },
     { path: KILLER_PATH, section: 'sudoku', priority: 0.9, lastmod: KILLER_UPDATED },
     { path: SAMURAI_PATH, section: 'sudoku', priority: 0.9, lastmod: SAMURAI_UPDATED },
+    { path: SAMURAI_PRINTABLE_PATH, section: 'sudoku', priority: 0.7, lastmod: SAMURAI_UPDATED },
     ...levelEntries('/minesweeper/', 'minesweeper', mines, newestOf(mines)),
     // Word Guess: the 5-letter game is the hub URL itself.
     ...word.map((e) => ({

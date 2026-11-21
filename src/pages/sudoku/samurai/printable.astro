@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/seo/Breadcrumbs.astro';
+import Faq from '../../../components/content/Faq.astro';
+import SamuraiPrintable from '../../../components/print/SamuraiPrintable';
+import { generateSamurai } from '../../../engines/sudoku/samurai';
+import { SAMURAI_PRINTABLE as P } from '../../../data/samurai-sudoku';
+import { canonicalUrl, ogImagePath } from '../../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, webPage, website } from '../../../lib/seo/schema';
+
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Sudoku', href: '/sudoku/' },
+  { name: 'Samurai', href: '/sudoku/samurai/' },
+  { name: 'Printable', href: '/sudoku/samurai/printable/' },
+];
+// Fixed at build time so the sheet renders without JS (and matches on hydration).
+const p = generateSamurai('medium', 'print-samurai-1');
+const initial = { level: 'medium' as const, sheet: { seed: p.seed, givens: p.givens, solution: p.solution } };
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, P.title, P.description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  howTo(url, 'How to print a Samurai Sudoku', P.howTo),
+  faqPage(url, P.faq),
+);
+---
+
+<BaseLayout title={P.title} description={P.description} image={ogImagePath('sudoku-samurai')} imageAlt="A printable Samurai Sudoku with five overlapping grids" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <div class="no-print">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">{P.h1}</h1>
+      <p class="text-muted mt-2 max-w-2xl">
+        Pick a level and press Print: one large Samurai fills the page, and the answer key prints on a second sheet. Every puzzle has exactly one solution and can be
+        solved by logic alone. Prefer to play on screen? <a class="underline hover:text-brand" href="/sudoku/samurai/">Play Samurai Sudoku online</a>.
+      </p>
+    </div>
+
+    <SamuraiPrintable client:load initial={initial} />
+
+    <div class="no-print">
+      <section id="how-to-print" aria-labelledby="how-heading" class="mt-10 max-w-3xl prose-copy">
+        <h2 id="how-heading">How to print a Samurai Sudoku</h2>
+        <ol>
+          {
+            P.howTo.map((s) => (
+              <li>
+                <strong>{s.name}.</strong> {s.text}
+              </li>
+            ))
+          }
+        </ol>
+        <p>
+          A Samurai is five ordinary Sudokus joined at their corners, so the usual techniques all apply. <a href="/blog/how-to-play-sudoku-beginners/">How to Play Sudoku</a>
+          covers singles, and the <a href="/blog/sudoku-advanced-solving-techniques/">advanced techniques guide</a> covers what Hard needs. Want a smaller puzzle?
+          <a href="/sudoku/printable/">Print classic Sudoku</a>, four to a page.
+        </p>
+      </section>
+
+      <Faq items={P.faq} />
+    </div>
+  </div>
+</BaseLayout>
