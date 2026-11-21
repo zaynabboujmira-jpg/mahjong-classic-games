@@ -5,9 +5,10 @@ import { recordWin } from '../../engines/core/progress';
 import { CARD, cardTokens, rankTargets } from '../../engines/mahjong-table/american';
 import { charlestonPass, stepBots, suggestDiscard } from '../../engines/mahjong-table/ai';
 import { FAAN_TABLE } from '../../engines/mahjong-table/classic';
+import { YAKU_TABLE, doraOf } from '../../engines/mahjong-table/riichi';
 import { RULES, SEAT_NAMES, TableGame, nextHand, type Claim, type Variant } from '../../engines/mahjong-table/game';
 import { TableRenderer } from '../../engines/mahjong-table/render';
-import { JOKER, tileName } from '../../engines/mahjong-table/tiles';
+import { JOKER, shortName, tileName } from '../../engines/mahjong-table/tiles';
 
 interface Props {
   variant: Variant;
@@ -19,9 +20,14 @@ interface Session {
   dealer: number;
   prevailing: number;
   hands: number;
+  /** Riichi: repeat counters and riichi sticks carried to the next hand. */
+  honba?: number;
+  sticks?: number;
 }
 
 const FRESH: Session = { scores: [0, 0, 0, 0], dealer: 0, prevailing: 0, hands: 0 };
+/** Riichi starts everyone on 25,000 points. */
+const freshSession = (riichi: boolean): Session => ({ ...FRESH, scores: riichi ? [25000, 25000, 25000, 25000] : [0, 0, 0, 0], honba: 0, sticks: 0 });
 const SUIT_COLORS = ['#1d4e89', '#c2272d', '#167a3e'];
 const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -38,7 +44,8 @@ export default function TableMahjongGame({ variant, variants }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderer = useRef<TableRenderer | null>(null);
   const game = useRef<TableGame | null>(null);
-  const session = useRef<Session>(FRESH);
+  const session = useRef<Session>(freshSession(rules.riichi));
+  const riichiMode = useRef(false);
   const timer = useRef(0);
   const seenEvents = useRef(0);
   const selected = useRef(new Set<number>());
@@ -88,6 +95,11 @@ export default function TableMahjongGame({ variant, variants }: Props) {
       const r = g.result!;
       const next = nextHand(rules, g.dealer, g.prevailing, r);
       session.current = { scores: s.scores.map((v, i) => v + r.payments[i]!), dealer: next.dealer, prevailing: next.prevailing, hands: s.hands + 1 };
+      if (rules.riichi) {
+        // A repeat counter is added after a dealer win or any draw, and cleared otherwise.
+        session.current.honba = r.kind === 'draw' || r.winner === g.dealer ? (s.honba ?? 0) + 1 : 0;
+        session.current.sticks = r.sticksLeft ?? 0;
+      }
       writeJson(storageKey, session.current);
       if (r.kind === 'win' && r.winner === 0) recordWin('mahjong-4p');
       setShowResult(true);
@@ -133,9 +145,10 @@ export default function TableMahjongGame({ variant, variants }: Props) {
 
   const startHand = (fresh = false) => {
     window.clearTimeout(timer.current);
-    if (fresh) session.current = { ...FRESH, scores: [0, 0, 0, 0] };
+    if (fresh) session.current = freshSession(rules.riichi);
     const s = session.current;
-    game.current = new TableGame(rules, randomSeed(), { dealer: s.dealer, prevailing: s.prevailing });
+    game.current = new TableGame(rules, randomSeed(), { dealer: s.dealer, prevailing: s.prevailing, honba: s.honba ?? 0, sticks: s.sticks ?? 0 });
+    riichiMode.current = false;
     seenEvents.current = 0;
     settled.current = false;
     selected.current = new Set();
@@ -177,6 +190,18 @@ export default function TableMahjongGame({ variant, variants }: Props) {
       return;
     }
     if (w.type === 'turn' && w.player === 0) {
+      if (rules.riichi && riichiMode.current) {
+        if (g.riichiOptions(0).some((o) => g.seats[0]!.hand.find((t) => t.id === o)?.kind === tile.kind)) {
+          riichiMode.current = false;
+          act((x) => x.declareRiichi(0, id));
+        } else setAnnounce('Discarding that tile would not leave you ready. Choose another, or cancel riichi.');
+        refresh();
+        return;
+      }
+      if (rules.riichi && g.riichi[0] && id !== g.drawnId) {
+        setAnnounce('In riichi you can only discard the tile you just drew.');
+        return;
+      }
       if (selected.current.has(id)) {
         discardSelected();
         return;
@@ -226,6 +251,7 @@ export default function TableMahjongGame({ variant, variants }: Props) {
     renderer.current = new TableRenderer(canvasRef.current!);
     const saved = readJson<Session | null>(storageKey, null);
     if (saved && Array.isArray(saved.scores) && saved.scores.length === 4) session.current = saved;
+    else session.current = freshSession(rules.riichi);
     fit();
     startHand();
     const ro = new ResizeObserver(fit);
@@ -266,9 +292,29 @@ export default function TableMahjongGame({ variant, variants }: Props) {
         buttons.push(btn('Hint', showHint));
       } else status = 'Passing tiles…';
     } else if (w.type === 'turn') {
-      if (w.player === 0) {
+      if (w.player === 0 && rules.riichi && g.riichi[0]) {
+        status = g.canSelfWin(0) ? 'Riichi: your tile wins! Declare tsumo, or let it go.' : 'Riichi: the tile you drew goes out.';
+        if (g.canSelfWin(0)) buttons.push(btn('Tsumo!', () => act((x) => x.selfWin(0)), true));
+        buttons.push(btn('Discard drawn tile', () => act((x) => x.discard(0, x.drawnId >= 0 ? x.drawnId : x.seats[0]!.hand[x.seats[0]!.hand.length - 1]!.id)), !g.canSelfWin(0)));
+      } else if (w.player === 0 && rules.riichi && riichiMode.current) {
+        status = 'Riichi: tap the tile to discard. Only discards that leave you ready are allowed.';
+        buttons.push(
+          btn('Cancel riichi', () => {
+            riichiMode.current = false;
+            refresh();
+          }),
+        );
+      } else if (w.player === 0) {
         status = 'Your turn: tap a tile, then tap it again (or press Discard).';
-        if (g.canSelfWin(0)) buttons.push(btn('Mahjong!', () => act((x) => x.selfWin(0)), true));
+        if (g.canSelfWin(0)) buttons.push(btn(rules.riichi ? 'Tsumo!' : 'Mahjong!', () => act((x) => x.selfWin(0)), true));
+        if (rules.riichi && g.riichiOptions(0).length)
+          buttons.push(
+            btn('Riichi', () => {
+              riichiMode.current = true;
+              setAnnounce('Riichi: choose the tile to discard.');
+              refresh();
+            }),
+          );
         for (const k of g.kongOptions(0)) buttons.push(btn(`Kong ${tileName(k)}`, () => act((x) => x.declareKong(0, k))));
         for (const s of g.jokerSwaps(0)) buttons.push(btn(`Take joker from ${SEAT_NAMES[s.owner]}`, () => act((x) => x.swapJoker(0, s.owner, s.meld))));
         buttons.push(btn('Discard', discardSelected, !g.canSelfWin(0), selected.current.size !== 1), btn('Hint', showHint));
@@ -278,7 +324,7 @@ export default function TableMahjongGame({ variant, variants }: Props) {
       if (opts.length) {
         const d = g.lastDiscard!;
         status = `${SEAT_NAMES[d.from]} discarded ${tileName(d.tile.kind, rules.american)}. Call it or pass.`;
-        opts.forEach((o) => buttons.push(btn(claimLabel(o, rules.american), () => act((x) => x.respond(0, o)), o.type === 'win')));
+        opts.forEach((o) => buttons.push(btn(rules.riichi && o.type === 'win' ? 'Ron!' : claimLabel(o, rules.american), () => act((x) => x.respond(0, o)), o.type === 'win')));
         buttons.push(btn('Pass', () => act((x) => x.respond(0, null))));
       } else status = 'Waiting for calls…';
     } else status = g.result?.kind === 'win' ? 'Hand over.' : 'Hand over: draw.';
@@ -312,6 +358,20 @@ export default function TableMahjongGame({ variant, variants }: Props) {
             <dt>Wall</dt>
             <dd class="tabular-nums">{g?.wallCount ?? 0}</dd>
           </div>
+          {rules.riichi && g && (
+            <>
+              <div>
+                <dt>Dora</dt>
+                <dd title={g.doraIndicators().map((k) => `Indicator ${tileName(k)}: dora ${tileName(doraOf(k))}`).join('; ')}>{g.doraIndicators().map((k) => shortName(doraOf(k))).join(' ')}</dd>
+              </div>
+              <div>
+                <dt>Sticks</dt>
+                <dd class="tabular-nums" title="Riichi sticks on the table and repeat counters (honba)">
+                  {g.sticks}·{g.honba}
+                </dd>
+              </div>
+            </>
+          )}
         </dl>
       </div>
 
@@ -369,6 +429,24 @@ export default function TableMahjongGame({ variant, variants }: Props) {
                   </ul>
                   <p class="card-legend">Colours mark different suits. Numbers shown are examples; F = flower, D = dragon. X: exposures allowed. C: concealed.</p>
                 </>
+              ) : rules.riichi ? (
+                <>
+                  <h2>Yaku table</h2>
+                  <p class="text-sm">
+                    You need at least one yaku to win. Dora add han but are not a yaku. Riichi with a closed ready hand is the easiest yaku: it costs 1,000 points, which the next winner collects.
+                  </p>
+                  <ul class="faan-list">
+                    {YAKU_TABLE.map((y) => (
+                      <li key={y.name}>
+                        <span>{y.name}</span>
+                        <strong>{y.han}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="text-sm">
+                    Points: 1 han 30 fu is 1,000 on a discard; 3 han 30 fu 3,900; 4 han 30 fu 7,700; mangan 8,000; haneman 12,000; baiman 16,000; yakuman 32,000. The dealer gets 50% more.
+                  </p>
+                </>
               ) : (
                 <>
                   <h2>Faan table</h2>
@@ -405,7 +483,11 @@ export default function TableMahjongGame({ variant, variants }: Props) {
                 <>
                   <p class="text-sm">
                     {result.selfDrawn ? 'Self-drawn' : `On ${result.discarder === 0 ? 'your' : `${SEAT_NAMES[result.discarder]}’s`} discard`}
-                    {rules.american ? ` · ${result.target!.hand.section}: ${result.target!.label}` : ` · ${result.faan} faan`}
+                    {rules.american
+                      ? ` · ${result.target!.hand.section}: ${result.target!.label}`
+                      : rules.riichi
+                        ? ` · ${result.faan} han ${result.fu} fu${result.limit ? ` · ${result.limit}` : ''}`
+                        : ` · ${result.faan} faan`}
                   </p>
                   {!rules.american && (
                     <ul class="faan-list text-sm">
@@ -420,7 +502,12 @@ export default function TableMahjongGame({ variant, variants }: Props) {
                   {rules.american && result.jokerless && <p class="text-sm">Jokerless: value doubled.</p>}
                 </>
               )}
-              {result.kind === 'draw' && <p>The wall ran out before anyone completed a hand.</p>}
+              {result.kind === 'draw' && (
+                <p>
+                  The wall ran out before anyone completed a hand.
+                  {rules.riichi && result.tenpai && ` Ready: ${result.tenpai.map((t, i) => (t ? SEAT_NAMES[i] : '')).filter(Boolean).join(', ') || 'nobody'}.`}
+                </p>
+              )}
               <ul class="score-list">
                 {result.payments.map((p, i) => (
                   <li key={i}>

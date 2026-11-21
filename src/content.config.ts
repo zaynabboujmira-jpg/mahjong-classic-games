@@ -82,7 +82,7 @@ const minesweeper = defineCollection({
 /** One Markdown file per 4-player rule set (/mahjong/american/, /mahjong/hong-kong/, /mahjong/chinese/). */
 const tableMahjong = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/mahjong-table' }),
-  schema: levelPage(['american', 'hong-kong', 'chinese'] as const),
+  schema: levelPage(['american', 'hong-kong', 'chinese', 'riichi'] as const),
 });
 
 /** Word Guess pages, one per word length (/word-guess/ is 5 letters). */

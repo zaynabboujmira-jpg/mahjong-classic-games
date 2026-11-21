@@ -15,7 +15,7 @@ const solve = (answer: string, ...guesses: string[]) =>
 import { generate as nonogram } from '../../engines/puzzles/nonogram';
 import { arcadeArt, guideArt, newGameArt, cardFanArt, layoutArt, memoryArt, minesArt, ogCardSvg, paddleArt, sudokuArt, svgToPng, tileHandArt, wordArt, type ArtTile } from '../../lib/og';
 
-const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese', { title: string; subtitle: string; tiles: ArtTile[] }> = {
+const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese' | 'riichi', { title: string; subtitle: string; tiles: ArtTile[] }> = {
   american: {
     title: 'American Mahjong',
     subtitle: 'Jokers & Charleston · vs 3 bots',
@@ -29,6 +29,11 @@ const TABLE_ART: Record<'american' | 'hong-kong' | 'chinese', { title: string; s
   chinese: {
     title: 'Chinese Mahjong',
     subtitle: 'Classic rules · vs 3 bots',
+    tiles: [{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 7 }, { bamboo: 7 }, { bamboo: 8 }, { dots: 9 }],
+  },
+  riichi: {
+    title: 'Riichi Mahjong',
+    subtitle: 'Japanese rules · Riichi · Dora',
     tiles: [{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 7 }, { bamboo: 7 }, { bamboo: 8 }, { dots: 9 }],
   },
 };

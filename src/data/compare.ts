@@ -38,6 +38,7 @@ export const TABLE_MAHJONG_COMPARE: Comparison = {
   rows: [
     { cells: ['Hong Kong', '144', 'Bonus tiles (score faan)', 'No', 'Yes', 'Four sets and a pair worth at least 3 faan'], href: '/mahjong/hong-kong/' },
     { cells: ['Chinese Classic', '136', 'Not used', 'No', 'Yes', 'Any four sets and a pair (no minimum)'], href: '/mahjong/chinese/' },
+    { cells: ['Riichi (Japanese)', '136', 'Not used', 'No', 'Yes', 'Four sets and a pair with at least one yaku; riichi, dora, furiten'], href: '/mahjong/riichi/' },
     { cells: ['American', '152', '8, used in hands', '8', 'No', 'An exact hand from the card; Charleston before play'], href: '/mahjong/american/' },
   ],
 };

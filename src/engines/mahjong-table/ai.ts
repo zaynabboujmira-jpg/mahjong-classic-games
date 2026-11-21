@@ -110,6 +110,11 @@ function bestAfterDiscard(counts: number[], melds: number): number {
 function classicClaim(game: TableGame, p: number, options: Claim[]): Claim | null {
   const win = options.find((o) => o.type === 'win');
   if (win) return win;
+  if (game.rules.riichi) {
+    // Riichi bots keep their hands closed (so riichi gives them a yaku), except for value honour pungs.
+    const pung = options.find((o) => o.type === 'pung');
+    return pung && isValueHonor(game, p, game.lastDiscard!.tile.kind) ? pung : null;
+  }
   const s = game.seats[p]!;
   const tile = game.lastDiscard!.tile;
   const counts = countKinds(s.hand);
@@ -153,6 +158,21 @@ function classicTurn(game: TableGame, p: number): void {
     return;
   }
   const s = game.seats[p]!;
+  if (game.rules.riichi) {
+    // In riichi the drawn tile goes straight back out.
+    if (game.riichi[p]) {
+      game.discard(p, game.drawnId >= 0 ? game.drawnId : s.hand[s.hand.length - 1]!.id);
+      return;
+    }
+    // Ready with a closed hand: always declare, discarding the tile the bot would have thrown if it keeps the hand ready.
+    const ready = game.riichiOptions(p);
+    if (ready.length) {
+      const pick = classicDiscard(game, p);
+      const id = ready.find((r) => s.hand.find((t) => t.id === r)?.kind === pick.kind) ?? ready[0]!;
+      game.declareRiichi(p, id);
+      return;
+    }
+  }
   for (const kind of game.kongOptions(p)) {
     const counts = countKinds(s.hand);
     const before = bestAfterDiscard(counts, s.melds.length);
@@ -286,6 +306,7 @@ function americanTurn(game: TableGame, p: number): void {
 /** The move a bot (or the hint for the human) would discard now. */
 export function suggestDiscard(game: TableGame, p: number): Tile {
   const s = game.seats[p]!;
+  if (game.rules.riichi && game.riichi[p]) return s.hand.find((t) => t.id === game.drawnId) ?? s.hand[s.hand.length - 1]!;
   return game.rules.american ? americanDiscard(s.hand, s.melds) : classicDiscard(game, p);
 }
 

@@ -1,9 +1,10 @@
 import { createRng, type Rng } from '../core/rng';
 import { americanValue, americanWin, groupKind, rankTargets, type Target } from './american';
-import { pointsFor, scoreClassic, type Faan } from './classic';
-import { EAST, JOKER, WINDS, buildWall, isBonus, isSuited, rankOf, sortTiles, tileName, type Meld, type Tile } from './tiles';
+import { pointsFor, scoreClassic, shanten, isWinningShape, type Faan } from './classic';
+import { riichiPayments, scoreRiichi, type RiichiContext, type RiichiScore } from './riichi';
+import { EAST, JOKER, KINDS, WINDS, buildWall, countKinds, isBonus, isSuited, rankOf, sortTiles, tileName, type Meld, type Tile } from './tiles';
 
-export type Variant = 'hong-kong' | 'chinese' | 'american';
+export type Variant = 'hong-kong' | 'chinese' | 'american' | 'riichi';
 
 export interface Rules {
   variant: Variant;
@@ -15,12 +16,15 @@ export interface Rules {
   /** Minimum faan to declare a win (classic only). */
   minFaan: number;
   chow: boolean;
+  /** Japanese rules: yaku, riichi, dora, furiten and han/fu scoring. */
+  riichi: boolean;
 }
 
 export const RULES: Record<Variant, Rules> = {
-  'hong-kong': { variant: 'hong-kong', name: 'Hong Kong', american: false, flowers: true, jokers: false, minFaan: 3, chow: true },
-  chinese: { variant: 'chinese', name: 'Chinese Classic', american: false, flowers: false, jokers: false, minFaan: 0, chow: true },
-  american: { variant: 'american', name: 'American', american: true, flowers: true, jokers: true, minFaan: 0, chow: false },
+  'hong-kong': { variant: 'hong-kong', name: 'Hong Kong', american: false, flowers: true, jokers: false, minFaan: 3, chow: true, riichi: false },
+  chinese: { variant: 'chinese', name: 'Chinese Classic', american: false, flowers: false, jokers: false, minFaan: 0, chow: true, riichi: false },
+  american: { variant: 'american', name: 'American', american: true, flowers: true, jokers: true, minFaan: 0, chow: false, riichi: false },
+  riichi: { variant: 'riichi', name: 'Riichi', american: false, flowers: false, jokers: false, minFaan: 1, chow: true, riichi: true },
 };
 
 export interface Seat {
@@ -45,8 +49,13 @@ export interface Result {
   /** American. */
   target: Target | null;
   jokerless: boolean;
-  /** Score change per seat (sums to zero). */
+  /** Score change per seat (sums to zero, apart from riichi sticks left on the table). */
   payments: number[];
+  /** Riichi: fu, the limit name, who was ready at a draw, and riichi sticks still on the table. */
+  fu?: number;
+  limit?: string;
+  tenpai?: boolean[];
+  sticksLeft?: number;
 }
 
 export type Dir = 'right' | 'across' | 'left';
@@ -76,6 +85,9 @@ export interface GameOptions {
   dealer?: number;
   /** Round wind 0-3. */
   prevailing?: number;
+  /** Riichi: repeat counters (honba) and riichi sticks carried from earlier hands. */
+  honba?: number;
+  sticks?: number;
 }
 
 export const SEAT_NAMES = ['You', 'Right', 'Across', 'Left'];
@@ -108,6 +120,19 @@ export class TableGame {
   charleston: CharlestonState | null = null;
   result: Result | null = null;
   readonly totalTiles: number;
+  /** Riichi state per seat. */
+  readonly riichi = [false, false, false, false];
+  readonly ippatsu = [false, false, false, false];
+  /** Kinds each player has discarded (for furiten, including tiles others called). */
+  readonly discardKinds: number[][] = [[], [], [], []];
+  /** Passed on a winning discard: no ron until the player's next discard (or ever, after riichi). */
+  readonly passedWin = [false, false, false, false];
+  /** The 14-tile dead wall (dora indicators and their ura-dora). */
+  private dead: Tile[] = [];
+  kongs = 0;
+  readonly honba: number;
+  sticks: number;
+  private declaring = false;
 
   constructor(rules: Rules, seed: string | Rng, opts: GameOptions = {}) {
     this.rules = rules;
@@ -116,6 +141,9 @@ export class TableGame {
     const rng = typeof seed === 'string' ? createRng(`table:${rules.variant}:${seed}`) : seed;
     this.wall = buildWall({ flowers: rules.flowers, jokers: rules.jokers }, rng);
     this.totalTiles = this.wall.length;
+    this.honba = opts.honba ?? 0;
+    this.sticks = opts.sticks ?? 0;
+    if (rules.riichi) this.dead = this.wall.splice(-14);
     this.back = this.wall.length - 1;
     this.seats = Array.from({ length: 4 }, () => ({ hand: [], melds: [], bonus: [], river: [] }));
     this.current = this.dealer;
@@ -167,7 +195,7 @@ export class TableGame {
 
   /** Every tile currently in play, for conservation checks. */
   allTiles(): Tile[] {
-    const out: Tile[] = this.wall.slice(this.front, this.back + 1);
+    const out: Tile[] = [...this.wall.slice(this.front, this.back + 1), ...this.dead];
     for (const s of this.seats) out.push(...s.hand, ...s.bonus, ...s.river, ...s.melds.flatMap((m) => m.tiles));
     return out;
   }
@@ -270,13 +298,100 @@ export class TableGame {
     if (this.phase !== 'turn' || this.current !== p) return false;
     const s = this.seats[p]!;
     if (this.rules.american) return !!americanWin(s.hand, s.melds);
+    if (this.rules.riichi) return !!this.riichiScore(p, s.hand, true);
     const score = scoreClassic(s.hand, s.melds, this.winContext(p, true));
     return !!score && score.faan >= this.rules.minFaan;
+  }
+
+  // ------------------------------------------------------------ Riichi
+
+  /** Dora indicators showing (one, plus one per kong), and the ura-dora under them. */
+  doraIndicators(): number[] {
+    return this.dead.length ? Array.from({ length: 1 + Math.min(4, this.kongs) }, (_, k) => this.dead[4 + 2 * k]!.kind) : [];
+  }
+  private uraIndicators(): number[] {
+    return this.dead.length ? Array.from({ length: 1 + Math.min(4, this.kongs) }, (_, k) => this.dead[5 + 2 * k]!.kind) : [];
+  }
+
+  private riichiContext(p: number, winKind: number, selfDrawn: boolean): RiichiContext {
+    return {
+      winKind,
+      selfDrawn,
+      seat: this.seatWind(p),
+      prevailing: this.prevailing,
+      riichi: this.riichi[p]!,
+      ippatsu: this.ippatsu[p]!,
+      lastTile: this.wallCount === 0,
+      rinshan: selfDrawn && this.afterKong,
+      doraIndicators: this.doraIndicators(),
+      uraIndicators: this.uraIndicators(),
+    };
+  }
+
+  /** Riichi score of the player's tiles as a win (self-drawn: the drawn tile completed it), or null. */
+  riichiScore(p: number, tiles: readonly Tile[], selfDrawn: boolean, winKind?: number): RiichiScore | null {
+    const s = this.seats[p]!;
+    const k = winKind ?? (tiles.find((t) => t.id === this.drawnId) ?? tiles[tiles.length - 1]!).kind;
+    return scoreRiichi(tiles, s.melds, this.riichiContext(p, k, selfDrawn));
+  }
+
+  /** Kinds that would complete a 13-tile hand (empty when not ready). */
+  waits(p: number): number[] {
+    const s = this.seats[p]!;
+    const counts = countKinds(s.hand);
+    const out: number[] = [];
+    for (let k = 0; k < KINDS; k++) {
+      if (counts[k]! >= 4) continue;
+      counts[k]!++;
+      if (isWinningShape(counts, s.melds.length)) out.push(k);
+      counts[k]!--;
+    }
+    return out;
+  }
+
+  /** Furiten: a winning tile is among the player's own discards, or they passed on a win. */
+  isFuriten(p: number): boolean {
+    if (this.passedWin[p]) return true;
+    const mine = new Set(this.discardKinds[p]);
+    return this.waits(p).some((k) => mine.has(k));
+  }
+
+  /** Tiles the player on turn could discard while declaring riichi (closed hand, ready after the discard). */
+  riichiOptions(p: number): number[] {
+    if (!this.rules.riichi || this.phase !== 'turn' || this.current !== p || this.riichi[p] || this.wallCount < 4) return [];
+    const s = this.seats[p]!;
+    if (s.melds.some((m) => !m.concealed)) return [];
+    const counts = countKinds(s.hand);
+    const out: number[] = [];
+    const done = new Set<number>();
+    for (const t of s.hand) {
+      if (done.has(t.kind)) continue;
+      done.add(t.kind);
+      counts[t.kind]!--;
+      if (shanten(counts, s.melds.length) === 0) out.push(t.id);
+      counts[t.kind]!++;
+    }
+    return out;
+  }
+
+  /** Declares riichi with a discard: 1,000 points go on the table, and the hand is locked. */
+  declareRiichi(p: number, tileId: number): boolean {
+    const kind = this.seats[p]!.hand.find((t) => t.id === tileId)?.kind;
+    if (kind === undefined || !this.riichiOptions(p).some((id) => this.seats[p]!.hand.find((t) => t.id === id)?.kind === kind)) return false;
+    this.riichi[p] = true;
+    this.ippatsu[p] = true;
+    this.sticks++;
+    this.log(p, 'claim', `${this.who(p)} ${this.verb(p, 'declare', 'declares')} riichi!`);
+    this.declaring = true;
+    const ok = this.discard(p, tileId);
+    this.declaring = false;
+    return ok;
   }
 
   /** Classic: kinds the player on turn can declare a kong of (concealed, or adding to a pung). */
   kongOptions(p: number): number[] {
     if (this.rules.american || this.phase !== 'turn' || this.current !== p || this.wallCount === 0) return [];
+    if (this.rules.riichi && this.riichi[p]) return [];
     const s = this.seats[p]!;
     const out = new Set<number>();
     for (const t of s.hand) {
@@ -332,6 +447,10 @@ export class TableGame {
       s.melds.push({ type: 'kong', kind, tiles, concealed: true });
     }
     this.log(p, 'kong', `${this.who(p)} ${this.verb(p, 'declare', 'declares')} a kong of ${this.name(kind)}.`);
+    if (this.rules.riichi) {
+      this.kongs++;
+      this.ippatsu.fill(false);
+    }
     return this.drawFor(p, true);
   }
 
@@ -346,6 +465,13 @@ export class TableGame {
     const hand = this.seats[p]!.hand;
     const i = hand.findIndex((t) => t.id === tileId);
     if (i < 0) return false;
+    // After riichi the hand is locked: the drawn tile must go.
+    if (this.rules.riichi && this.riichi[p] && !this.declaring && this.drawnId >= 0 && tileId !== this.drawnId) return false;
+    if (this.rules.riichi) {
+      if (this.riichi[p] && !this.declaring) this.ippatsu[p] = false;
+      if (!this.riichi[p]) this.passedWin[p] = false;
+      this.discardKinds[p]!.push(hand[i]!.kind);
+    }
     const [tile] = hand.splice(i, 1);
     this.seats[p]!.river.push(tile!);
     this.lastDiscard = { tile: tile!, from: p };
@@ -394,8 +520,14 @@ export class TableGame {
       }
       return out;
     }
-    const score = scoreClassic(withTile, s.melds, this.winContext(p, false));
-    if (score && score.faan >= this.rules.minFaan) out.push({ type: 'win' });
+    if (this.rules.riichi) {
+      if (this.riichiScore(p, withTile, false, tile.kind) && !this.isFuriten(p)) out.push({ type: 'win' });
+      // A player in riichi may only claim a discard to win.
+      if (this.riichi[p]) return out;
+    } else {
+      const score = scoreClassic(withTile, s.melds, this.winContext(p, false));
+      if (score && score.faan >= this.rules.minFaan) out.push({ type: 'win' });
+    }
     const same = s.hand.filter((t) => t.kind === tile.kind).length;
     if (same >= 2 && !isBonus(tile.kind)) out.push({ type: 'pung', jokers: 0 });
     if (same >= 3 && this.wallCount > 0) out.push({ type: 'kong', jokers: 0 });
@@ -422,6 +554,8 @@ export class TableGame {
   respond(p: number, claim: Claim | null): boolean {
     if (this.phase !== 'claim' || this.answers[p] !== undefined) return false;
     if (claim && !this.options[p]!.some((o) => JSON.stringify(o) === JSON.stringify(claim))) return false;
+    // Passing on a win in Riichi means furiten until your next discard (for good, after riichi).
+    if (this.rules.riichi && claim?.type !== 'win' && this.options[p]!.some((o) => o.type === 'win')) this.passedWin[p] = true;
     this.answers[p] = claim;
     if (this.answers.every((a) => a !== undefined)) this.resolveClaims();
     return true;
@@ -464,6 +598,11 @@ export class TableGame {
     s.hand = s.hand.filter((t) => !used.includes(t));
     const tiles = [...used, tile].sort((a, b) => a.kind - b.kind);
     s.melds.push({ type, kind, tiles, concealed: false });
+    if (this.rules.riichi) {
+      // Any call ends everyone's ippatsu chance.
+      this.ippatsu.fill(false);
+      if (type === 'kong') this.kongs++;
+    }
     this.log(best, 'claim', `${this.who(best)} ${this.verb(best, 'call', 'calls')} ${type === 'chow' ? 'Chow' : type[0]!.toUpperCase() + type.slice(1)} on ${this.name(tile.kind)}.`);
     this.lastDiscard = null;
     this.current = best;
@@ -502,8 +641,18 @@ export class TableGame {
 
   private finishDraw() {
     this.phase = 'over';
-    this.result = { kind: 'draw', winner: -1, discarder: -1, selfDrawn: false, faan: 0, items: [], target: null, jokerless: false, payments: [0, 0, 0, 0] };
-    this.log(-1, 'draw-game', 'The wall is empty: this hand is a draw.');
+    const payments = [0, 0, 0, 0];
+    let tenpai: boolean[] | undefined;
+    if (this.rules.riichi) {
+      // Players who are ready share 3,000 points from those who are not.
+      tenpai = [0, 1, 2, 3].map((p) => this.waits(p).length > 0);
+      const ready = tenpai.filter(Boolean).length;
+      if (ready > 0 && ready < 4)
+        for (let p = 0; p < 4; p++) payments[p] = tenpai[p] ? 3000 / ready : -3000 / (4 - ready);
+      for (let p = 0; p < 4; p++) if (this.riichi[p]) payments[p]! -= 1000;
+    }
+    this.result = { kind: 'draw', winner: -1, discarder: -1, selfDrawn: false, faan: 0, items: [], target: null, jokerless: false, payments, ...(tenpai ? { tenpai, sticksLeft: this.sticks } : {}) };
+    this.log(-1, 'draw-game', this.rules.riichi ? `The wall is empty: a draw. Ready: ${tenpai!.map((t, p) => (t ? this.who(p) : '')).filter(Boolean).join(', ') || 'nobody'}.` : 'The wall is empty: this hand is a draw.');
   }
 
   private finishWin(p: number, discarder: number) {
@@ -514,6 +663,25 @@ export class TableGame {
     let items: Faan[] = [];
     let target: Target | null = null;
     let jokerless = false;
+    if (this.rules.riichi) {
+      const winKind = selfDrawn ? (s.hand.find((t) => t.id === this.drawnId) ?? s.hand[s.hand.length - 1]!).kind : this.lastDiscard!.tile.kind;
+      const score = this.riichiScore(p, s.hand, selfDrawn, winKind)!;
+      const payments = riichiPayments(score.base, p, discarder, this.dealer);
+      // Repeat counters: 300 per honba, from the discarder or 100 from each player.
+      for (let q = 0; q < 4; q++) {
+        if (q === p) continue;
+        const extra = selfDrawn ? 100 * this.honba : q === discarder ? 300 * this.honba : 0;
+        payments[q]! -= extra;
+        payments[p]! += extra;
+      }
+      for (let q = 0; q < 4; q++) if (this.riichi[q]) payments[q]! -= 1000;
+      payments[p]! += this.sticks * 1000;
+      this.phase = 'over';
+      this.result = { kind: 'win', winner: p, discarder, selfDrawn, faan: score.han, items: score.yaku.map((y) => ({ name: y.name, faan: y.han })), target: null, jokerless: false, payments, fu: score.fu, limit: score.limit, sticksLeft: 0 };
+      const how = selfDrawn ? 'by tsumo' : `by ron on ${this.who(discarder) === 'You' ? 'your' : `${this.who(discarder)}’s`} discard`;
+      this.log(p, 'win', `${this.who(p)} ${this.verb(p, 'win', 'wins')} ${how}: ${score.limit || `${score.han} han ${score.fu} fu`}.`);
+      return;
+    }
     if (this.rules.american) {
       target = americanWin(s.hand, s.melds)!;
       const v = americanValue(target, s.hand, s.melds);
@@ -543,8 +711,11 @@ export class TableGame {
 
 /** Seat wind index of the dealer for the next hand, and the next round wind. */
 export function nextHand(rules: Rules, dealer: number, prevailing: number, result: Result | null): { dealer: number; prevailing: number } {
-  // American rotates every hand; classic keeps the dealer after a dealer win or a draw.
-  const keep = !rules.american && result && (result.kind === 'draw' || result.winner === dealer);
+  // American rotates every hand; classic keeps the dealer after a dealer win or a draw;
+  // Riichi keeps the dealer after a dealer win or a draw where the dealer was ready.
+  const keep = rules.riichi
+    ? !!result && (result.winner === dealer || (result.kind === 'draw' && !!result.tenpai?.[dealer]))
+    : !rules.american && result && (result.kind === 'draw' || result.winner === dealer);
   if (keep) return { dealer, prevailing };
   const next = (dealer + 1) % 4;
   return { dealer: next, prevailing: next === 0 ? (prevailing + 1) % 4 : prevailing };
