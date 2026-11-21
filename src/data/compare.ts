@@ -50,6 +50,8 @@ export const SOLITAIRE_COMPARE: Comparison = {
     { cells: ['Spider', '104 (two decks)', '10', 'Yes', '1, 2 or 4 suits', 'Skill and luck'], href: '/solitaire/spider/' },
     { cells: ['FreeCell', '52', '8 + 4 free cells', 'No, all face up', 'Numbered deals', 'Skill'], href: '/solitaire/freecell/' },
     { cells: ['Pyramid', '52', '7 rows (28 cards) + stock', 'No, but covered', '3 passes or unlimited', 'Luck and planning'], href: '/solitaire/pyramid/' },
+    { cells: ['Eight Off', '52', '8 + 8 free cells', 'No, all face up', 'Build in suit, Kings only in empty columns', 'Skill'], href: '/solitaire/eight-off/' },
+    { cells: ['Double Klondike', '104 (two decks)', '9', 'Yes', 'Draw 1 or Draw 3', 'Skill and luck'], href: '/solitaire/double-klondike/' },
   ],
 };
 

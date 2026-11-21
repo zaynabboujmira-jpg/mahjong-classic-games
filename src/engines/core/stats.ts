@@ -78,7 +78,7 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
   add('mahjong-solitaire', layoutsDone > 0 || keys.includes('mahjong:settings'), bestLayout ? `${time(bestLayout)} (${layoutsDone}/6 layouts)` : null);
   const hands = tableSessions.reduce((n, s) => n + (s?.hands ?? 0), 0);
   add('mahjong-4p', hands > 0, hands ? `${hands} hand${hands > 1 ? 's' : ''} played` : null);
-  for (const id of ['klondike', 'spider', 'freecell']) {
+  for (const id of ['klondike', 'spider', 'freecell', 'eight-off', 'double-klondike']) {
     const b = cardBest(id);
     add(id, b !== null || keys.includes(`${id}:settings`), b ? time(b) : null);
   }

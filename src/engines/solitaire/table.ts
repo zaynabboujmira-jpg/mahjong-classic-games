@@ -64,8 +64,13 @@ export interface TableSpec {
     stack?: boolean;
     /** Hint drawn in an empty slot, e.g. "A" for foundations. */
     label?: string;
+    /** Top-row line: 0 (default) or 1 for a second line of piles (Eight Off's foundations). */
+    row?: number;
   }[];
 }
+
+/** How many lines of piles sit above the tableau. */
+export const topRowsOf = (spec: TableSpec) => 1 + Math.max(0, ...spec.top.map((t) => t.row ?? 0));
 
 /** Every pile of a spec in keyboard order: top row left to right, then the tableau. */
 export function pilesOf(spec: TableSpec): PileRef[] {

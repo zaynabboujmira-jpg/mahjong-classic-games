@@ -1,5 +1,5 @@
 /**
- * The 43 games of Free Play Classic, grouped for the portal. One source for
+ * The 45 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -163,6 +163,40 @@ export const CATALOG: readonly CatalogGame[] = [
       goal: 'Remove all 28 pyramid cards by pairing exposed cards that total 13; kings are removed alone',
       modes: 'Three passes through the stock (classic) or unlimited; numbered, shareable deals',
       controls: 'Tap two cards to pair them, tap the stock to draw; D draws, Z undoes; hints',
+      players: '1',
+    },
+  },
+  {
+    id: 'eight-off',
+    name: 'Eight Off',
+    category: 'mahjong-cards',
+    play: '/solitaire/eight-off/',
+    hub: '/solitaire/',
+    hook: 'A FreeCell cousin: eight free cells, columns built in suit.',
+    badges: ['8 Free Cells', 'All Face Up', 'Undo + Hints'],
+    icon: `<rect x="2" y="3" width="4" height="6" rx="1" ${S}/><rect x="7" y="3" width="4" height="6" rx="1" ${S}/><rect x="13" y="3" width="4" height="6" rx="1" ${S}/><rect x="18" y="3" width="4" height="6" rx="1" ${S}/><path d="M4 13v8M10 13v6M14 13v8M20 13v5" ${S}/>`,
+    facts: {
+      type: 'Open patience card game (FreeCell family)',
+      goal: 'Move all 52 cards to four foundations by suit; columns build down in the same suit and only Kings fill empty columns',
+      modes: 'Eight free cells, four filled at the deal; runs move with enough free cells; shareable deals',
+      controls: 'Tap a card to send it to the best place, or drag; A auto-moves, H hints, Ctrl+Z undoes',
+      players: '1',
+    },
+  },
+  {
+    id: 'double-klondike',
+    name: 'Double Klondike',
+    category: 'mahjong-cards',
+    play: '/solitaire/double-klondike/',
+    hub: '/solitaire/',
+    hook: 'Klondike with two decks: 104 cards, nine columns, eight foundations.',
+    badges: ['Two Decks', 'Draw 1 or 3', 'Undo + Hints'],
+    icon: `<rect x="3" y="4" width="11" height="15" rx="1.5" ${S}/><rect x="10" y="6" width="11" height="15" rx="1.5" ${S}/>`,
+    facts: {
+      type: 'Two-deck patience card game (Klondike family)',
+      goal: 'Move all 104 cards to eight foundations, two per suit, from Ace to King',
+      modes: 'Draw 1 or Draw 3 with unlimited passes through the stock; nine columns of 1 to 9 cards',
+      controls: 'Tap the stock to draw, tap a card to send it to the best place, or drag; hints and undo',
       players: '1',
     },
   },

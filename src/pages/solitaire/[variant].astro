@@ -7,6 +7,7 @@ import KlondikeGame from '../../components/game/KlondikeGame';
 import SpiderGame from '../../components/game/SpiderGame';
 import FreeCellGame from '../../components/game/FreeCellGame';
 import PyramidGame from '../../components/game/PyramidGame';
+import EightOffGame from '../../components/game/EightOffGame';
 import { FAMOUS_DEALS } from '../../data/freecell';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import Faq from '../../components/content/Faq.astro';
@@ -70,6 +71,8 @@ const jsonLd = graph(
     {data.engine === 'spider' && <SpiderGame client:load defaultSuits={data.defaultSuits ?? 1} otherGame={other} />}
     {data.engine === 'freecell' && <FreeCellGame client:load otherGame={other} />}
     {data.engine === 'pyramid' && <PyramidGame client:load />}
+    {data.engine === 'eight-off' && <EightOffGame client:load otherGame={{ name: 'Play FreeCell', href: '/solitaire/freecell/' }} />}
+    {data.engine === 'double-klondike' && <KlondikeGame client:load defaultDraw={data.defaultDraw ?? 1} decks={2} otherGame={{ name: 'Play Klondike', href: '/solitaire/klondike/' }} />}
   </div>
 
   <div class="container-page mt-2">

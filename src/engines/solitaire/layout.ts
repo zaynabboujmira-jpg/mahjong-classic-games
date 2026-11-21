@@ -1,5 +1,5 @@
 import type { Card } from './cards';
-import { tableau, type PileRef, type TableSpec, type TableView } from './table';
+import { tableau, topRowsOf, type PileRef, type TableSpec, type TableView } from './table';
 
 export const CARD_ASPECT = 1.4;
 export const MAX_CARD_W = 104;
@@ -29,17 +29,17 @@ const gapRatio = (columns: number) => (columns >= 8 ? 0.08 : 0.14);
  * Card size for a viewport: N columns plus N+1 gaps fill the width (never
  * wider), capped so the top row and a short column fit the height.
  */
-export function metricsFor(viewW: number, viewH: number, columns = 7): Metrics {
+export function metricsFor(viewW: number, viewH: number, columns = 7, topRows = 1): Metrics {
   const g = gapRatio(columns);
   const byWidth = viewW / (columns + (columns + 1) * g);
-  const byHeight = viewH / (CARD_ASPECT * 3.2 + 3 * g);
+  const byHeight = viewH / (CARD_ASPECT * (2.2 + topRows) + (2 + topRows) * g);
   const cardW = Math.floor(Math.min(byWidth, byHeight, MAX_CARD_W) * 100) / 100;
   const gap = cardW * g;
   const boardW = columns * cardW + (columns + 1) * gap;
   const offset = Math.max(0, (viewW - boardW) / 2);
   const colX = Array.from({ length: columns }, (_, i) => offset + gap + i * (cardW + gap));
   const cardH = cardW * CARD_ASPECT;
-  return { cardW, cardH, gap, colX, topY: gap, tableauY: gap * 2 + cardH, boardW };
+  return { cardW, cardH, gap, colX, topY: gap, tableauY: gap * (1 + topRows) + cardH * topRows, boardW };
 }
 
 export interface PlacedCard {
@@ -67,13 +67,14 @@ export interface Scene {
  * that keeps ranks readable.
  */
 export function layoutTable(spec: TableSpec, view: TableView, viewW: number, viewH: number): Scene {
-  const m = metricsFor(viewW, viewH, spec.columns);
-  const { cardW: w, cardH: h, colX, topY, tableauY } = m;
+  const m = metricsFor(viewW, viewH, spec.columns, topRowsOf(spec));
+  const { cardW: w, cardH: h, colX, tableauY } = m;
   const slots: Scene['slots'] = [];
   const cards: PlacedCard[] = [];
 
   for (const t of spec.top) {
     const x = colX[t.col]!;
+    const topY = m.topY + (t.row ?? 0) * (h + m.gap);
     slots.push({ pile: t.pile, rect: { x, y: topY, w, h }, ...(t.label ? { label: t.label } : {}) });
     const pile = view.cardsIn(t.pile);
     const down = view.faceDownIn(t.pile);
@@ -135,9 +136,10 @@ export function dropTarget(scene: Scene, x: number, y: number): PileRef | null {
     }
     return null;
   }
-  if (y < topY || y > topY + h + gap / 2) return null;
+  if (y < topY) return null;
   for (const s of scene.slots) {
     if (s.pile.kind !== 'foundation' && s.pile.kind !== 'cell') continue;
+    if (y < s.rect.y - gap / 2 || y > s.rect.y + h + gap / 2) continue;
     if (x >= s.rect.x - gap / 2 && x <= s.rect.x + w + gap / 2) return s.pile;
   }
   return null;

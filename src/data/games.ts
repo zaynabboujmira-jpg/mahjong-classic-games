@@ -151,6 +151,8 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'mini-crossword', name: 'Mini Crossword', status: 'live', href: '/puzzles/mini-crossword/', blurb: 'A daily 5×5 and 7×7 crossword plus unlimited puzzles.' },
   { slug: 'backgammon', name: 'Backgammon', status: 'live', href: '/board/backgammon/', blurb: 'Race fifteen checkers home against three computer levels or a friend.' },
   { slug: 'mahjong-connect', name: 'Mahjong Connect', status: 'live', href: '/mahjong/connect/', blurb: 'Link matching tiles with a line of up to two bends.' },
+  { slug: 'eight-off', name: 'Eight Off', status: 'live', href: '/solitaire/eight-off/', blurb: 'Eight free cells and same-suit columns: a FreeCell cousin.' },
+  { slug: 'double-klondike', name: 'Double Klondike', status: 'live', href: '/solitaire/double-klondike/', blurb: 'Two-deck Klondike with nine columns and eight foundations.' },
   { slug: 'hearts', name: 'Hearts', status: 'live', href: '/cards/hearts/', blurb: 'Four-player Hearts against three computer players.' },
   { slug: 'infinite-minesweeper', name: 'Infinite Minesweeper', status: 'live', href: '/minesweeper/infinite/', blurb: 'An endless minefield with 1 or 3 lives and three densities.' },
   { slug: 'sudoku-variants', name: 'Sudoku Variants', status: 'live', href: '/sudoku/jigsaw/', blurb: 'Jigsaw, Diagonal, 16×16 and 6×6 Sudoku, Easy and Medium.' },

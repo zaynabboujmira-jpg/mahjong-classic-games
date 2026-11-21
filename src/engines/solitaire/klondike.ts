@@ -1,10 +1,13 @@
 import type { Rng } from '../core/rng';
-import { cardLabel, isRed, shuffledDeck, type Card } from './cards';
+import { shuffleInPlace } from '../core/rng';
+import { FULL_DECK, cardLabel, isRed, type Card } from './cards';
 import { STOCK, WASTE, foundation, samePile, tableau, type Hint, type PileRef, type SolitaireEngine, type TableSpec } from './table';
 
 export { STOCK, WASTE, foundation, samePile, tableau, type Hint, type PileRef } from './table';
 
 export type DrawMode = 1 | 3;
+/** Klondike uses one deck; Double Klondike two (104 cards, nine columns, eight foundations). */
+export type Decks = 1 | 2;
 
 export interface TableauPile {
   readonly cards: readonly Card[];
@@ -20,16 +23,31 @@ export interface KlondikeState {
   readonly moves: number;
 }
 
-/** Klondike table: stock, waste, gap, four foundations; seven columns below. */
-export const klondikeSpec = (drawMode: DrawMode): TableSpec => ({
-  columns: 7,
-  tableau: 7,
-  top: [
-    { pile: STOCK, col: 0, stack: true, label: '↻' },
-    { pile: WASTE, col: 1, fan: drawMode === 3 ? 3 : 1 },
-    ...[0, 1, 2, 3].map((f) => ({ pile: foundation(f), col: 3 + f, label: 'A' })),
-  ],
-});
+/**
+ * Klondike table: stock, waste, gap, four foundations; seven columns below.
+ * Double Klondike: stock and waste, then eight foundations in one row of ten
+ * slots, above nine columns.
+ */
+export const klondikeSpec = (drawMode: DrawMode, decks: Decks = 1): TableSpec =>
+  decks === 2
+    ? {
+        columns: 10,
+        tableau: 9,
+        top: [
+          { pile: STOCK, col: 0, stack: true, label: '↻' },
+          { pile: WASTE, col: 1, fan: drawMode === 3 ? 3 : 1 },
+          ...[0, 1, 2, 3, 4, 5, 6, 7].map((f) => ({ pile: foundation(f), col: 2 + f, label: 'A' })),
+        ],
+      }
+    : {
+        columns: 7,
+        tableau: 7,
+        top: [
+          { pile: STOCK, col: 0, stack: true, label: '↻' },
+          { pile: WASTE, col: 1, fan: drawMode === 3 ? 3 : 1 },
+          ...[0, 1, 2, 3].map((f) => ({ pile: foundation(f), col: 3 + f, label: 'A' })),
+        ],
+      };
 
 interface MutState {
   stock: Card[];
@@ -53,28 +71,38 @@ const HISTORY_LIMIT = 1000;
  * Klondike rules, framework-free. Standard rules: build tableau down in
  * alternating colours, only Kings on empty columns, foundations up by suit
  * from Ace, unlimited passes through the stock in Draw 1 or Draw 3.
+ * With two decks (Double Klondike) there are nine columns of 1 to 9 cards
+ * and eight foundations, two for each suit.
  * Every move is undoable (the state is small, so history stores snapshots).
  */
 export class Klondike implements SolitaireEngine {
   private s: MutState;
   private readonly history: MutState[] = [];
 
+  /** Number of tableau columns and foundations (7 and 4, or 9 and 8 with two decks). */
+  readonly cols: number;
+  readonly nf: number;
+
   constructor(
     rng: Rng,
     readonly drawMode: DrawMode = 1,
+    readonly decks: Decks = 1,
   ) {
-    const deck = shuffledDeck(rng);
+    this.cols = decks === 2 ? 9 : 7;
+    this.nf = decks * 4;
+    const deck = shuffleInPlace(decks === 2 ? [...FULL_DECK, ...FULL_DECK] : FULL_DECK.slice(), rng);
     const tab: MutState['tableau'] = [];
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < this.cols; i++) {
       tab.push({ cards: deck.splice(0, i + 1), faceDown: i });
     }
-    this.s = { stock: deck, waste: [], foundations: [[], [], [], []], tableau: tab, moves: 0 };
+    this.s = { stock: deck, waste: [], foundations: Array.from({ length: this.nf }, () => []), tableau: tab, moves: 0 };
   }
 
   /** Builds a game from an explicit position (tests, future saved games). */
   static fromState(state: KlondikeState, drawMode: DrawMode = 1): Klondike {
     const g = Object.create(Klondike.prototype) as Klondike;
-    Object.assign(g, { drawMode, history: [], s: clone(state as MutState) });
+    const decks = state.foundations.length === 8 ? 2 : 1;
+    Object.assign(g, { drawMode, decks, cols: state.tableau.length, nf: state.foundations.length, history: [], s: clone(state as MutState) });
     return g;
   }
 
@@ -85,24 +113,26 @@ export class Klondike implements SolitaireEngine {
     return this.s.moves;
   }
   get status(): string {
-    return `Draw ${this.drawMode}`;
+    return `Draw ${this.drawMode}${this.decks === 2 ? ' · 2 decks' : ''}`;
   }
   /** Truly stuck: stock and waste are empty and no card can legally move anywhere. */
   get isStuck(): boolean {
     if (this.isWon || this.s.stock.length || this.s.waste.length) return false;
-    const targets = [0, 1, 2, 3].map(foundation).concat([0, 1, 2, 3, 4, 5, 6].map(tableau));
-    for (let i = 0; i < 7; i++) {
+    const targets = this.range(this.nf).map(foundation).concat(this.range(this.cols).map(tableau));
+    for (let i = 0; i < this.cols; i++) {
       const t = this.s.tableau[i]!;
       for (let index = t.faceDown; index < t.cards.length; index++) {
         if (targets.some((to) => this.canMove(tableau(i), index, to))) return false;
       }
     }
-    for (let f = 0; f < 4; f++) {
+    for (let f = 0; f < this.nf; f++) {
       const n = this.s.foundations[f]!.length;
       if (n && targets.some((to) => this.canMove(foundation(f), n - 1, to))) return false;
     }
     return true;
   }
+  private range = (n: number) => Array.from({ length: n }, (_, i) => i);
+
   cardsIn(p: PileRef): readonly Card[] {
     return pileCards(this.s, p);
   }
@@ -217,11 +247,11 @@ export class Klondike implements SolitaireEngine {
     const run = this.pickUp(from, index);
     if (!run) return null;
     if (run.length === 1 && from.kind !== 'foundation') {
-      for (let f = 0; f < 4; f++) if (this.canMove(from, index, foundation(f))) return foundation(f);
+      for (let f = 0; f < this.nf; f++) if (this.canMove(from, index, foundation(f))) return foundation(f);
     }
     const leadsColumn = from.kind === 'tableau' && index === 0;
     let empty: PileRef | null = null;
-    for (let t = 0; t < 7; t++) {
+    for (let t = 0; t < this.cols; t++) {
       const to = tableau(t);
       if (!this.canMove(from, index, to)) continue;
       if (this.s.tableau[t]!.cards.length > 0) return to;
@@ -242,20 +272,20 @@ export class Klondike implements SolitaireEngine {
     if (s.waste.length) tops.push({ from: WASTE, index: s.waste.length - 1 });
     s.tableau.forEach((t, i) => t.cards.length && tops.push({ from: tableau(i), index: t.cards.length - 1 }));
     for (const { from, index } of tops) {
-      for (let f = 0; f < 4; f++) if (this.canMove(from, index, foundation(f))) return { kind: 'move', from, index, to: foundation(f) };
+      for (let f = 0; f < this.nf; f++) if (this.canMove(from, index, foundation(f))) return { kind: 'move', from, index, to: foundation(f) };
     }
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < this.cols; i++) {
       const t = s.tableau[i]!;
       if (t.cards.length === 0 || t.faceDown >= t.cards.length) continue;
       const index = t.faceDown; // move the whole face-up run
       if (index === 0) continue; // would only shuffle a column-heading run around
-      for (let j = 0; j < 7; j++) {
+      for (let j = 0; j < this.cols; j++) {
         if (j !== i && this.canMove(tableau(i), index, tableau(j))) return { kind: 'move', from: tableau(i), index, to: tableau(j) };
       }
     }
     if (s.waste.length) {
       const index = s.waste.length - 1;
-      for (let j = 0; j < 7; j++) if (this.canMove(WASTE, index, tableau(j))) return { kind: 'move', from: WASTE, index, to: tableau(j) };
+      for (let j = 0; j < this.cols; j++) if (this.canMove(WASTE, index, tableau(j))) return { kind: 'move', from: WASTE, index, to: tableau(j) };
     }
     if (s.stock.length || s.waste.length) return { kind: 'draw' };
     return null;
@@ -273,7 +303,7 @@ export class Klondike implements SolitaireEngine {
     this.s.tableau.forEach((t, i) => {
       const index = t.cards.length - 1;
       if (index < 0) return;
-      for (let f = 0; f < 4; f++) {
+      for (let f = 0; f < this.nf; f++) {
         if (this.canMove(tableau(i), index, foundation(f)) && (!best || t.cards[index]!.rank < best.rank)) {
           best = { from: tableau(i), index, to: foundation(f), rank: t.cards[index]!.rank };
         }

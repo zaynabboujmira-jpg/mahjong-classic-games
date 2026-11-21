@@ -33,7 +33,7 @@ const layouts = defineCollection({
 const solitaire = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/solitaire' }),
   schema: z.object({
-    engine: z.enum(['klondike', 'spider', 'freecell', 'pyramid']),
+    engine: z.enum(['klondike', 'spider', 'freecell', 'pyramid', 'eight-off', 'double-klondike']),
     order: z.number().int(),
     title: z.string().min(10).max(48),
     h1: z.string().min(10).max(70),

@@ -1,19 +1,21 @@
 import { createRng, randomSeed } from '../../engines/core/rng';
-import { Klondike, klondikeSpec, type DrawMode } from '../../engines/solitaire/klondike';
+import { Klondike, klondikeSpec, type Decks, type DrawMode } from '../../engines/solitaire/klondike';
 import CardTable from './CardTable';
 
 interface Props {
   defaultDraw: DrawMode;
+  /** 2 for Double Klondike (104 cards, nine columns). */
+  decks?: Decks;
   otherGame: { name: string; href: string };
 }
 
-export default function KlondikeGame({ defaultDraw, otherGame }: Props) {
+export default function KlondikeGame({ defaultDraw, decks = 1, otherGame }: Props) {
   return (
     <CardTable
-      name="Klondike Solitaire"
-      storageKey="klondike"
-      create={(seed, o) => new Klondike(createRng(seed), o['draw'] === 3 ? 3 : 1)}
-      spec={(o) => klondikeSpec(o['draw'] === 3 ? 3 : 1)}
+      name={decks === 2 ? 'Double Klondike' : 'Klondike Solitaire'}
+      storageKey={decks === 2 ? 'double-klondike' : 'klondike'}
+      create={(seed, o) => new Klondike(createRng(decks === 2 ? `double:${seed}` : seed), o['draw'] === 3 ? 3 : 1, decks)}
+      spec={(o) => klondikeSpec(o['draw'] === 3 ? 3 : 1, decks)}
       newSeed={randomSeed}
       seedParam="seed"
       isValidSeed={(s) => /^[a-z0-9]{1,24}$/i.test(s)}
