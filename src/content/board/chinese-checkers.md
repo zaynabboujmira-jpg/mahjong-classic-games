@@ -36,7 +36,7 @@ faq:
 
 ## The classic star-board race
 
-Chinese Checkers is played on a six-pointed star with 121 holes. Each player starts with ten marbles in one point of the star and races them across to the point directly opposite. There are no captures: the whole game is about moving faster than everyone else, and the fastest way to move is to hop.
+Chinese Checkers is played on a six-pointed star with 121 holes. Each player starts with ten marbles in one point of the star and races them across to the point directly opposite. There are no captures: the whole game is about moving faster than everyone else, and the fastest way to move is to hop. New to the game? [How to Play Chinese Checkers: Rules, Jumps & Strategy](/blog/how-to-play-chinese-checkers/) covers the setup for every number of players, house rules and tactics.
 
 ## How to win more games
 

@@ -98,4 +98,4 @@ International draughts, played on a 10×10 board, has different rules: men captu
 
 ## Play a game now
 
-The [checkers game on this site](/board/checkers/) uses these American rules. Select a piece and its legal moves light up; when a jump is available, only the pieces that can capture can move, so the forced-jump rule is easy to learn. Play the computer at Easy, Medium or Hard, or a friend on the same device. Wondering how it compares with chess? See [Chess vs Checkers](/blog/chess-vs-checkers/).
+The [checkers game on this site](/board/checkers/) uses these American rules. Select a piece and its legal moves light up; when a jump is available, only the pieces that can capture can move, so the forced-jump rule is easy to learn. Play the computer at Easy, Medium or Hard, or a friend on the same device. Wondering how it compares with chess? See [Chess vs Checkers](/blog/chess-vs-checkers/). For the star-board game with marbles, where hops never capture, read [How to Play Chinese Checkers](/blog/how-to-play-chinese-checkers/).
