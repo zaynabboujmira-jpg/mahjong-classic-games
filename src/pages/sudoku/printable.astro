@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import Faq from '../../components/content/Faq.astro';
+import SudokuPrintable from '../../components/print/SudokuPrintable';
+import { generate } from '../../engines/sudoku/generator';
+import { PRINTABLE } from '../../data/sudoku-printable';
+import { canonicalUrl, ogImagePath } from '../../lib/seo/meta';
+import { breadcrumbs, faqPage, graph, howTo, organization, webPage, website } from '../../lib/seo/schema';
+
+const levels = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+const site = Astro.site!;
+const origin = new URL('/', site).href;
+const url = canonicalUrl(Astro.url.pathname, site);
+const image = ogImagePath('sudoku');
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Sudoku', href: '/sudoku/' },
+  { name: 'Printable', href: '/sudoku/printable/' },
+];
+
+// The first set is fixed at build time so the sheets render without JS (and match on hydration).
+const initial = {
+  difficulty: 'medium' as const,
+  sheets: [1, 2, 3, 4].map((n) => {
+    const p = generate('medium', `print-medium-${n}`);
+    return { seed: p.seed, givens: p.givens, solution: p.solution };
+  }),
+};
+
+const jsonLd = graph(
+  organization(origin),
+  website(origin),
+  webPage(origin, url, PRINTABLE.title, PRINTABLE.description),
+  breadcrumbs(url, crumbs.map((c) => ({ name: c.name, url: new URL(c.href, site).href }))),
+  howTo(url, 'How to print Sudoku puzzles', PRINTABLE.howTo),
+  faqPage(url, PRINTABLE.faq),
+);
+---
+
+<BaseLayout title={PRINTABLE.title} description={PRINTABLE.description} image={image} imageAlt="Printable Sudoku grids on paper" jsonLd={jsonLd}>
+  <div class="container-page pt-4">
+    <div class="no-print">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">{PRINTABLE.h1}</h1>
+      <p class="text-muted mt-2 max-w-2xl">
+        Pick a level, choose 1 or 4 puzzles per page and press Print. Every puzzle has exactly one solution and can be solved by logic
+        alone, and the answer key prints on its own page. Prefer to play on screen? <a class="underline hover:text-brand" href="/sudoku/"
+          >Play Sudoku online</a
+        >.
+      </p>
+    </div>
+
+    <SudokuPrintable client:load initial={initial} levels={levels.map((l) => ({ id: l.data.level, name: l.data.name }))} />
+
+    <div class="no-print">
+      <section id="how-to-print" aria-labelledby="how-heading" class="mt-10 max-w-3xl prose-copy">
+        <h2 id="how-heading">How to print Sudoku puzzles</h2>
+        <ol>
+          {
+            PRINTABLE.howTo.map((s) => (
+              <li>
+                <strong>{s.name}.</strong> {s.text}
+              </li>
+            ))
+          }
+        </ol>
+        <p>
+          New to Sudoku? <a href="/blog/how-to-play-sudoku-beginners/">How to Play Sudoku: Rules and Tips for Beginners</a> explains the rules
+          and the two techniques that solve every Easy puzzle. For Hard and Expert sheets, keep the
+          <a href="/blog/sudoku-advanced-solving-techniques/">advanced techniques guide</a> close by.
+        </p>
+      </section>
+
+      <section aria-labelledby="levels-heading" class="mt-10">
+        <h2 id="levels-heading" class="text-2xl font-bold mb-4">Play the same levels online</h2>
+        <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            levels.map((l) => (
+              <li class="rounded-xl border border-border bg-card p-4 flex flex-col">
+                <h3 class="font-bold">
+                  <a class="hover:text-brand" href={`/sudoku/${l.data.level}/`}>
+                    {l.data.name} Sudoku
+                  </a>
+                </h3>
+                <p class="text-sm text-muted mt-1">{l.data.summary}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <Faq items={PRINTABLE.faq} />
+    </div>
+  </div>
+</BaseLayout>

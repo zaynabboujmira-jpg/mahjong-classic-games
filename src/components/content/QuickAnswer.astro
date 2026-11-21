@@ -52,7 +52,7 @@ const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
   {
     guides.map((p) => (
       <p class="guide-link">
-        Strategy guide: <a href={postPath(p)}>{p.data.title}</a>
+        {p.data.category === 'Rules' ? 'Rules guide' : p.data.category === 'Tips' ? 'Guide' : 'Strategy guide'}: <a href={postPath(p)}>{p.data.title}</a>
       </p>
     ))
   }

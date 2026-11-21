@@ -1,4 +1,5 @@
 ---
+import FullscreenButton from '../../components/game/FullscreenButton.astro';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
@@ -88,6 +89,7 @@ const jsonLd = graph(
     <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">Minesweeper online – free, 3 classic levels</h1>
+      <FullscreenButton />
     </div>
     <MinesweeperGame
       client:load

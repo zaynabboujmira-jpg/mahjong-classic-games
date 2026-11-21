@@ -1,0 +1,64 @@
+---
+/**
+ * Full-screen toggle for the game shell it sits in. Uses the Fullscreen API
+ * where the browser allows it on an element; otherwise (iPhone Safari, or a
+ * refused request) it falls back to a CSS mode that pins the shell over the
+ * whole viewport. Esc leaves either mode. One per page.
+ */
+---
+
+<button type="button" class="fs-toggle" data-fs-toggle aria-pressed="false" aria-label="Full screen" title="Full screen">
+  <svg class="fs-enter" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+    ><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg
+  >
+  <svg class="fs-exit" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+    ><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"></path></svg
+  >
+</button>
+
+<script is:inline>
+  (() => {
+    const btn = document.querySelector('[data-fs-toggle]');
+    const shell = btn && btn.closest('.game-shell');
+    if (!shell) return;
+    const root = document.documentElement;
+    const d = document;
+    const nativeEl = () => d.fullscreenElement || d.webkitFullscreenElement;
+    const canNative = !!(shell.requestFullscreen || shell.webkitRequestFullscreen) && !!(d.fullscreenEnabled || d.webkitFullscreenEnabled);
+    const sync = () => {
+      if (nativeEl()) root.classList.remove('game-max');
+      const on = !!nativeEl() || root.classList.contains('game-max');
+      btn.setAttribute('aria-pressed', String(on));
+      btn.setAttribute('aria-label', on ? 'Exit full screen' : 'Full screen');
+      btn.title = on ? 'Exit full screen (Esc)' : 'Full screen';
+      // Boards that measure the window re-fit to the new size.
+      requestAnimationFrame(() => dispatchEvent(new Event('resize')));
+    };
+    const fallback = (on) => {
+      root.classList.toggle('game-max', on);
+      sync();
+    };
+    btn.addEventListener('click', async () => {
+      if (nativeEl()) return void (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+      if (root.classList.contains('game-max')) return fallback(false);
+      if (canNative) {
+        // Some hosts (in-app browsers, frames) refuse the request or never answer it: give it a moment, then use the CSS mode.
+        const req = shell.requestFullscreen ? shell.requestFullscreen({ navigationUI: 'hide' }) : shell.webkitRequestFullscreen();
+        const ok = await Promise.race([
+          Promise.resolve(req).then(
+            () => true,
+            () => false,
+          ),
+          new Promise((r) => setTimeout(() => r(false), 1200)),
+        ]);
+        if (ok || nativeEl()) return;
+      }
+      fallback(true);
+    });
+    d.addEventListener('fullscreenchange', sync);
+    d.addEventListener('webkitfullscreenchange', sync);
+    d.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && root.classList.contains('game-max')) fallback(false);
+    });
+  })();
+</script>

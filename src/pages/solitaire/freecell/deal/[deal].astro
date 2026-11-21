@@ -1,4 +1,5 @@
 ---
+import FullscreenButton from '../../../../components/game/FullscreenButton.astro';
 import type { GetStaticPaths } from 'astro';
 import { getEntry } from 'astro:content';
 import EmbedGame from '../../../../components/content/EmbedGame.astro';
@@ -70,6 +71,7 @@ const short = (rank: number) => RANK_LABELS[rank];
     <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">FreeCell deal #{deal}</h1>
+      <FullscreenButton />
     </div>
     <FreeCellGame client:load deal={deal} otherGame={{ name: 'More FreeCell', href: '/solitaire/freecell/' }} />
   </div>

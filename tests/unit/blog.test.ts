@@ -40,10 +40,15 @@ const EXPECTED: Record<string, string> = {
   'how-to-play-dominoes-draw-and-block': 'dominoes',
   'pyramid-solitaire-rules-and-strategy': 'pyramid',
   'tic-tac-toe-how-to-never-lose': 'tic-tac-toe',
+  // Third batch (2026-11-21): beginner rules and setup guides (seo-action-plan Batch 2 #1-4).
+  'how-to-set-up-a-chess-board': 'chess',
+  'chess-strategies-for-beginners': 'chess',
+  'how-to-play-mahjong-beginners': 'mahjong-4p',
+  'how-to-play-sudoku-beginners': 'sudoku',
 };
 
 describe('strategy guides (/blog/)', () => {
-  it('has the 22 planned guides, each mapped to its game', () => {
+  it('has the 26 planned guides, each mapped to its game', () => {
     expect(posts.map((p) => p.slug).sort()).toEqual(Object.keys(EXPECTED).sort());
     for (const p of posts) expect(p.front.relatedGameId, p.slug).toBe(EXPECTED[p.slug]);
   });
@@ -77,10 +82,25 @@ describe('strategy guides (/blog/)', () => {
   });
 
   it('internal links point at real site paths', () => {
-    const known = [/^\/mahjong\/american-mahjong-guide\/$/, /^\/solitaire\/freecell\/deal\/\d+\/$/];
+    // Every game page, guide and level page; the post-build SEO audit also checks each link resolves.
+    const pages = new Set([...CATALOG.flatMap((g) => [g.play, g.hub]), ...posts.map((p) => `/blog/${p.slug}/`), '/daily/', '/sudoku/printable/']);
+    const known = [
+      /^\/mahjong\/(american-mahjong-guide|turtle|dragon|pyramid|fortress|butterfly|fish|american|hong-kong|chinese)\/$/,
+      /^\/sudoku\/(easy|medium|hard|expert)\/$/,
+      /^\/minesweeper\/(beginner|intermediate|expert)\/$/,
+      /^\/solitaire\/freecell\/deal\/\d+\/$/,
+    ];
     for (const p of posts)
       for (const [, href] of p.body.matchAll(/\]\((\/[^)]*)\)/g))
-        expect(known.some((re) => re.test(href!)), `${p.slug}: ${href}`).toBe(true);
+        expect(pages.has(href!) || known.some((re) => re.test(href!)), `${p.slug}: ${href}`).toBe(true);
+  });
+
+  it('new beginner guides link to the games they teach', () => {
+    const links = (slug: string) => [...posts.find((p) => p.slug === slug)!.body.matchAll(/\]\((\/[^)]*)\)/g)].map((m) => m[1]);
+    expect(links('how-to-set-up-a-chess-board')).toContain('/board/chess/');
+    expect(links('chess-strategies-for-beginners')).toContain('/board/chess/');
+    expect(links('how-to-play-mahjong-beginners')).toContain('/mahjong/chinese/');
+    expect(links('how-to-play-sudoku-beginners')).toContain('/sudoku/easy/');
   });
 
   it('titles and descriptions are unique', () => {

@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { PRINTABLE, PRINTABLE_PATH } from '../data/sudoku-printable';
 import { CATALOG, CATEGORIES, type CatalogGame } from '../data/catalog';
 import { FAMOUS_DEALS } from '../data/freecell';
 import { HOW_TO_STEPS } from '../data/mahjong';
@@ -55,7 +56,10 @@ async function subPages(): Promise<Record<string, SubPage[]>> {
       ...soli('freecell'),
       ...FAMOUS_DEALS.map((d) => ({ title: `FreeCell deal #${d.deal}`, path: `/solitaire/freecell/deal/${d.deal}/`, summary: d.note })),
     ],
-    sudoku: sudoku.map((e) => fromLevel('/sudoku/', e)),
+    sudoku: [
+      ...sudoku.map((e) => fromLevel('/sudoku/', e)),
+      { title: PRINTABLE.title, path: PRINTABLE_PATH, summary: PRINTABLE.summary, howTo: PRINTABLE.howTo, faq: PRINTABLE.faq },
+    ],
     minesweeper: mines.map((e) => fromLevel('/minesweeper/', e)),
     'word-guess': word.map((e) => fromLevel('/word-guess/', e, e.data.level === '5-letters' ? '/word-guess/' : undefined)),
   };

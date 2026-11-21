@@ -1,4 +1,5 @@
 ---
+import FullscreenButton from '../../components/game/FullscreenButton.astro';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
@@ -87,6 +88,7 @@ const jsonLd = graph(
     <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">Sudoku online – free puzzles, Easy to Expert</h1>
+      <FullscreenButton />
     </div>
     <SudokuGame
       client:load
@@ -136,6 +138,11 @@ const jsonLd = graph(
       <p>
         A Sudoku never needs arithmetic: the digits are just nine different symbols. What matters is where each one can and cannot go,
         and every placed digit narrows the options for the cells that share its row, column and box.
+      </p>
+      <p>
+        New to Sudoku? Read <a href="/blog/how-to-play-sudoku-beginners/">How to Play Sudoku: Rules and Tips for Beginners</a>, then try the
+        <a href="/blog/sudoku-advanced-solving-techniques/">advanced techniques</a> when Hard puzzles start to feel easy. Prefer paper?
+        <a href="/sudoku/printable/">Print free Sudoku puzzles</a> at any level.
       </p>
     </section>
 

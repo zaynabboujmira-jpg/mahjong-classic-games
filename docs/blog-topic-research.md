@@ -2,6 +2,19 @@
 
 How the guide topics in `src/content/blog/` were chosen, so they can be re-checked against real search data later.
 
+## Batch 3 (2026-11-21): 4 beginner guides from Semrush data
+
+Chosen from the Semrush US broad-match exports of 2026-11-20 (13 seed games), ranked by volume against keyword difficulty (KD). The cluster volume is the summed monthly volume of the close variants one guide can rank for. Full analysis: `seo-action-plan.md` (private, git-ignored).
+
+| Guide | Primary keyword (US vol / KD) | Cluster vol (median KD) |
+| --- | --- | --- |
+| `how-to-set-up-a-chess-board` | chess board setup (60,500 / 19) | 186,000 (21.5) |
+| `chess-strategies-for-beginners` | chess strategies for beginners (74,000 / 15) | 161,000 (25) |
+| `how-to-play-mahjong-beginners` | how to play mahjong (40,500 / 28) | 146,000 (24) |
+| `how-to-play-sudoku-beginners` | how to play sudoku (40,500 / 27) | 97,000 (41) |
+
+The same release added `/sudoku/printable/` for the printable cluster ("sudoku printable" 22,200 / KD 30; "free printable sudoku games" 3,600 / KD 17).
+
 ## Batch 2 (2026-11-14): 10 rules and how-to questions
 
 **Method.** The plan was to rank People Also Ask and informational questions by search volume with OpenSEO. The OpenSEO account had 2 credits, and the keyword-metrics call was refused for lack of credits, so **no search volumes were collected**. Instead, with the owner's agreement, each candidate question was checked with a standard web search to confirm that Google surfaces it widely (many dedicated pages from rules sites, encyclopedias and card-game portals), and that none of the first 12 guides already answers it. Treat the order below as editorial judgement, not as a volume ranking.

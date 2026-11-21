@@ -1,4 +1,5 @@
 ---
+import FullscreenButton from '../game/FullscreenButton.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../seo/Breadcrumbs.astro';
 import Faq from './Faq.astro';
@@ -92,6 +93,7 @@ const jsonLd = graph(
     <div class="container-page pt-2 pb-1 game-head">
       <Breadcrumbs items={crumbs} />
       <h1 class="text-lg sm:text-xl font-extrabold leading-tight mt-0.5">{data.h1}</h1>
+      <FullscreenButton />
     </div>
     <slot name="game" />
   </div>

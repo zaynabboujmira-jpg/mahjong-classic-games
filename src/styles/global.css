@@ -3303,6 +3303,86 @@
   min-height: 0;
 }
 
+/* ---------- Full-screen toggle (FullscreenButton.astro) ---------- */
+.game-head {
+  position: relative;
+}
+.game-head h1 {
+  padding-right: 2.75rem;
+}
+.fs-toggle {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.2rem;
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--fg);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.fs-toggle:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.fs-toggle:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.fs-toggle .fs-exit,
+.fs-toggle[aria-pressed='true'] .fs-enter {
+  display: none;
+}
+.fs-toggle[aria-pressed='true'] .fs-exit {
+  display: block;
+}
+@media (max-width: 640px) and (max-height: 760px) {
+  .fs-toggle {
+    width: 2rem;
+    height: 2rem;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+}
+/* Native full screen, and the CSS fallback (html.game-max) where the API is missing. */
+.game-shell:fullscreen {
+  height: 100vh;
+  min-height: 0;
+  background: var(--bg);
+  overflow: auto;
+}
+.game-shell:-webkit-full-screen {
+  height: 100vh;
+  min-height: 0;
+  background: var(--bg);
+  overflow: auto;
+}
+html.game-max,
+html.game-max body {
+  overflow: hidden;
+}
+html.game-max .game-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  height: 100svh;
+  min-height: 0;
+  background: var(--bg);
+  overflow: auto;
+}
+.game-shell:fullscreen .game-head nav[aria-label='Breadcrumb'],
+html.game-max .game-head nav[aria-label='Breadcrumb'] {
+  display: none;
+}
+.embedded .fs-toggle {
+  display: none;
+}
+
 /* ---------- Site header: bold pills with icons, Daily badge, theme toggle ---------- */
 @layer components {
   .nav-icon {
@@ -3447,5 +3527,189 @@
     .nav-menu-btn {
       padding: 0 0.7rem;
     }
+  }
+}
+
+/* ---------- Printable Sudoku (/sudoku/printable/) ---------- */
+.printable {
+  margin-top: 1.25rem;
+}
+.ps-controls {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+}
+.ps-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+.ps-label {
+  min-width: 3.75rem;
+  font-weight: 700;
+}
+.ps-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  min-height: 2.75rem;
+  cursor: pointer;
+}
+.ps-check input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--brand);
+}
+.ps-status {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.ps-controls .seg:disabled,
+.ps-controls .btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+/* On screen each sheet looks like a sheet of paper, in light and dark mode. */
+.ps-sheets {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.ps-sheets[aria-busy='true'] {
+  opacity: 0.5;
+}
+.ps-sheet {
+  background: #fff;
+  color: #111;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  padding: 1.25rem;
+  max-width: 52rem;
+}
+.ps-sheet-title {
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+.ps-footer {
+  margin-top: 0.9rem;
+  font-size: 0.75rem;
+  color: #555;
+  text-align: center;
+}
+.ps-four {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+  gap: 1.25rem;
+  justify-items: center;
+}
+.ps-one {
+  display: flex;
+  justify-content: center;
+}
+.ps-puzzle figcaption {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+.ps-grid {
+  --c: 1.65rem;
+  border-collapse: collapse;
+  border: 2.5px solid #111;
+  font-variant-numeric: tabular-nums;
+}
+.ps-one .ps-grid {
+  --c: min(2.6rem, 9vw);
+}
+.ps-grid-small {
+  --c: 1.35rem;
+}
+.ps-grid td {
+  width: var(--c);
+  height: var(--c);
+  padding: 0;
+  border: 1px solid #888;
+  text-align: center;
+  vertical-align: middle;
+  font-size: calc(var(--c) * 0.6);
+  font-weight: 600;
+  line-height: 1;
+}
+.ps-grid td:nth-child(3n):not(:last-child) {
+  border-right: 2.5px solid #111;
+}
+.ps-grid tr:nth-child(3n):not(:last-child) td {
+  border-bottom: 2.5px solid #111;
+}
+.ps-answers .ps-grid td {
+  font-weight: 500;
+  color: #333;
+}
+
+@media print {
+  html:has(.printable),
+  html:has(.printable) body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  html:has(.printable) .site-header,
+  html:has(.printable) .site-footer,
+  html:has(.printable) .no-print,
+  html:has(.printable) #consent,
+  html:has(.printable) .quick-switch,
+  html:has(.printable) a[href='#main'] {
+    display: none !important;
+  }
+  html:has(.printable) main,
+  html:has(.printable) .container-page {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+  .printable,
+  .ps-sheets {
+    margin: 0;
+    gap: 0;
+  }
+  .ps-sheets {
+    display: block;
+    opacity: 1 !important;
+  }
+  .ps-sheet {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    max-width: none;
+    break-after: page;
+    break-inside: avoid;
+  }
+  .ps-sheet:last-child {
+    break-after: auto;
+  }
+  .ps-sheet-title {
+    font-size: 14pt;
+    margin-bottom: 6mm;
+  }
+  .ps-four {
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm 6mm;
+  }
+  .ps-grid {
+    --c: 9mm;
+  }
+  .ps-one .ps-grid {
+    --c: 18mm;
+  }
+  .ps-grid-small {
+    --c: 8mm;
+  }
+  .ps-footer {
+    margin-top: 6mm;
+    font-size: 8pt;
   }
 }
