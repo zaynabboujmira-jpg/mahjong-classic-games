@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import LevelPage from '../../components/content/LevelPage.astro';
+import SamuraiSudokuGame from '../../components/game/SamuraiSudokuGame';
+import { SAMURAI } from '../../data/samurai-sudoku';
+import { KILLER } from '../../data/killer-sudoku';
+
+/** Samurai Sudoku: five overlapping grids, with its own island and Easy/Medium/Hard levels. */
+const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+const levels = [
+  ...sudoku.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary })),
+  { id: KILLER.level, name: KILLER.name, summary: KILLER.summary },
+  { id: SAMURAI.level, name: SAMURAI.name, summary: SAMURAI.summary },
+];
+---
+
+<LevelPage
+  game="Sudoku"
+  base="/sudoku/"
+  level={{ id: SAMURAI.level, name: SAMURAI.name, summary: SAMURAI.summary }}
+  levels={levels}
+  data={SAMURAI}
+  genre={['Puzzle', 'Logic puzzle', 'Samurai Sudoku']}
+  imageAlt="Five overlapping Sudoku grids arranged in an X"
+  imageKey="sudoku-samurai"
+  qa="samurai-sudoku"
+  levelsHeading="More Sudoku"
+  levelTitle={(name) => `${name} Sudoku`}
+  howToName="How to play Samurai Sudoku"
+  more={{
+    heading: 'Want a shorter puzzle?',
+    text: 'Classic Sudoku has four levels from Easy to Expert, and Killer Sudoku swaps the clues for cage sums.',
+    href: '/sudoku/',
+    label: 'Play Sudoku',
+  }}
+>
+  <SamuraiSudokuGame slot="game" client:load />
+  <h2>Five Sudokus in one</h2>
+  <p>
+    Samurai Sudoku joins five 9×9 Sudoku grids in the shape of an X. The centre grid shares one 3×3 box with each corner grid, so the four shaded boxes belong to two
+    grids at once and every digit there must work in both. With 369 cells to fill, it is the long-form Sudoku: a puzzle for a quiet evening rather than a coffee break.
+  </p>
+  <h2>How to approach a Samurai</h2>
+  <ul>
+    <li><strong>Start where the clues are densest.</strong> One grid usually has an easy way in; solve as much of it as you can.</li>
+    <li><strong>Carry digits across the corners.</strong> Each shared box you complete gives the neighbouring grid nine free clues.</li>
+    <li><strong>Switch grids when stuck.</strong> A grid that stalls often opens up once its shared box is filled from the other side.</li>
+    <li><strong>Use the classic techniques.</strong> Singles, locked candidates and pairs work exactly as in ordinary Sudoku, grid by grid.</li>
+  </ul>
+  <p>
+    New to Sudoku? <a href="/blog/how-to-play-sudoku-beginners/">How to Play Sudoku</a> explains the techniques that solve every Easy and Medium grid, and the
+    <a href="/blog/sudoku-advanced-solving-techniques/">advanced techniques guide</a> covers what Hard needs. For a different twist, try <a href="/sudoku/killer/"
+      >Killer Sudoku</a
+    >.
+  </p>
+</LevelPage>

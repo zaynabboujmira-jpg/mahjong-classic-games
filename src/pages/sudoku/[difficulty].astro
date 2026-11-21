@@ -19,7 +19,11 @@ const { entry, entries } = Astro.props;
 const { data } = entry;
 const { Content } = await render(entry);
 const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
-const moreLevels = [...levels, { id: 'killer', name: 'Killer', summary: 'Sudoku with cages: each dashed group of cells must add up to its sum, with no digit repeated inside it.' }];
+const moreLevels = [
+  ...levels,
+  { id: 'killer', name: 'Killer', summary: 'Sudoku with cages: each dashed group of cells must add up to its sum, with no digit repeated inside it.' },
+  { id: 'samurai', name: 'Samurai', summary: 'Five Sudoku grids in an X: the centre grid shares a corner box with each of the four others.' },
+];
 ---
 
 <LevelPage

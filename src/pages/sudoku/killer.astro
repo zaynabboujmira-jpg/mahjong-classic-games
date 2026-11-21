@@ -3,12 +3,14 @@ import { getCollection } from 'astro:content';
 import LevelPage from '../../components/content/LevelPage.astro';
 import KillerSudokuGame from '../../components/game/KillerSudokuGame';
 import { KILLER } from '../../data/killer-sudoku';
+import { SAMURAI } from '../../data/samurai-sudoku';
 
 /** Killer Sudoku: the cage variant, with its own island and Easy/Hard levels. */
 const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
 const levels = [
   ...sudoku.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary })),
   { id: KILLER.level, name: KILLER.name, summary: KILLER.summary },
+  { id: SAMURAI.level, name: SAMURAI.name, summary: SAMURAI.summary },
 ];
 ---
 

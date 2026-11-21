@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 import { PRINTABLE, PRINTABLE_PATH } from '../data/sudoku-printable';
 import { KILLER, KILLER_PATH } from '../data/killer-sudoku';
+import { SAMURAI, SAMURAI_PATH } from '../data/samurai-sudoku';
 import { CATALOG, CATEGORIES, type CatalogGame } from '../data/catalog';
 import { FAMOUS_DEALS } from '../data/freecell';
 import { HOW_TO_STEPS } from '../data/mahjong';
@@ -61,6 +62,7 @@ async function subPages(): Promise<Record<string, SubPage[]>> {
       ...sudoku.map((e) => fromLevel('/sudoku/', e)),
       { title: PRINTABLE.title, path: PRINTABLE_PATH, summary: PRINTABLE.summary, howTo: PRINTABLE.howTo, faq: PRINTABLE.faq },
     ],
+    'samurai-sudoku': [{ title: SAMURAI.title, path: SAMURAI_PATH, summary: SAMURAI.summary, howTo: SAMURAI.howTo, faq: SAMURAI.faq }],
     'killer-sudoku': [{ title: KILLER.title, path: KILLER_PATH, summary: KILLER.summary, howTo: KILLER.howTo, faq: KILLER.faq }],
     minesweeper: mines.map((e) => fromLevel('/minesweeper/', e)),
     'word-guess': word.map((e) => fromLevel('/word-guess/', e, e.data.level === '5-letters' ? '/word-guess/' : undefined)),
@@ -88,7 +90,7 @@ export async function llmsTxt(site: URL): Promise<string> {
   const lines = [
     `# ${SITE.name}`,
     '',
-    `> ${SITE.name} (${abs('/')}) is a free${FEATURES.ads ? '' : ', ad-free'} website with 38 classic games that play instantly in the browser on phones, tablets and computers. No download and no account${FEATURES.consent ? '' : ', no tracking cookies'}; scores stay on the player's device.`,
+    `> ${SITE.name} (${abs('/')}) is a free${FEATURES.ads ? '' : ', ad-free'} website with 39 classic games that play instantly in the browser on phones, tablets and computers. No download and no account${FEATURES.consent ? '' : ', no tracking cookies'}; scores stay on the player's device.`,
     '',
     'Facts worth knowing: every Mahjong Solitaire deal is generated with a solution; every Sudoku has exactly one solution reachable by logic alone; the first Minesweeper click is always safe; the arcade and word games are original games in classic genres (not the trademarked originals); the American Mahjong table uses this site\'s own hand card, not the National Mah Jongg League card.',
     '',
@@ -126,7 +128,7 @@ export async function llmsTxt(site: URL): Promise<string> {
     '## Daily challenges and stats',
     '',
     `- [Daily challenges](${abs('/daily/')}): the same six puzzles for everyone each day (Word Guess, medium Sudoku, hard Killer Sudoku, a mate-in-2 chess puzzle, Klondike draw-1 and the Turtle Mahjong layout), a daily streak and a spoiler-free result to share. New puzzles at local midnight.`,
-    `- [Your stats & achievements](${abs('/stats/')}): wins and best results across all 38 games, the daily streak and ten achievements, read from the player's own browser with a reset option.`,
+    `- [Your stats & achievements](${abs('/stats/')}): wins and best results across all 39 games, the daily streak and ten achievements, read from the player's own browser with a reset option.`,
     '',
   );
   lines.push('## Site', '', `- [All games](${abs('/games/')})`, `- [About](${abs('/about/')})`, `- [Privacy](${abs('/privacy/')})`, `- [Terms of use](${abs('/terms/')})`, '');
@@ -139,7 +141,7 @@ export async function llmsFullTxt(site: URL): Promise<string> {
   const lines = [
     `# ${SITE.name}: full game reference`,
     '',
-    `> Rules, modes, controls, how-to steps and FAQs for all 38 games on ${abs('/')}. Every answer below also appears on the linked page.`,
+    `> Rules, modes, controls, how-to steps and FAQs for all 39 games on ${abs('/')}. Every answer below also appears on the linked page.`,
     '',
     '## Daily challenges',
     '',
@@ -147,7 +149,7 @@ export async function llmsFullTxt(site: URL): Promise<string> {
     '',
     'Four seeded puzzles shared by every player each day: the daily Word Guess, a medium Sudoku, a Klondike draw-1 deal and a Turtle layout Mahjong Solitaire board. Winning at least one keeps the daily streak alive; the result can be shared without spoilers. Everything is stored in the browser.',
     '',
-    `Stats and achievements: ${abs('/stats/')} lists wins and best results across all 38 games plus ten achievements.`,
+    `Stats and achievements: ${abs('/stats/')} lists wins and best results across all 39 games plus ten achievements.`,
     '',
   ];
   lines.push(

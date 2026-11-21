@@ -1,5 +1,5 @@
 /**
- * The 38 games of Free Play Classic, grouped for the portal. One source for
+ * The 39 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -19,7 +19,7 @@ export interface Category {
 export const CATEGORIES: readonly Category[] = [
   { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
   { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, chess puzzles, Checkers, Chinese Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against the computer or a friend.' },
-  { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku and Killer Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
+  { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku, Killer and Samurai Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
   { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
 
@@ -214,6 +214,23 @@ export const CATALOG: readonly CatalogGame[] = [
       goal: 'Fill the 9×9 grid so every row, column and 3×3 box holds the digits 1 to 9 once',
       modes: 'Easy, Medium, Hard and Expert, graded by the hardest solving technique needed; every puzzle has exactly one solution',
       controls: 'Tap a cell and a number, or type 1-9; notes mode, auto notes, mistake highlighting, hints, undo',
+      players: '1',
+    },
+  },
+  {
+    id: 'samurai-sudoku',
+    name: 'Samurai Sudoku',
+    category: 'puzzles',
+    play: '/sudoku/samurai/',
+    hub: '/sudoku/',
+    hook: 'Five overlapping Sudoku grids in an X: the long-form puzzle.',
+    badges: ['5 Grids', '3 Levels', 'One Solution'],
+    icon: `<rect x="2" y="2" width="8" height="8" rx="1" ${S}/><rect x="14" y="2" width="8" height="8" rx="1" ${S}/><rect x="8" y="8" width="8" height="8" rx="1" ${S}/><rect x="2" y="14" width="8" height="8" rx="1" ${S}/><rect x="14" y="14" width="8" height="8" rx="1" ${S}/>`,
+    facts: {
+      type: 'Sudoku variant: five overlapping 9×9 grids',
+      goal: 'Fill all 369 cells so every row, column and box of each of the five grids holds 1 to 9 once; the four shared corner boxes count for two grids',
+      modes: 'Easy, Medium and Hard, graded by the hardest technique any grid needs; every grid solvable by logic, so the puzzle has exactly one solution',
+      controls: 'Tap a cell and a number, or type 1-9; notes, fill notes, mistake highlighting, hints, undo, autosave',
       players: '1',
     },
   },
