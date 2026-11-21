@@ -2545,6 +2545,25 @@
     text-align: left;
   }
 
+  /* Sudoku variants: digit pads for 6 and 16 digits. */
+  .digits.digits-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .digits.digits-16 {
+    grid-template-columns: repeat(8, 1fr);
+  }
+  @media (min-width: 760px) and (min-aspect-ratio: 5/4) {
+    .digits.digits-6 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .digits.digits-16 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .digits.digits-16 .digit {
+      min-height: 3.1rem;
+    }
+  }
+
   /* Samurai Sudoku: a 21-cell-wide board needs every pixel, so it may grow past the classic 35rem. */
   .samurai-fit {
     aspect-ratio: 1;

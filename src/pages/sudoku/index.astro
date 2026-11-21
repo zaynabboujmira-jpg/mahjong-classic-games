@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import CompareTable from '../../components/content/CompareTable.astro';
 import { SUDOKU_COMPARE } from '../../data/compare';
+import { VARIANT_PAGES } from '../../data/sudoku-variants';
 import Faq from '../../components/content/Faq.astro';
 import EmbedGame from '../../components/content/EmbedGame.astro';
 import SudokuGame from '../../components/game/SudokuGame';
@@ -122,6 +123,23 @@ const jsonLd = graph(
         ))
       }
     </ul>
+    <section aria-labelledby="variants-heading" class="mt-6 max-w-3xl">
+      <h2 id="variants-heading" class="text-xl font-bold">Sudoku variants</h2>
+      <ul class="grid gap-3 sm:grid-cols-2 mt-3">
+        {
+          Object.values(VARIANT_PAGES).map((v) => (
+            <li class="rounded-xl border border-border bg-card p-4">
+              <h3 class="font-bold">
+                <a class="hover:text-brand" href={v.path}>
+                  {v.name} Sudoku
+                </a>
+              </h3>
+              <p class="text-sm text-muted mt-1">{v.summary}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
     <section aria-labelledby="killer-heading" class="mt-6 rounded-xl border border-border bg-card p-5 max-w-3xl">
       <h2 id="killer-heading" class="text-xl font-bold">
         <a class="hover:text-brand" href="/sudoku/killer/">Killer Sudoku</a>

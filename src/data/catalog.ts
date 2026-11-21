@@ -1,5 +1,5 @@
 /**
- * The 40 games of Free Play Classic, grouped for the portal. One source for
+ * The 41 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -19,7 +19,7 @@ export interface Category {
 export const CATEGORIES: readonly Category[] = [
   { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, Mahjong Connect, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
   { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, chess puzzles, Checkers, Chinese Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against the computer or a friend.' },
-  { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku, Killer and Samurai Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
+  { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku and its variants (Killer, Samurai, Jigsaw, 16×16), Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
   { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
 
@@ -231,6 +231,23 @@ export const CATALOG: readonly CatalogGame[] = [
       goal: 'Fill the 9×9 grid so every row, column and 3×3 box holds the digits 1 to 9 once',
       modes: 'Easy, Medium, Hard and Expert, graded by the hardest solving technique needed; every puzzle has exactly one solution',
       controls: 'Tap a cell and a number, or type 1-9; notes mode, auto notes, mistake highlighting, hints, undo',
+      players: '1',
+    },
+  },
+  {
+    id: 'sudoku-variants',
+    name: 'Sudoku Variants',
+    category: 'puzzles',
+    play: '/sudoku/jigsaw/',
+    hub: '/sudoku/',
+    hook: 'Jigsaw, Diagonal, giant 16×16 and a 6×6 for kids: new shapes, same logic.',
+    badges: ['4 Variants', 'Easy + Medium', 'One Solution'],
+    icon: `<rect x="3" y="3" width="18" height="18" rx="2" ${S}/><path d="M3 9h6v6h6v6M9 3v6h6V3M15 9h6" ${S}/>`,
+    facts: {
+      type: 'Sudoku variants: 6×6, Diagonal (Sudoku X), Jigsaw (irregular regions) and 16×16',
+      goal: 'Fill the grid so every row, column and region (and both diagonals in Diagonal Sudoku) holds each digit exactly once',
+      modes: 'Each variant in Easy (naked singles) and Medium (hidden singles); Jigsaw gets a new region layout every puzzle; every puzzle has one solution',
+      controls: 'Tap a cell and a digit, or type it (1 then 0-6 for 10-16); notes, fill notes, mistake highlighting, hints, undo, autosave',
       players: '1',
     },
   },

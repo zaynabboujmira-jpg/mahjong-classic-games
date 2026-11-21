@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import LevelPage from './LevelPage.astro';
+import VariantSudokuGame from '../game/VariantSudokuGame';
+import { VARIANT_PAGES } from '../../data/sudoku-variants';
+import { KILLER } from '../../data/killer-sudoku';
+import { SAMURAI } from '../../data/samurai-sudoku';
+import type { Variant } from '../../engines/sudoku/variants';
+
+/** One Sudoku variant page (6×6, Diagonal, Jigsaw, 16×16) on the shared level layout. */
+interface Props {
+  variant: Variant;
+}
+const v = VARIANT_PAGES[Astro.props.variant];
+const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+const levels = [
+  ...sudoku.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary })),
+  ...Object.values(VARIANT_PAGES).map((p) => ({ id: p.variant, name: p.name, summary: p.summary })),
+  { id: KILLER.level, name: KILLER.name, summary: KILLER.summary },
+  { id: SAMURAI.level, name: SAMURAI.name, summary: SAMURAI.summary },
+];
+const id = v.path.split('/')[2]!;
+---
+
+<LevelPage
+  game="Sudoku"
+  base="/sudoku/"
+  level={{ id, name: v.name, summary: v.summary }}
+  levels={levels}
+  data={v}
+  genre={['Puzzle', 'Logic puzzle', 'Sudoku variant']}
+  imageAlt={`A ${v.name} Sudoku grid`}
+  imageKey={`sudoku-${id}`}
+  qa="sudoku-variants"
+  qaExtra={[{ label: 'This page', value: v.summary }]}
+  levelsHeading="More Sudoku"
+  levelTitle={(name) => `${name} Sudoku`}
+  howToName={`How to play ${v.name} Sudoku`}
+  more={{
+    heading: 'Prefer classic Sudoku?',
+    text: 'Four levels from Easy to Expert, every puzzle with one solution and solvable by logic alone.',
+    href: '/sudoku/',
+    label: 'Play Sudoku',
+  }}
+>
+  <VariantSudokuGame slot="game" client:load variant={v.variant} />
+  <h2>About {v.name} Sudoku</h2>
+  <p>{v.intro}</p>
+  <h2>Tips</h2>
+  <ul>{v.tips.map((t) => <li>{t}</li>)}</ul>
+  <p>
+    New to Sudoku? <a href="/blog/how-to-play-sudoku-beginners/">How to Play Sudoku</a> explains naked and hidden singles, the two techniques that solve every Easy and
+    Medium puzzle here. Other variants: {
+      Object.values(VARIANT_PAGES)
+        .filter((p) => p.variant !== v.variant)
+        .map((p, i, arr) => (
+          <>
+            <a href={p.path}>{p.name} Sudoku</a>
+            {i < arr.length - 1 ? ', ' : ''}
+          </>
+        ))
+    }, <a href="/sudoku/killer/">Killer Sudoku</a> and <a href="/sudoku/samurai/">Samurai Sudoku</a>.
+  </p>
+</LevelPage>

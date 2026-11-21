@@ -86,6 +86,9 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
   add('sudoku', sudokuDone.length > 0 || keys.some((k) => k.startsWith('sudoku:')), sudokuDone.length ? `${time(minOf(sudokuDone.map(sudokuBest))!)} (${sudokuDone.join(', ')})` : null);
   const puzzlesSolved = ['mate1', 'mate2'].reduce((n, m) => n + (kv.get<number[] | null>(`chesspz:solved:${m}`, null)?.length ?? 0), 0);
   add('chess-puzzles', puzzlesSolved > 0 || keys.includes('chesspz:mode'), puzzlesSolved ? `${puzzlesSolved} puzzle${puzzlesSolved > 1 ? 's' : ''} solved` : null);
+  const variantBest = keys.filter((k) => k.startsWith('variant:') && k.includes(':best:')).map(num);
+  const variantTime = minOf(variantBest);
+  add('sudoku-variants', variantTime !== null || keys.some((k) => k.startsWith('variant:') && k.includes(':progress:')), variantTime ? `${time(variantTime)} best` : null);
   const samuraiDone = ['easy', 'medium', 'hard'].filter((d) => num(`samurai:best:${d}`) !== null);
   add('samurai-sudoku', samuraiDone.length > 0 || keys.some((k) => k.startsWith('samurai:')), samuraiDone.length ? `${time(minOf(samuraiDone.map((d) => num(`samurai:best:${d}`)))!)} (${samuraiDone.join(', ')})` : null);
   const connectDone = ['easy', 'medium', 'hard'].filter((d) => num(`connect:best:${d}`) !== null);

@@ -4,6 +4,7 @@ import type { GetStaticPaths } from 'astro';
 import LevelPage from '../../components/content/LevelPage.astro';
 import SudokuGame from '../../components/game/SudokuGame';
 import { SUDOKU_COMPARE } from '../../data/compare';
+import { VARIANT_PAGES } from '../../data/sudoku-variants';
 
 /** One playable page per difficulty in src/content/sudoku. */
 export const getStaticPaths = (async () => {
@@ -23,6 +24,7 @@ const moreLevels = [
   ...levels,
   { id: 'killer', name: 'Killer', summary: 'Sudoku with cages: each dashed group of cells must add up to its sum, with no digit repeated inside it.' },
   { id: 'samurai', name: 'Samurai', summary: 'Five Sudoku grids in an X: the centre grid shares a corner box with each of the four others.' },
+  ...Object.values(VARIANT_PAGES).map((v) => ({ id: v.path.split('/')[2]!, name: v.name, summary: v.summary })),
 ];
 ---
 
