@@ -1,5 +1,5 @@
 /**
- * The 45 games of Free Play Classic, grouped for the portal. One source for
+ * The 46 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -232,6 +232,23 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'You and a computer partner against two computer opponents; Nil bids, bags (10 bags cost 100)',
       controls: 'Tap a number to bid, then tap cards to play; only legal cards are lit',
       players: '1 with a computer partner against 2 computer players',
+    },
+  },
+  {
+    id: 'two-player-spades',
+    name: '2-Player Spades',
+    category: 'mahjong-cards',
+    play: '/cards/2-player-spades/',
+    hub: '/cards/',
+    hook: 'Two-handed Spades: draw your hand, then bid and play head to head.',
+    badges: ['Draw Phase', 'Nil Bids', 'To 300 or 500'],
+    icon: `<path d="M8 3s5 4 5 7a2.5 2.5 0 0 1-4.3 1.7L9.5 15h-3l.8-3.3A2.5 2.5 0 0 1 3 10c0-3 5-7 5-7z" ${S}/><path d="M16 9s5 4 5 7a2.5 2.5 0 0 1-4.3 1.7l.8 3.3h-3l.8-3.3A2.5 2.5 0 0 1 11 16c0-3 5-7 5-7z" ${S}/>`,
+    facts: {
+      type: 'Two-player trick-taking card game (two-handed Spades)',
+      goal: 'Win at least the number of tricks you bid; first to 300 or 500 points wins',
+      modes: 'You against the computer; hands are drawn card by card from the stock; Nil bids and bags (10 bags cost 100)',
+      controls: 'Keep or pass each drawn card, tap a number to bid, then tap cards to play; only legal cards are lit',
+      players: '1 against 1 computer player',
     },
   },
   {

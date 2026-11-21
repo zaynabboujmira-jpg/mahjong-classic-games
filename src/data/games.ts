@@ -159,6 +159,7 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'samurai-sudoku', name: 'Samurai Sudoku', status: 'live', href: '/sudoku/samurai/', blurb: 'Five overlapping Sudoku grids, Easy to Hard, one solution each.' },
   { slug: 'killer-sudoku', name: 'Killer Sudoku', status: 'live', href: '/sudoku/killer/', blurb: 'Sudoku with sum cages, Easy and Hard, every puzzle with one solution.' },
   { slug: 'spades', name: 'Spades', status: 'live', href: '/cards/spades/', blurb: 'Partnership Spades with bids, Nil and bags.' },
+  { slug: 'two-player-spades', name: '2-Player Spades', status: 'live', href: '/cards/2-player-spades/', blurb: 'Two-handed Spades with a draw phase, Nil and bags.' },
   { slug: 'cribbage', name: 'Cribbage', status: 'live', href: '/cards/cribbage/', blurb: 'Two-player Cribbage to 121 with a pegging board and full scoring.' },
   { slug: 'pyramid', name: 'Pyramid Solitaire', status: 'live', href: '/solitaire/pyramid/', blurb: 'Pair cards that add up to 13 to clear the pyramid.' },
   { slug: 'chess960', name: 'Chess960', status: 'live', href: '/board/chess960/', blurb: 'Random-start chess: 960 positions against three computer levels.' },

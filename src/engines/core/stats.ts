@@ -144,6 +144,8 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
     const won = num(`${id}:wins`) ?? 0;
     add(id, played > 0 || (id === 'cribbage' && keys.includes('cribbage:game')), played ? `${won} of ${played} games won` : null);
   }
+  const sp2 = num('spades2:games') ?? 0;
+  add('two-player-spades', sp2 > 0 || keys.includes('spades2:game'), sp2 ? `${num('spades2:wins') ?? 0} of ${sp2} games won` : null);
   const pyramidBest = maxOf(withPrefix('pyramid:best:').map(num));
   add('pyramid', pyramidBest !== null || keys.includes('pyramid:mode'), pyramidBest ? `${pyramidBest.toLocaleString('en-US')} points` : null);
   const wheelBest = num('wheel:best');

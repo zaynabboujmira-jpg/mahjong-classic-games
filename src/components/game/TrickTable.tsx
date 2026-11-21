@@ -20,6 +20,8 @@ export interface TrickTableProps {
   message: string;
   /** Extra controls between the table and your hand (pass button, bid picker). */
   children?: ComponentChildren;
+  /** Opponent seats to draw (default West, North, East); two-player games show only North. */
+  seats?: number[];
 }
 
 const POS = ['s', 'w', 'n', 'e'];
@@ -33,7 +35,7 @@ export function TrickTable(p: TrickTableProps) {
         {p.message}
       </p>
       <div class="tt-table">
-        {[1, 2, 3].map((s) => (
+        {(p.seats ?? [1, 2, 3]).map((s) => (
           <div key={s} class={`tt-seat tt-${POS[s]}${p.turn === s ? ' is-turn' : ''}`}>
             <span class="tt-name">{p.names[s]}</span>
             <span class="tt-info">{p.info[s]}</span>

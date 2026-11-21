@@ -2715,6 +2715,27 @@
     font-size: 0.9rem;
   }
 
+  /* 2-player Spades: the draw */
+  .sp2-draw {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .sp2-top .pc {
+    --cw: clamp(3.4rem, 12vmin, 4.6rem);
+  }
+  .sp2-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-width: 18rem;
+  }
+  .sp2-actions .tt-hint {
+    text-align: left;
+  }
+
   /* Cribbage */
   .cb {
     --cw: clamp(2.4rem, 9vmin, 3.6rem);

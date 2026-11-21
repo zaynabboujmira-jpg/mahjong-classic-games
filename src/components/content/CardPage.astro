@@ -6,6 +6,7 @@ import { CARDS_COMPARE } from '../../data/compare';
 import HeartsGame from '../game/HeartsGame';
 import SpadesGame from '../game/SpadesGame';
 import CribbageGame from '../game/CribbageGame';
+import Spades2Game from '../game/Spades2Game';
 
 /** A multiplayer card game page under /cards/. */
 interface Props {
@@ -20,6 +21,7 @@ const ALT: Record<string, string> = {
   hearts: 'Four hands of cards around a trick with the queen of spades',
   spades: 'A trick of four cards with a spade trumping',
   cribbage: 'A cribbage board with pegs beside a hand of cards and the starter',
+  '2-player-spades': 'Two hands of cards facing each other with a spade trumping a trick',
 };
 ---
 
@@ -30,10 +32,10 @@ const ALT: Record<string, string> = {
   level={{ id: data.level, name: data.name, summary: data.summary }}
   levels={levels}
   data={data}
-  genre={data.level === 'cribbage' ? ['Card game', 'Cribbage', 'Two-player'] : ['Card game', 'Trick-taking', 'Multiplayer']}
+  genre={data.level === 'cribbage' ? ['Card game', 'Cribbage', 'Two-player'] : data.level === '2-player-spades' ? ['Card game', 'Trick-taking', 'Two-player'] : ['Card game', 'Trick-taking', 'Multiplayer']}
   imageAlt={ALT[data.level]!}
   imageKey={`cards-${data.level}`}
-  qa={data.level}
+  qa={data.level === '2-player-spades' ? 'two-player-spades' : data.level}
   compare={CARDS_COMPARE}
   levelsHeading="More card games"
   levelTitle={(name) => name}
@@ -48,5 +50,6 @@ const ALT: Record<string, string> = {
   {data.level === 'hearts' && <HeartsGame slot="game" client:load />}
   {data.level === 'spades' && <SpadesGame slot="game" client:load />}
   {data.level === 'cribbage' && <CribbageGame slot="game" client:load />}
+  {data.level === '2-player-spades' && <Spades2Game slot="game" client:load />}
   <Content />
 </LevelPage>

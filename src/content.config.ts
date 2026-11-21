@@ -112,7 +112,7 @@ const board = defineCollection({
 /** Multiplayer card games (/cards/[game]/). */
 const cards = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/cards' }),
-  schema: levelPage(['hearts', 'spades', 'cribbage'] as const),
+  schema: levelPage(['hearts', 'spades', 'cribbage', '2-player-spades'] as const),
 });
 
 /** Strategy and rules guides (/blog/[slug]/); the schema lives in src/data/blog.ts so tests can use it. */
