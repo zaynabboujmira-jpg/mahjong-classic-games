@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { readJson, writeJson } from '../../engines/core/storage';
 import { recordWin } from '../../engines/core/progress';
 import { Synth } from '../../engines/arcade/audio';
-import { BISHOP, BLACK, Chess, KNIGHT, QUEEN, ROOK, WHITE, colorOf, squareName, typeOf, type Color, type Move } from '../../engines/board/chess';
+import { BISHOP, BLACK, Chess, FLAG_CASTLE, KNIGHT, QUEEN, ROOK, START_FEN, WHITE, colorOf, fen960, squareName, typeOf, type Color, type Move } from '../../engines/board/chess';
 import { chooseMove, type ChessLevel } from '../../engines/board/chess-ai';
 import { PIECE_NAMES, pieceSvg } from './chess-pieces';
 
@@ -25,8 +25,17 @@ interface Rec {
   drawn: number;
 }
 
-export default function ChessGame() {
+/** A Chess960 start number from the URL (?n=0-959), or a random one. */
+const pick960 = (fromUrl = false) => {
+  const n = fromUrl ? Number(new URLSearchParams(location.search).get('n')) : NaN;
+  return Number.isInteger(n) && n >= 0 && n < 960 && new URLSearchParams(location.search).has('n') ? n : Math.floor(Math.random() * 960);
+};
+
+export default function ChessGame({ variant = 'standard' }: { variant?: 'standard' | '960' }) {
+  const is960 = variant === '960';
+  const prefix = is960 ? 'chess960' : 'chess';
   const game = useRef(new Chess());
+  const [pos960, setPos960] = useState(518);
   const synth = useRef(new Synth());
   const [, setTick] = useState(0);
   const [opponent, setOpponent] = useState<Opponent>('club');
@@ -42,7 +51,7 @@ export default function ChessGame() {
 
   const vsAi = opponent !== 'friend';
   const refresh = () => setTick((n) => n + 1);
-  const recKey = (o: Opponent) => `chess:record:${o}`;
+  const recKey = (o: Opponent) => `${prefix}:record:${o}`;
 
   const status = () => {
     const g = game.current;
@@ -68,7 +77,7 @@ export default function ChessGame() {
     if (out === 'checkmate') {
       if (g.turn !== me) {
         r.won++;
-        recordWin('chess');
+        recordWin(is960 ? 'chess960' : 'chess');
       } else r.lost++;
     } else r.drawn++;
     writeJson(recKey(opp), r);
@@ -100,9 +109,15 @@ export default function ChessGame() {
     }, 60);
   };
 
-  const start = (opp: Opponent = opponent, me: Color = side) => {
+  const start = (opp: Opponent = opponent, me: Color = side, n = pos960) => {
     window.clearTimeout(aiTimer.current);
-    game.current = new Chess();
+    game.current = is960 ? new Chess(fen960(n), { chess960: true }) : new Chess(START_FEN);
+    if (is960) {
+      setPos960(n);
+      const url = new URL(location.href);
+      url.searchParams.set('n', String(n));
+      history.replaceState(null, '', url);
+    }
     sans.current = [];
     setThinking(false);
     setSelected(-1);
@@ -110,8 +125,8 @@ export default function ChessGame() {
     setOpponent(opp);
     setSide(me);
     setRecord(readJson<Rec>(recKey(opp), { won: 0, lost: 0, drawn: 0 }));
-    writeJson('chess:settings', { opponent: opp, side: me });
-    setAnnounce(opp === 'friend' ? 'New game for two players. White to move.' : `New game. You play ${me === WHITE ? 'White' : 'Black'}.`);
+    writeJson(`${prefix}:settings`, { opponent: opp, side: me });
+    setAnnounce(`${is960 ? `Chess960 position ${n}. ` : ''}${opp === 'friend' ? 'New game for two players. White to move.' : `New game. You play ${me === WHITE ? 'White' : 'Black'}.`}`);
     refresh();
     if (opp !== 'friend' && me === BLACK) aiMove(opp, me);
   };
@@ -127,7 +142,9 @@ export default function ChessGame() {
     if (!myTurn()) return;
     const p = g.board[s]!;
     if (selected >= 0) {
-      const moves = g.moves(selected).filter((m) => m.to === s);
+      // Chess960 castling can also be played by tapping the square the king lands on.
+      let moves = g.moves(selected).filter((m) => m.to === s);
+      if (!moves.length) moves = g.moves(selected).filter((m) => m.flags & FLAG_CASTLE && g.kingTarget(m) === s);
       if (moves.length > 1) {
         setPromo(moves);
         return;
@@ -173,14 +190,14 @@ export default function ChessGame() {
   };
 
   useEffect(() => {
-    const s = readJson<{ opponent: Opponent; side: Color }>('chess:settings', { opponent: 'club', side: WHITE });
-    start(OPPONENTS.some((o) => o.id === s.opponent) ? s.opponent : 'club', s.side === BLACK ? BLACK : WHITE);
+    const s = readJson<{ opponent: Opponent; side: Color }>(`${prefix}:settings`, { opponent: 'club', side: WHITE });
+    start(OPPONENTS.some((o) => o.id === s.opponent) ? s.opponent : 'club', s.side === BLACK ? BLACK : WHITE, is960 ? pick960(true) : 518);
     return () => window.clearTimeout(aiTimer.current);
   }, []);
 
   const g = game.current;
   const flipped = side === BLACK && vsAi;
-  const targets = new Set(selected >= 0 ? g.moves(selected).map((m) => m.to) : []);
+  const targets = new Set(selected >= 0 ? g.moves(selected).flatMap((m) => (m.flags & FLAG_CASTLE ? [m.to, g.kingTarget(m)] : [m.to])) : []);
   const last = g.played[g.played.length - 1];
   const checkSq = g.inCheck() ? g.kings[g.turn] : -1;
   const order = Array.from({ length: 64 }, (_, i) => {
@@ -209,9 +226,14 @@ export default function ChessGame() {
   return (
     <section class="game" aria-label="Chess">
       <div class="toolbar" role="toolbar" aria-label="Game controls">
-        <button type="button" class="btn btn-primary" onClick={() => start()}>
-          New game
+        <button type="button" class="btn btn-primary" onClick={() => start(opponent, side, is960 ? pick960() : 518)}>
+          {is960 ? 'New position' : 'New game'}
         </button>
+        {is960 && (
+          <button type="button" class="btn" onClick={() => start()}>
+            Replay #{pos960}
+          </button>
+        )}
         <button type="button" class="btn" onClick={undo} disabled={g.played.length === 0 || (vsAi && g.played.length === 1 && side === BLACK)}>
           Undo
         </button>
@@ -238,6 +260,7 @@ export default function ChessGame() {
       </div>
       <div class="arcade-area">
         <p class="arcade-message" aria-hidden="true">
+          {is960 && <span class="board-moves">Position {pos960} · </span>}
           {status()} {moveList && <span class="board-moves">{moveList}</span>}
         </p>
         <div class="sq-fit">
@@ -263,7 +286,7 @@ export default function ChessGame() {
                   role="gridcell"
                   class={cls}
                   tabIndex={-1}
-                  aria-label={`${squareName(s)}${p ? `, ${colorOf(p) === WHITE ? 'white' : 'black'} ${PIECE_NAMES[typeOf(p)]}` : ''}${targets.has(s) ? ', can move here' : ''}`}
+                  aria-label={`${squareName(s)}${p ? `, ${colorOf(p) === WHITE ? 'white' : 'black'} ${PIECE_NAMES[typeOf(p)]}` : ''}${targets.has(s) ? (p && colorOf(p) === g.turn ? ', castle with this rook' : ', can move here') : ''}`}
                   onClick={() => tapSquare(s)}
                 >
                   {p ? <span class="chess-piece" dangerouslySetInnerHTML={{ __html: pieceSvg(typeOf(p), colorOf(p) === WHITE) }} /> : null}
@@ -288,8 +311,8 @@ export default function ChessGame() {
         )}
         {g.outcome() && (
           <div class="four-over">
-            <button type="button" class="btn btn-primary" onClick={() => start()}>
-              Play again
+            <button type="button" class="btn btn-primary" onClick={() => start(opponent, side, is960 ? pick960() : 518)}>
+              {is960 ? 'New position' : 'Play again'}
             </button>
           </div>
         )}

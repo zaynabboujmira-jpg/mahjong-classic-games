@@ -155,7 +155,7 @@ class Search {
 
 /** Chooses the computer's move for the side to move. */
 export function chooseMove(game: Chess, level: ChessLevel, rng: Rng = createRng(game.fen())): Move | null {
-  const g = new Chess(game.fen());
+  const g = game.clone();
   const moves = g.moves();
   if (!moves.length) return null;
   const set = SETTINGS[level];

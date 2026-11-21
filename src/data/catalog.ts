@@ -1,5 +1,5 @@
 /**
- * The 42 games of Free Play Classic, grouped for the portal. One source for
+ * The 43 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -470,6 +470,23 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'You against 1, 2, 3 or 5 computer players at Easy, Medium or Hard, or 2 players on one device; undo and autosave',
       controls: 'Tap a marble, then a highlighted hole; one tap plays a whole chain of hops; Tab and Enter work too',
       players: '1 against 1 to 5 computer players, or 2 on one device',
+    },
+  },
+  {
+    id: 'chess960',
+    name: 'Chess960',
+    category: 'board',
+    play: '/board/chess960/',
+    hub: '/board/',
+    hook: 'Fischer random chess: 960 shuffled starts, no opening theory.',
+    badges: ['960 Starts', '3 AI Levels', '2 Players'],
+    icon: `<path d="M8 20h8M9 20l1-6h4l1 6M10 14l-1.5-4h7L14 14M9 6.5h6M12 4v5" ${S}/><path d="M3 4h3M18 20h3" ${S}/>`,
+    facts: {
+      type: 'Chess variant (Fischer random chess)',
+      goal: 'Checkmate the king; the back-row pieces start in one of 960 shuffled positions, mirrored for both sides',
+      modes: 'Against Beginner, Club or Tactician, or 2 players on one device; random or numbered start positions; Chess960 castling',
+      controls: 'Tap a piece, then a square; to castle tap the king, then the rook; undo; arrow keys and Enter',
+      players: '1 against the computer, or 2 on one device',
     },
   },
   {

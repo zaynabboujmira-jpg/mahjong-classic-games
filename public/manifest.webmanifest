@@ -1,7 +1,7 @@
 {
   "name": "Free Play Classic",
   "short_name": "Free Play",
-  "description": "42 classic browser games: Mahjong, solitaire, card, board, puzzle, word and arcade games. Instant play, no ads, no sign-up.",
+  "description": "43 classic browser games: Mahjong, solitaire, card, board, puzzle, word and arcade games. Instant play, no ads, no sign-up.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

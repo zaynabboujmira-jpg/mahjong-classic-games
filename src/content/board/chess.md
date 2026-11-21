@@ -47,3 +47,5 @@ Chess is played on an 8 × 8 board between White and Black, each with sixteen pi
 ## Three computer levels
 
 Start with Beginner to learn the moves, then step up to Club for a fair game. Tactician thinks several moves ahead and sees tactics such as forks and pins, so every piece needs a defender.
+
+Want a fresh start every game? [Chess960](/board/chess960/) shuffles the back-row pieces into one of 960 positions, so no two openings are the same.

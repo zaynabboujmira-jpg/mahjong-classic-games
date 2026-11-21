@@ -107,6 +107,49 @@ const LETTERS = ' pnbrqk';
 
 export type Outcome = 'checkmate' | 'stalemate' | 'fifty-move' | 'repetition' | 'material' | null;
 
+/** Knight placements among the five squares left after the bishops and queen (Chess960 numbering). */
+const KNIGHTS_960 = [
+  [0, 1],
+  [0, 2],
+  [0, 3],
+  [0, 4],
+  [1, 2],
+  [1, 3],
+  [1, 4],
+  [2, 3],
+  [2, 4],
+  [3, 4],
+];
+
+/**
+ * White's back rank for Chess960 start position n (0-959), in the standard
+ * numbering: bishops on opposite colours, the king between the rooks.
+ * Position 518 is the normal chess set-up.
+ */
+export function backRank960(n: number): string {
+  const rank: (string | null)[] = new Array<string | null>(8).fill(null);
+  let x = ((n % 960) + 960) % 960;
+  rank[(x % 4) * 2 + 1] = 'B';
+  x = Math.floor(x / 4);
+  rank[(x % 4) * 2] = 'B';
+  x = Math.floor(x / 4);
+  const free = () => rank.flatMap((p, i) => (p ? [] : [i]));
+  rank[free()[x % 6]!] = 'Q';
+  x = Math.floor(x / 6);
+  const f = free();
+  for (const k of KNIGHTS_960[x]!) rank[f[k]!] = 'N';
+  const rest = free();
+  rank[rest[0]!] = 'R';
+  rank[rest[1]!] = 'K';
+  rank[rest[2]!] = 'R';
+  return rank.join('');
+}
+
+export const fen960 = (n: number) => {
+  const r = backRank960(n);
+  return `${r.toLowerCase()}/pppppppp/8/8/8/8/PPPPPPPP/${r} w KQkq - 0 1`;
+};
+
 export class Chess {
   board = new Array<number>(64).fill(0);
   turn: Color = WHITE;
@@ -120,9 +163,35 @@ export class Chess {
   /** Moves played in the game (not search), with the position keys for repetition. */
   played: Move[] = [];
   keys: string[] = [];
+  /** Chess960: castling uses the rooks' starting files and puts king and rook on the usual squares. */
+  chess960 = false;
+  /** Files of the king-side and queen-side rooks that may castle. */
+  castleFiles: [number, number] = [7, 0];
 
-  constructor(fen = START_FEN) {
+  constructor(fen = START_FEN, opts: { chess960?: boolean } = {}) {
+    this.chess960 = !!opts.chess960;
     this.load(fen);
+    if (this.chess960) {
+      // The two rooks either side of White's king (both sides mirror each other in Chess960).
+      const kf = fileOf(this.kings[WHITE]);
+      const rooks = [0, 1, 2, 3, 4, 5, 6, 7].filter((f) => this.board[f] === make(ROOK, WHITE));
+      this.castleFiles = [rooks.find((f) => f > kf) ?? 7, [...rooks].reverse().find((f) => f < kf) ?? 0];
+    }
+  }
+
+  /** A copy of this position with the same variant settings (no move history). */
+  clone(): Chess {
+    const c = new Chess(this.fen());
+    c.chess960 = this.chess960;
+    c.castleFiles = [...this.castleFiles] as [number, number];
+    return c;
+  }
+
+  /** Where the king ends up for a move (for Chess960 castling the move's `to` is the rook square). */
+  kingTarget(m: Move): number {
+    if (!(m.flags & FLAG_CASTLE) || !this.chess960) return m.to;
+    const base = rankOf(m.from) * 8;
+    return m.to > m.from ? base + 6 : base + 2;
   }
 
   load(fen: string) {
@@ -280,6 +349,7 @@ export class Chess {
     const base = us === WHITE ? 0 : 56;
     const kingSide = us === WHITE ? 1 : 4;
     const queenSide = us === WHITE ? 2 : 8;
+    if (this.chess960) return this.castles960(out, base, kingSide, queenSide, k, r, them);
     if (b[base + 4] !== k) return;
     if (this.castle & kingSide && b[base + 7] === r && !b[base + 5] && !b[base + 6]) {
       if (!this.isAttacked(base + 4, them) && !this.isAttacked(base + 5, them) && !this.isAttacked(base + 6, them))
@@ -291,10 +361,55 @@ export class Chess {
     }
   }
 
+  /**
+   * Chess960 castling: the king goes to the g- or c-file and the rook to the f- or
+   * d-file. Every square either piece crosses must be empty (apart from the two
+   * pieces themselves), and the king may not start in, pass through or land on check.
+   * The move is written king-to-rook-square.
+   */
+  private castles960(out: Move[], base: number, kingSide: number, queenSide: number, k: number, r: number, them: Color) {
+    const b = this.board;
+    const ks = this.kings[this.turn];
+    if (rankOf(ks) * 8 !== base) return;
+    const sides: [number, number, number, number][] = [
+      [kingSide, this.castleFiles[0], base + 6, base + 5],
+      [queenSide, this.castleFiles[1], base + 2, base + 3],
+    ];
+    for (const [right, file, kt, rt] of sides) {
+      const rs = base + file;
+      if (!(this.castle & right) || b[rs] !== r) continue;
+      let clear = true;
+      for (const [a, z] of [
+        [ks, kt],
+        [rs, rt],
+      ] as const)
+        for (let sq = Math.min(a, z); sq <= Math.max(a, z); sq++) if (sq !== ks && sq !== rs && b[sq]) clear = false;
+      if (!clear) continue;
+      let safe = true;
+      for (let sq = Math.min(ks, kt); sq <= Math.max(ks, kt); sq++) if (this.isAttacked(sq, them)) safe = false;
+      if (safe) out.push({ from: ks, to: rs, piece: k, captured: 0, promo: 0, flags: FLAG_CASTLE });
+    }
+  }
+
   makeMove(m: Move) {
     const b = this.board;
     this.stack.push({ move: m, castle: this.castle, ep: this.ep, half: this.half });
     const us = colorOf(m.piece);
+    if (this.chess960 && m.flags & FLAG_CASTLE) {
+      const kt = this.kingTarget(m);
+      const rt = m.to > m.from ? kt - 1 : kt + 1;
+      b[m.from] = 0;
+      b[m.to] = 0;
+      b[kt] = m.piece;
+      b[rt] = make(ROOK, us);
+      this.kings[us] = kt;
+      this.castle &= us === WHITE ? ~3 : ~12;
+      this.ep = -1;
+      this.half++;
+      if (us === BLACK) this.full++;
+      this.turn = (us ^ 1) as Color;
+      return;
+    }
     b[m.from] = 0;
     b[m.to] = m.promo ? make(m.promo, us) : m.piece;
     if (m.flags & FLAG_EP) b[us === WHITE ? m.to - 8 : m.to + 8] = 0;
@@ -311,11 +426,13 @@ export class Chess {
       this.kings[us] = m.to;
       this.castle &= us === WHITE ? ~3 : ~12;
     }
+    // A rook leaving (or captured on) its starting square loses that castling right.
+    const [kf, qf] = this.castleFiles;
     for (const s of [m.from, m.to]) {
-      if (s === 0) this.castle &= ~2;
-      else if (s === 7) this.castle &= ~1;
-      else if (s === 56) this.castle &= ~8;
-      else if (s === 63) this.castle &= ~4;
+      if (s === qf) this.castle &= ~2;
+      else if (s === kf) this.castle &= ~1;
+      else if (s === 56 + qf) this.castle &= ~8;
+      else if (s === 56 + kf) this.castle &= ~4;
     }
     this.ep = m.flags & FLAG_DOUBLE ? (m.from + m.to) >> 1 : -1;
     this.half = typeOf(m.piece) === PAWN || m.captured ? 0 : this.half + 1;
@@ -329,6 +446,21 @@ export class Chess {
     const { move: m } = u;
     const b = this.board;
     const us = colorOf(m.piece);
+    if (this.chess960 && m.flags & FLAG_CASTLE) {
+      const kt = this.kingTarget(m);
+      const rt = m.to > m.from ? kt - 1 : kt + 1;
+      b[kt] = 0;
+      b[rt] = 0;
+      b[m.from] = m.piece;
+      b[m.to] = make(ROOK, us);
+      this.kings[us] = m.from;
+      this.castle = u.castle;
+      this.ep = u.ep;
+      this.half = u.half;
+      if (us === BLACK) this.full--;
+      this.turn = us;
+      return;
+    }
     b[m.from] = m.piece;
     b[m.to] = m.flags & FLAG_EP ? 0 : m.captured;
     if (m.flags & FLAG_EP) b[us === WHITE ? m.to - 8 : m.to + 8] = m.captured;

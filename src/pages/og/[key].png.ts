@@ -59,7 +59,7 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `42 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `43 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
     { params: { key: 'blog' }, props: { title: 'Strategy Guides', subtitle: 'Tactics for classic games · Free', art: guideArt('<path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>') } },
     { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Killer · Chess · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong-connect' }, props: { title: 'Mahjong Connect', subtitle: 'Link pairs · 3 board sizes', art: tileHandArt([{ dots: 5 }, { bamboo: 3 }, { dots: 5 }, 'flower', { bamboo: 7 }, { bamboo: 3 }, 'flower']) } },
@@ -129,6 +129,7 @@ export const getStaticPaths = (async () => {
     { params: { key: 'board-four-in-a-row' }, props: { title: 'Four in a Row', subtitle: 'vs computer or a friend', art: newGameArt('four-in-a-row') } },
     { params: { key: 'board-chess' }, props: { title: 'Chess', subtitle: '3 computer levels or a friend', art: newGameArt('chess') } },
     { params: { key: 'board-chinese-checkers' }, props: { title: 'Chinese Checkers', subtitle: '2 to 6 players · Chain hops', art: newGameArt('chinese-checkers') } },
+    { params: { key: 'board-chess960' }, props: { title: 'Chess960', subtitle: '960 random starts · 3 levels', art: newGameArt('chess') } },
     { params: { key: 'board-chess-puzzles' }, props: { title: 'Chess Puzzles', subtitle: 'Daily mate in 2 · Mate in 1 and 2', art: newGameArt('chess') } },
     { params: { key: 'board-checkers' }, props: { title: 'Checkers', subtitle: 'Forced jumps · Kings · 3 levels', art: newGameArt('checkers') } },
     { params: { key: 'board-dominoes' }, props: { title: 'Dominoes', subtitle: 'Draw & Block · 2-4 players', art: newGameArt('dominoes') } },

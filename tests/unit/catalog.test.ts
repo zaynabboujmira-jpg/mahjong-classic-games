@@ -7,11 +7,11 @@ import { SITE } from '../../src/data/site';
 import { ANSWERS } from '../../src/engines/word/answers';
 
 describe('game catalog', () => {
-  it('lists the 42 games in four hubs (10 + 8 + 13 + 11)', () => {
-    expect(CATALOG).toHaveLength(42);
-    expect(new Set(CATALOG.map((g) => g.id)).size).toBe(42);
+  it('lists the 43 games in four hubs (10 + 9 + 13 + 11)', () => {
+    expect(CATALOG).toHaveLength(43);
+    expect(new Set(CATALOG.map((g) => g.id)).size).toBe(43);
     const count = (id: string) => CATALOG.filter((g) => g.category === id).length;
-    expect(CATEGORIES.map((c) => count(c.id))).toEqual([10, 8, 13, 11]);
+    expect(CATEGORIES.map((c) => count(c.id))).toEqual([10, 9, 13, 11]);
     expect(CATEGORIES.map((c) => c.hub)).toEqual(['/cards/', '/board/', '/puzzles/', '/arcade/']);
   });
 

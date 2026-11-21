@@ -133,6 +133,7 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
     ['backgammon', 'backgammon:record:', 'backgammon:opponent'],
     ['tic-tac-toe', 'ttt:record:', 'ttt:settings'],
     ['chinese-checkers', 'cc:record:', 'cc:game'],
+    ['chess960', 'chess960:record:', 'chess960:settings'],
   ] as const) {
     const recs = withPrefix(prefix).map((k) => kv.get<{ won: number; lost: number; drawn?: number } | null>(k, null));
     const played = recs.reduce((n, r) => n + (r ? r.won + r.lost + (r.drawn ?? 0) : 0), 0);
