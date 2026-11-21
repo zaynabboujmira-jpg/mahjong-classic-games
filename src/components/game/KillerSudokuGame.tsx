@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { randomSeed } from '../../engines/core/rng';
 import { readJson, writeJson } from '../../engines/core/storage';
-import { recordWin } from '../../engines/core/progress';
+import { dailySeed, recordWin } from '../../engines/core/progress';
+import { dayNumber } from '../../engines/core/day';
 import type { HintResult } from '../../engines/sudoku/game';
 import { KillerGame as Game } from '../../engines/sudoku/killer-game';
 import { KILLER_LEVELS, type KillerLevel as Difficulty, type KillerPuzzle as Puzzle } from '../../engines/sudoku/killer';
@@ -45,6 +46,7 @@ export default function KillerSudokuGame({ otherGame }: Props) {
   const hint = useRef<HintResult | null>(null);
   const keyboard = useRef(false);
   const wonRef = useRef(false);
+  const isDaily = useRef(false);
 
   const [selected, setSelected] = useState(-1);
   const [notesMode, setNotesMode] = useState(false);
@@ -128,7 +130,9 @@ export default function KillerSudokuGame({ otherGame }: Props) {
     timer.current = { startedAt: 0, banked };
     setWon(false);
     setElapsed(banked);
-    setMessage(banked ? 'Welcome back: your progress was restored.' : '');
+    const daily = p.level === 'hard' && p.seed === dailySeed(dayNumber(new Date()));
+    isDaily.current = daily;
+    setMessage(`${daily ? "Today's daily Killer Sudoku: the same puzzle for everyone. " : ''}${banked ? 'Welcome back: your progress was restored.' : ''}`);
     setBest(readJson<number | null>(bestKey(), null));
     selRef.current = -1;
     setSelected(-1);
@@ -185,7 +189,8 @@ export default function KillerSudokuGame({ otherGame }: Props) {
         setBest(time);
       }
       writeJson(progressKey(), null);
-      recordWin('killer-sudoku');
+      // From today's daily link (puzzle=daily<day>, Hard) this also completes the daily challenge.
+      recordWin('killer-sudoku', puzzle.current?.level === 'hard' ? (puzzle.current?.seed ?? null) : null);
       setWon(true);
       setAnnounce(`Solved in ${fmt(time)}!`);
     } else save();
@@ -422,7 +427,7 @@ export default function KillerSudokuGame({ otherGame }: Props) {
           {won && (
             <div class="overlay" role="dialog" aria-modal="false" aria-labelledby="win-title">
               <div class="panel">
-                <h2 id="win-title">Solved!</h2>
+                <h2 id="win-title">{isDaily.current ? 'Daily Killer Sudoku solved!' : 'Solved!'}</h2>
                 <p>
                   {LEVEL_NAMES[difficulty]} Killer in <strong>{fmt(elapsed)}</strong>
                   {g && g.hintsUsed > 0 && <> · {g.hintsUsed} hints</>}
@@ -432,8 +437,8 @@ export default function KillerSudokuGame({ otherGame }: Props) {
                   <button type="button" class="btn btn-primary" onClick={newGame}>
                     New puzzle
                   </button>
-                  <a class="btn" href={otherGame.href}>
-                    {otherGame.name}
+                  <a class="btn" href={isDaily.current ? '/daily/' : otherGame.href}>
+                    {isDaily.current ? 'Daily challenges' : otherGame.name}
                   </a>
                 </div>
               </div>

@@ -5,10 +5,10 @@ export const KILLER_UPDATED = new Date('2026-11-21');
 export const KILLER = {
   level: 'killer',
   name: 'Killer',
-  title: 'Killer Sudoku Online – Free, Easy and Hard',
+  title: 'Killer Sudoku Online – Free Daily, Easy and Hard',
   h1: 'Killer Sudoku – free online puzzles, Easy and Hard',
   description:
-    'Play Killer Sudoku online free: fill the grid so each dashed cage adds up to its sum with no repeats. Easy and Hard levels, notes, hints, undo and autosave.',
+    'Play Killer Sudoku free online: each dashed cage must add up to its sum with no repeats. Easy and Hard levels plus a daily puzzle, with notes, hints and undo.',
   summary: 'Sudoku with cages: each dashed group of cells must add up to its sum, with no digit repeated inside it.',
   keywords: ['killer sudoku', 'killer sudoku online', 'play killer sudoku free', 'killer sudoku easy', 'killer sudoku hard'],
   howTo: [
@@ -37,6 +37,10 @@ export const KILLER = {
     {
       q: 'Does every Killer Sudoku here have one solution?',
       a: 'Yes. A solver checks every puzzle before you see it. If a cage layout would allow two answers, the game reveals a starting digit until only one answer remains.',
+    },
+    {
+      q: 'Is there a daily Killer Sudoku?',
+      a: 'Yes. Every day there is a new Hard Killer Sudoku, the same puzzle for everyone. Open it from the daily challenges page; solving it counts towards your daily streak, and you can share a spoiler-free summary of your day.',
     },
     {
       q: 'Is my progress saved?',

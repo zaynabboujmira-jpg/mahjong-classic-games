@@ -155,6 +155,7 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'spades', name: 'Spades', status: 'live', href: '/cards/spades/', blurb: 'Partnership Spades with bids, Nil and bags.' },
   { slug: 'cribbage', name: 'Cribbage', status: 'live', href: '/cards/cribbage/', blurb: 'Two-player Cribbage to 121 with a pegging board and full scoring.' },
   { slug: 'pyramid', name: 'Pyramid Solitaire', status: 'live', href: '/solitaire/pyramid/', blurb: 'Pair cards that add up to 13 to clear the pyramid.' },
+  { slug: 'chinese-checkers', name: 'Chinese Checkers', status: 'live', href: '/board/chinese-checkers/', blurb: 'Hop marbles across the star against up to five computer players or a friend.' },
   { slug: 'tic-tac-toe', name: 'Tic Tac Toe', status: 'live', href: '/board/tic-tac-toe/', blurb: 'Noughts and crosses plus Five in a Row.' },
   { slug: 'word-builder', name: 'Word Builder', status: 'live', href: '/puzzles/word-builder/', blurb: 'Make words from a wheel of seven letters.' },
   { slug: 'bubble-shooter', name: 'Bubble Shooter', status: 'live', href: '/arcade/bubble-shooter/', blurb: 'Aim, bounce and match three bubbles of a colour to pop them.' },

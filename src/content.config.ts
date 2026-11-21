@@ -56,7 +56,7 @@ const levelPage = <T extends readonly [string, ...string[]]>(levels: T) =>
     level: z.enum(levels),
     order: z.number().int(),
     /** Short label for toggles and breadcrumbs, e.g. "Expert". */
-    name: z.string().min(3).max(14),
+    name: z.string().min(3).max(18),
     title: z.string().min(10).max(48),
     h1: z.string().min(10).max(70),
     description: z.string().min(110).max(160),
@@ -106,7 +106,7 @@ const puzzles = defineCollection({
 /** Board games (/board/[game]/). */
 const board = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/board' }),
-  schema: levelPage(['chess', 'checkers', 'dominoes', 'four-in-a-row', 'backgammon', 'tic-tac-toe'] as const),
+  schema: levelPage(['chess', 'checkers', 'dominoes', 'four-in-a-row', 'backgammon', 'tic-tac-toe', 'chinese-checkers'] as const),
 });
 
 /** Multiplayer card games (/cards/[game]/). */

@@ -121,6 +121,7 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
   for (const [id, prefix, setting] of [
     ['backgammon', 'backgammon:record:', 'backgammon:opponent'],
     ['tic-tac-toe', 'ttt:record:', 'ttt:settings'],
+    ['chinese-checkers', 'cc:record:', 'cc:game'],
   ] as const) {
     const recs = withPrefix(prefix).map((k) => kv.get<{ won: number; lost: number; drawn?: number } | null>(k, null));
     const played = recs.reduce((n, r) => n + (r ? r.won + r.lost + (r.drawn ?? 0) : 0), 0);
@@ -162,7 +163,7 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
     a('first-win', 'First Win', 'Win, solve or clear any game.', totalWins > 0 || anyBest),
     a('daily-debut', 'Daily Debut', 'Complete your first daily challenge.', dailyDays > 0),
     a('streak-7', '7-Day Streak', 'Complete a daily challenge seven days in a row.', streak.best >= 7),
-    a('perfect-day', 'Perfect Day', 'Complete all four daily challenges on the same day.', perfectDay),
+    a('perfect-day', 'Perfect Day', 'Complete every daily challenge on the same day.', perfectDay),
     a('word-wizard', 'Word Wizard', 'Solve a Word Guess in two guesses or fewer.', word.some((s) => (s.dist[0] ?? 0) + (s.dist[1] ?? 0) > 0)),
     a('sudoku-expert', 'Sudoku Expert', 'Solve an Expert Sudoku.', sudokuBest('expert') !== null),
     a('tile-master', 'Tile Master', 'Clear all six Mahjong Solitaire layouts.', layoutsDone === 6),

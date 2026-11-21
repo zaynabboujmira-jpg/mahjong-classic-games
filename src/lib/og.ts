@@ -285,7 +285,7 @@ ${([['#a855f7', 300], ['#f97316', 360]] as const).map(([c, x]) => `<path d="M${x
 
 /** Art for the six newer games, each an original scene in a 460 × 300 frame. */
 export function newGameArt(
-  kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row' | 'chess' | 'checkers' | 'dominoes' | 'word-search' | 'mini-crossword' | 'bubble-shooter' | 'hearts' | 'spades' | 'cribbage' | 'pyramid' | 'backgammon' | 'tic-tac-toe' | 'word-builder',
+  kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row' | 'chess' | 'checkers' | 'chinese-checkers' | 'dominoes' | 'word-search' | 'mini-crossword' | 'bubble-shooter' | 'hearts' | 'spades' | 'cribbage' | 'pyramid' | 'backgammon' | 'tic-tac-toe' | 'word-builder',
   picture: readonly (readonly boolean[])[] = []): OgArt {
   const frame = (bg: string, inner: string) => `<g transform="translate(40 0)"><rect width="460" height="300" rx="16" fill="${bg}"/>${inner}</g>`;
   let svg = '';
@@ -403,6 +403,22 @@ export function newGameArt(
       ];
       for (const [t, r, c, white] of pieces)
         out += `<g transform="translate(${x0 + c * sq + 2} ${6 + r * sq + 2}) scale(${(sq - 4) / 45})" fill="${white ? '#f8f4ea' : '#2b2b30'}" stroke="${white ? '#3a3a3a' : '#0d0d10'}" stroke-width="1.4" style="--eye:${white ? '#3a3a3a' : '#f8f4ea'}">${PIECE_PATHS[t]!.replace(/var\(--eye\)/g, white ? '#3a3a3a' : '#f8f4ea')}</g>`;
+      svg = frame('#123f33', out);
+      break;
+    }
+    case 'chinese-checkers': {
+      // The star: two triangles of holes, with red marbles at the bottom point and yellow at the top.
+      let out = '';
+      const s = 13;
+      for (let z = -8; z <= 8; z++)
+        for (let x = -8; x <= 8; x++) {
+          const y = -x - z;
+          if (y < -8 || y > 8 || !(Math.max(x, y, z) <= 4 || Math.min(x, y, z) >= -4)) continue;
+          const cx = 230 + s * Math.sqrt(3) * (x + z / 2);
+          const cy = 150 + s * 1.5 * z * 0.92;
+          const fill = z > 4 ? '#dc2626' : z < -4 ? '#eab308' : x > 4 ? '#9333ea' : x < -4 ? '#2563eb' : '';
+          out += fill ? `<circle cx="${cx}" cy="${cy}" r="${s * 0.62}" fill="${fill}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>` : `<circle cx="${cx}" cy="${cy}" r="${s * 0.3}" fill="rgba(0,0,0,.4)"/>`;
+        }
       svg = frame('#123f33', out);
       break;
     }

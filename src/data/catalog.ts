@@ -1,5 +1,5 @@
 /**
- * The 36 games of Free Play Classic, grouped for the portal. One source for
+ * The 37 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -18,7 +18,7 @@ export interface Category {
 
 export const CATEGORIES: readonly Category[] = [
   { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
-  { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against computer opponents at several levels, or a friend.' },
+  { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, Checkers, Chinese Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against computer opponents at several levels, or a friend.' },
   { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku and Killer Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
   { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
@@ -385,6 +385,23 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'Against the computer (Beginner, Club, Tactician: minimax search with alpha-beta pruning and piece-square tables) or 2 players on one device; play White or Black',
       controls: 'Tap or click a piece, then a highlighted square; arrow keys and Enter; undo',
       players: '1 against the computer, or 2 on one device',
+    },
+  },
+  {
+    id: 'chinese-checkers',
+    name: 'Chinese Checkers',
+    category: 'board',
+    play: '/board/chinese-checkers/',
+    hub: '/board/',
+    hook: 'Hop your ten marbles across the star before anyone else.',
+    badges: ['2 to 6 Players', 'Chain Hops', '3 AI Levels'],
+    icon: `<path d="M12 2l3 5.2h6l-3 5.3 3 5.3h-6L12 23l-3-5.2H3l3-5.3-3-5.3h6z" ${S}/><circle cx="12" cy="12" r="1.6" fill="currentColor"/>`,
+    facts: {
+      type: 'Star-board race game (a Halma variant)',
+      goal: 'Be first to move all ten marbles into the point of the star opposite your start, by steps and chains of hops',
+      modes: 'You against 1, 2, 3 or 5 computer players at Easy, Medium or Hard, or 2 players on one device; undo and autosave',
+      controls: 'Tap a marble, then a highlighted hole; one tap plays a whole chain of hops; Tab and Enter work too',
+      players: '1 against 1 to 5 computer players, or 2 on one device',
     },
   },
   {

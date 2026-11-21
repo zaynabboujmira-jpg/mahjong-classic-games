@@ -2539,6 +2539,91 @@
     text-align: left;
   }
 
+  /* Chinese Checkers */
+  .cc-area {
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.4rem;
+  }
+  .cc-msg {
+    margin: 0;
+    text-align: center;
+  }
+  .cc-board {
+    width: min(100%, 36rem, calc((100svh - 15rem) * 0.87));
+    min-width: 16rem;
+    height: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-point {
+    fill: #f5ecd2;
+    opacity: 0.22;
+  }
+  .cc-hole {
+    fill: rgb(0 0 0 / 0.38);
+  }
+  .cc-hit {
+    fill: transparent;
+  }
+  .cc-cell.is-active {
+    cursor: pointer;
+  }
+  .cc-cell:focus {
+    outline: none;
+  }
+  .cc-cell:focus-visible .cc-hit {
+    stroke: #fde68a;
+    stroke-width: 1.4;
+  }
+  .cc-marble {
+    stroke: rgb(0 0 0 / 0.45);
+    stroke-width: 0.8;
+  }
+  .cc-cell.is-sel .cc-marble {
+    stroke: #fde68a;
+    stroke-width: 2.2;
+  }
+  .cc-target {
+    fill: rgb(253 230 138 / 0.9);
+    animation: cc-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes cc-pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+  .cc-last {
+    fill: none;
+    stroke: #fde68a;
+    stroke-width: 1;
+    stroke-dasharray: 2 1.5;
+  }
+  .cc-path {
+    fill: none;
+    stroke: rgb(253 230 138 / 0.55);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .cc-dot {
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    border-radius: 50%;
+    vertical-align: baseline;
+  }
+  .cc-pick select {
+    min-height: 2.75rem;
+    padding: 0 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background: var(--card);
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
   /* Cribbage */
   .cb {
     --cw: clamp(2.4rem, 9vmin, 3.6rem);

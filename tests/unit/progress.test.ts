@@ -215,3 +215,15 @@ describe('summarize', () => {
     expect(unlocked(kv)).not.toContain('arcade-master');
   });
 });
+
+describe('daily Killer Sudoku', () => {
+  it('links to the Hard puzzle seeded with the day, and a win from that seed completes the challenge', () => {
+    expect(dailyLink('killer-sudoku', 500)).toBe('/sudoku/killer/?puzzle=daily500&level=hard');
+    const kv = memoryKV();
+    const now = new Date(2026, 10, 21, 12);
+    const p = recordWin('killer-sudoku', dailySeed(dayNumber(now)), now, kv);
+    expect(p.daily[String(dayNumber(now))]?.['killer-sudoku']).toEqual({ won: true });
+    const other = recordWin('killer-sudoku', 'abc', now, memoryKV());
+    expect(other.daily).toEqual({});
+  });
+});

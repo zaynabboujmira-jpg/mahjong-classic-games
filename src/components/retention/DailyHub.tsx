@@ -5,6 +5,7 @@ import { DAILY_GAMES, DAILY_NAMES, dailyLink, dailyStreak, emptyProgress, readPr
 const BLURB: Record<DailyGame, string> = {
   'word-guess': "Today's five-letter word, the same for everyone.",
   sudoku: "Today's Medium Sudoku: one solution, pure logic.",
+  'killer-sudoku': "Today's Hard Killer Sudoku: cage sums, one solution.",
   klondike: "Today's Klondike deal, Draw 1.",
   mahjong: "Today's Turtle deal: every deal can be solved.",
 };
@@ -12,6 +13,7 @@ const BLURB: Record<DailyGame, string> = {
 const FALLBACK: Record<DailyGame, string> = {
   'word-guess': '/word-guess/',
   sudoku: '/sudoku/medium/',
+  'killer-sudoku': '/sudoku/killer/',
   klondike: '/solitaire/klondike/',
   mahjong: '/mahjong/turtle/',
 };
@@ -24,7 +26,7 @@ const untilMidnight = () => {
 };
 
 /**
- * Today's four daily challenges with completion marks, the daily streak and
+ * Today's daily challenges with completion marks, the daily streak and
  * a spoiler-free share summary. Everything is read from this browser only.
  */
 export default function DailyHub() {
@@ -77,7 +79,9 @@ export default function DailyHub() {
         <dl class="daily-stats">
           <div>
             <dt>Done today</dt>
-            <dd>{done}/4</dd>
+            <dd>
+              {done}/{DAILY_GAMES.length}
+            </dd>
           </div>
           <div>
             <dt>Streak</dt>

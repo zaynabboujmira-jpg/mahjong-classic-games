@@ -10,9 +10,9 @@ import { breadcrumbs, faqPage, graph, itemList, organization, webPage, website }
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Daily Challenges – Word, Sudoku, Klondike, Mahjong';
+const title = 'Daily Challenges – Word, Sudoku, Killer Sudoku';
 const description =
-  'Four free daily puzzle challenges, the same for everyone: a five-letter word, a Sudoku, a Klondike deal and a Mahjong deal. Keep your daily streak going.';
+  'Five free daily challenges, the same for everyone: a five-letter word, a Sudoku, a Killer Sudoku, a Klondike deal and a Mahjong deal. Keep your streak going.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Daily challenges', href: '/daily/' },
@@ -20,13 +20,14 @@ const crumbs = [
 const challenges = [
   { name: 'Daily Word Guess', href: '/word-guess/', text: 'The five-letter daily word: six guesses, the same word for everyone.' },
   { name: 'Daily Sudoku', href: '/sudoku/medium/', text: "A Medium Sudoku with one solution, reachable by logic alone." },
+  { name: 'Daily Killer Sudoku', href: '/sudoku/killer/', text: 'A Hard Killer Sudoku: cages with sums instead of most starting digits, and exactly one solution.' },
   { name: 'Daily Klondike', href: '/solitaire/klondike/', text: 'One Klondike Solitaire deal, Draw 1.' },
   { name: 'Daily Mahjong', href: '/mahjong/turtle/', text: 'A Turtle layout deal that can always be solved.' },
 ];
 const faq = [
   {
     q: 'How do the daily challenges work?',
-    a: 'Every day there are four challenges: a five-letter Word Guess, a Medium Sudoku, a Klondike deal and a Turtle Mahjong deal. Everyone gets the same ones on the same calendar day, so you can compare results with friends.',
+    a: 'Every day there are five challenges: a five-letter Word Guess, a Medium Sudoku, a Hard Killer Sudoku, a Klondike deal and a Turtle Mahjong deal. Everyone gets the same ones on the same calendar day, so you can compare results with friends.',
   },
   {
     q: 'When do new challenges appear?',
@@ -38,7 +39,7 @@ const faq = [
   },
   {
     q: 'Can every daily challenge be won?',
-    a: 'The Mahjong deal is always solvable and the Sudoku always has exactly one logical solution. Klondike deals are shuffled at random, so now and then a deal cannot be won.',
+    a: 'The Mahjong deal is always solvable, and the Sudoku and the Killer Sudoku always have exactly one solution. Klondike deals are shuffled at random, so now and then a deal cannot be won.',
   },
   {
     q: 'Where is my progress saved?',
@@ -55,15 +56,15 @@ const jsonLd = graph(
 );
 ---
 
-<BaseLayout title={title} description={description} image={ogImagePath('daily')} imageAlt="Four daily challenges and a streak counter" jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} image={ogImagePath('daily')} imageAlt="Five daily challenges and a streak counter" jsonLd={jsonLd}>
   <div class="container-page pt-4 max-w-4xl">
     <Breadcrumbs items={crumbs} />
     <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Daily challenges</h1>
-    <p class="text-muted mt-2 max-w-2xl">Four puzzles a day, the same for everyone. Complete at least one each day to keep your streak.</p>
+    <p class="text-muted mt-2 max-w-2xl">Five puzzles a day, the same for everyone. Complete at least one each day to keep your streak.</p>
     <DailyHub client:load />
 
     <section class="mt-10 prose-copy" aria-labelledby="today-title">
-      <h2 id="today-title">Today's four challenges</h2>
+      <h2 id="today-title">Today's five challenges</h2>
       <ul>
         {
           challenges.map((c) => (
@@ -73,7 +74,7 @@ const jsonLd = graph(
           ))
         }
       </ul>
-      <p>Want more? Every game also has unlimited play, and your results across all 36 games are on <a href="/stats/">your stats page</a>.</p>
+      <p>Want more? Every game also has unlimited play, and your results across all 37 games are on <a href="/stats/">your stats page</a>.</p>
     </section>
 
     <Faq items={faq} />

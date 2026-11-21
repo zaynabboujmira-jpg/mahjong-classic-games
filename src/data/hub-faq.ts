@@ -44,7 +44,7 @@ export const HUB_FAQ = {
   board: [
     {
       q: 'Can I play board games against a friend?',
-      a: 'Yes. Chess, checkers, backgammon, Four in a Row and Tic Tac Toe all have a 2 player mode for two people on one device. Dominoes is played against 1, 2 or 3 computer players.',
+      a: 'Yes. Chess, checkers, Chinese Checkers, backgammon, Four in a Row and Tic Tac Toe all have a 2 player mode for two people on one device. Dominoes is played against 1, 2 or 3 computer players.',
     },
     {
       q: 'How strong is the computer?',
@@ -52,7 +52,7 @@ export const HUB_FAQ = {
     },
     {
       q: 'Which board game is quickest to learn?',
-      a: 'Tic Tac Toe and Four in a Row take a minute to learn. Checkers and dominoes follow, then backgammon and chess, which have the most rules to learn.',
+      a: 'Tic Tac Toe and Four in a Row take a minute to learn. Chinese Checkers, checkers and dominoes follow, then backgammon and chess, which have the most rules to learn.',
     },
     {
       q: 'Are the board games free?',
@@ -94,7 +94,7 @@ export const HUB_FAQ = {
   games: [
     {
       q: 'What games can I play on Free Play Classic?',
-      a: '36 classic browser games in four groups: Mahjong and card games, board games, puzzles and word games, and arcade games.',
+      a: '37 classic browser games in four groups: Mahjong and card games, board games, puzzles and word games, and arcade games.',
     },
     {
       q: 'Do I need an account or a download?',
