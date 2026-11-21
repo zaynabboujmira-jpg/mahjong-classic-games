@@ -152,6 +152,7 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'backgammon', name: 'Backgammon', status: 'live', href: '/board/backgammon/', blurb: 'Race fifteen checkers home against three computer levels or a friend.' },
   { slug: 'mahjong-connect', name: 'Mahjong Connect', status: 'live', href: '/mahjong/connect/', blurb: 'Link matching tiles with a line of up to two bends.' },
   { slug: 'hearts', name: 'Hearts', status: 'live', href: '/cards/hearts/', blurb: 'Four-player Hearts against three computer players.' },
+  { slug: 'infinite-minesweeper', name: 'Infinite Minesweeper', status: 'live', href: '/minesweeper/infinite/', blurb: 'An endless minefield with 1 or 3 lives and three densities.' },
   { slug: 'sudoku-variants', name: 'Sudoku Variants', status: 'live', href: '/sudoku/jigsaw/', blurb: 'Jigsaw, Diagonal, 16×16 and 6×6 Sudoku, Easy and Medium.' },
   { slug: 'samurai-sudoku', name: 'Samurai Sudoku', status: 'live', href: '/sudoku/samurai/', blurb: 'Five overlapping Sudoku grids, Easy to Hard, one solution each.' },
   { slug: 'killer-sudoku', name: 'Killer Sudoku', status: 'live', href: '/sudoku/killer/', blurb: 'Sudoku with sum cages, Easy and Hard, every puzzle with one solution.' },

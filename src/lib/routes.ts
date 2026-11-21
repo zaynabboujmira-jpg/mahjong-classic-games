@@ -2,6 +2,7 @@ import { getCollection } from 'astro:content';
 import { PRINTABLE_PATH, PRINTABLE_UPDATED } from '../data/sudoku-printable';
 import { KILLER_PATH, KILLER_UPDATED } from '../data/killer-sudoku';
 import { CONNECT_PATH, CONNECT_UPDATED } from '../data/mahjong-connect';
+import { INFINITE_PATH, INFINITE_UPDATED } from '../data/infinite-minesweeper';
 import { SAMURAI_PATH, SAMURAI_PRINTABLE_PATH, SAMURAI_UPDATED } from '../data/samurai-sudoku';
 import { VARIANT_PAGES, VARIANTS_UPDATED } from '../data/sudoku-variants';
 import { FAMOUS_DEALS } from '../data/freecell';
@@ -65,6 +66,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { path: PRINTABLE_PATH, section: 'sudoku', priority: 0.8, lastmod: PRINTABLE_UPDATED },
     { path: KILLER_PATH, section: 'sudoku', priority: 0.9, lastmod: KILLER_UPDATED },
     { path: CONNECT_PATH, section: 'mahjong', priority: 0.9, lastmod: CONNECT_UPDATED },
+    { path: INFINITE_PATH, section: 'minesweeper', priority: 0.9, lastmod: INFINITE_UPDATED },
     { path: SAMURAI_PATH, section: 'sudoku', priority: 0.9, lastmod: SAMURAI_UPDATED },
     ...Object.values(VARIANT_PAGES).map((v) => ({ path: v.path, section: 'sudoku' as const, priority: 0.8, lastmod: VARIANTS_UPDATED })),
     { path: SAMURAI_PRINTABLE_PATH, section: 'sudoku', priority: 0.7, lastmod: SAMURAI_UPDATED },

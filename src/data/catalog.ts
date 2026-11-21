@@ -1,5 +1,5 @@
 /**
- * The 41 games of Free Play Classic, grouped for the portal. One source for
+ * The 42 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -231,6 +231,23 @@ export const CATALOG: readonly CatalogGame[] = [
       goal: 'Fill the 9×9 grid so every row, column and 3×3 box holds the digits 1 to 9 once',
       modes: 'Easy, Medium, Hard and Expert, graded by the hardest solving technique needed; every puzzle has exactly one solution',
       controls: 'Tap a cell and a number, or type 1-9; notes mode, auto notes, mistake highlighting, hints, undo',
+      players: '1',
+    },
+  },
+  {
+    id: 'infinite-minesweeper',
+    name: 'Infinite Minesweeper',
+    category: 'puzzles',
+    play: '/minesweeper/infinite/',
+    hub: '/minesweeper/',
+    hook: 'An endless minefield: open as many safe squares as you can.',
+    badges: ['Endless Board', '1 or 3 Lives', 'Best Scores'],
+    icon: `<rect x="2" y="2" width="20" height="20" rx="2" ${S} stroke-dasharray="3 2"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/><path d="M12 6v2M12 16v2M6 12h2M16 12h2" ${S}/>`,
+    facts: {
+      type: 'Endless Minesweeper (logic puzzle)',
+      goal: 'Open as many safe squares as possible on a field with no edges, using the numbers to avoid mines',
+      modes: 'Easy, Normal and Hard mine density (12%, 17%, 22%); 1 life or 3 lives; the centre is always safe',
+      controls: 'Click or tap to dig, right-click or long-press to flag, tap a satisfied number to chord; drag, scroll or arrow keys to explore; zoom',
       players: '1',
     },
   },

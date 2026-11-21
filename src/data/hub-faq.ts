@@ -94,7 +94,7 @@ export const HUB_FAQ = {
   games: [
     {
       q: 'What games can I play on Free Play Classic?',
-      a: '41 classic browser games in four groups: Mahjong and card games, board games, puzzles and word games, and arcade games.',
+      a: '42 classic browser games in four groups: Mahjong and card games, board games, puzzles and word games, and arcade games.',
     },
     {
       q: 'Do I need an account or a download?',

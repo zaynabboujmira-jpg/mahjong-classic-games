@@ -59,7 +59,7 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `41 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `42 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
     { params: { key: 'blog' }, props: { title: 'Strategy Guides', subtitle: 'Tactics for classic games · Free', art: guideArt('<path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>') } },
     { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Killer · Chess · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong-connect' }, props: { title: 'Mahjong Connect', subtitle: 'Link pairs · 3 board sizes', art: tileHandArt([{ dots: 5 }, { bamboo: 3 }, { dots: 5 }, 'flower', { bamboo: 7 }, { bamboo: 3 }, 'flower']) } },
@@ -149,6 +149,7 @@ export const getStaticPaths = (async () => {
     { params: { key: 'sudoku-diagonal' }, props: { title: 'Diagonal Sudoku', subtitle: 'Sudoku X · Easy and Medium', art: sudokuArt(generateVariant('diagonal', 'easy', 'og').givens) } },
     { params: { key: 'sudoku-6x6' }, props: { title: '6×6 Sudoku', subtitle: 'For kids and beginners', art: sudokuArt(generate('easy', 'og-6x6').givens) } },
     { params: { key: 'sudoku-16x16' }, props: { title: '16×16 Sudoku', subtitle: 'Giant grid · Numbers 1 to 16', art: sudokuArt(generate('medium', 'og-16').givens) } },
+    { params: { key: 'minesweeper-infinite' }, props: { title: 'Infinite Minesweeper', subtitle: 'Endless board · 1 or 3 lives', art: minesArt(minesField()) } },
     { params: { key: 'minesweeper' }, props: { title: 'Free Minesweeper', subtitle: 'Safe first click · 3 levels', art: minesArt(minesField()) } },
     ...LEVEL_IDS.map((id) => ({
       params: { key: `minesweeper-${id}` },

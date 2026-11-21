@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import LevelPage from '../../components/content/LevelPage.astro';
+import InfiniteMinesweeperGame from '../../components/game/InfiniteMinesweeperGame';
+import { INFINITE } from '../../data/infinite-minesweeper';
+
+/** Infinite Minesweeper: an endless field with its own island. */
+const mines = (await getCollection('minesweeper')).sort((a, b) => a.data.order - b.data.order);
+const levels = [
+  ...mines.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary })),
+  { id: INFINITE.level, name: INFINITE.name, summary: INFINITE.summary },
+];
+---
+
+<LevelPage
+  game="Minesweeper"
+  base="/minesweeper/"
+  level={{ id: INFINITE.level, name: INFINITE.name, summary: INFINITE.summary }}
+  levels={levels}
+  data={INFINITE}
+  genre={['Puzzle', 'Logic puzzle', 'Minesweeper']}
+  imageAlt="An endless Minesweeper field with numbers and flags"
+  imageKey="minesweeper-infinite"
+  qa="infinite-minesweeper"
+  levelsHeading="More Minesweeper"
+  levelTitle={(name) => `${name} Minesweeper`}
+  howToName="How to play Infinite Minesweeper"
+  more={{
+    heading: 'Prefer a board you can finish?',
+    text: 'Classic Minesweeper has Beginner, Intermediate and Expert boards with a safe first click and best times.',
+    href: '/minesweeper/',
+    label: 'Play Minesweeper',
+  }}
+>
+  <InfiniteMinesweeperGame slot="game" client:load />
+  <h2>A minefield with no edges</h2>
+  <p>
+    Infinite Minesweeper keeps the rules of the classic game but takes away the walls. The field stretches forever in every direction, and your goal changes from
+    clearing a board to opening as many safe squares as you can. Drag to explore, follow the numbers into new territory and push your best score higher.
+  </p>
+  <h2>Tips for a high score</h2>
+  <ul>
+    <li><strong>Expand along a front.</strong> Work along the edge of the area you have opened, where the numbers give you the most information.</li>
+    <li><strong>Never guess when you can count.</strong> On an endless field there is always another safe square somewhere; move along before taking a 50/50.</li>
+    <li><strong>Flag as you go.</strong> Flags let you chord: tap a number whose mines are all flagged to open its other neighbours at once.</li>
+    <li><strong>Try 3 lives first.</strong> Relaxed mode lets you learn the patterns without losing a long run to one slip.</li>
+  </ul>
+  <p>
+    Want to read the numbers faster? <a href="/blog/minesweeper-patterns-and-probability/">Minesweeper patterns and probability</a> covers the 1-2-1, 1-2-2-1 and other
+    shapes that appear again and again.
+  </p>
+</LevelPage>
