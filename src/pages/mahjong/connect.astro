@@ -1,0 +1,51 @@
+---
+import LevelPage from '../../components/content/LevelPage.astro';
+import MahjongConnectGame from '../../components/game/MahjongConnectGame';
+import { CONNECT } from '../../data/mahjong-connect';
+
+/** Mahjong Connect: matching tiles linked by a line with at most two bends. */
+const levels = [
+  { id: 'turtle', name: 'Mahjong Solitaire', summary: 'The classic stacked layouts: match free tiles from the sides and the top.', path: '/mahjong/turtle/' },
+  { id: CONNECT.level, name: CONNECT.name, summary: CONNECT.summary },
+  { id: 'hong-kong', name: '4-player Mahjong', summary: 'The table game against three computer players, in Hong Kong, Chinese Classic or American rules.', path: '/mahjong/hong-kong/' },
+];
+---
+
+<LevelPage
+  game="Mahjong"
+  base="/mahjong/"
+  level={{ id: CONNECT.level, name: CONNECT.name, summary: CONNECT.summary }}
+  levels={levels}
+  data={CONNECT}
+  genre={['Puzzle', 'Tile matching', 'Mahjong']}
+  imageAlt="A grid of Mahjong tiles with a line linking two matching tiles"
+  imageKey="mahjong-connect"
+  qa="mahjong-connect"
+  levelsHeading="More Mahjong games"
+  levelTitle={(name) => (name === 'Connect' ? 'Mahjong Connect' : name)}
+  howToName="How to play Mahjong Connect"
+  more={{
+    heading: 'Prefer the classic stacks?',
+    text: 'Mahjong Solitaire has six layouts from the Turtle to the Fortress, every deal solvable.',
+    href: '/mahjong/',
+    label: 'Play Mahjong Solitaire',
+  }}
+>
+  <MahjongConnectGame slot="game" client:load />
+  <h2>Link the tiles, clear the board</h2>
+  <p>
+    Mahjong Connect uses the familiar Mahjong tiles, but lays them flat in a grid. Two matching tiles can be removed when a line joins them with no more than two bends,
+    passing only through empty spaces or around the outside of the board. Every pair you clear opens new paths, so the board gets easier as it empties.
+  </p>
+  <h2>Tips for faster clears</h2>
+  <ul>
+    <li><strong>Start at the edges.</strong> Tiles on the outside can always use the empty border, so they connect most easily.</li>
+    <li><strong>Open long lanes.</strong> Clearing a whole row or column creates a corridor that links tiles far apart.</li>
+    <li><strong>Watch for the third tile.</strong> Each picture appears four times. Before taking a pair, check that you are not trapping the other two.</li>
+    <li><strong>Save your shuffles.</strong> The game reshuffles for free when you are truly stuck, so keep your own shuffles for the end.</li>
+  </ul>
+  <p>
+    Want to know what the tiles mean? <a href="/blog/mahjong-tiles-meaning-guide/">The Mahjong tiles guide</a> explains every suit, honour and flower. For stacked
+    layouts, read <a href="/blog/how-to-win-mahjong-solitaire/">How to Win at Mahjong Solitaire</a>.
+  </p>
+</LevelPage>

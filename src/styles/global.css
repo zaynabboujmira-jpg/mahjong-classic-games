@@ -2560,6 +2560,30 @@
     }
   }
 
+  /* Mahjong Connect */
+  .mc-area {
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.4rem;
+  }
+  .mc-msg {
+    margin: 0;
+    min-height: 1.3rem;
+    text-align: center;
+  }
+  .mc-fit {
+    flex: 1;
+    width: 100%;
+    min-height: min(70svh, 34rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mc-board {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   /* Chinese Checkers */
   .cc-area {
     flex-direction: column;

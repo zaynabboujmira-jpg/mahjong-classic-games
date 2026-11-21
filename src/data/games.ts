@@ -150,6 +150,7 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'word-search', name: 'Word Search', status: 'live', href: '/puzzles/word-search/', blurb: 'Find the hidden words in themed 10×10, 12×12 and 15×15 grids.' },
   { slug: 'mini-crossword', name: 'Mini Crossword', status: 'live', href: '/puzzles/mini-crossword/', blurb: 'A daily 5×5 and 7×7 crossword plus unlimited puzzles.' },
   { slug: 'backgammon', name: 'Backgammon', status: 'live', href: '/board/backgammon/', blurb: 'Race fifteen checkers home against three computer levels or a friend.' },
+  { slug: 'mahjong-connect', name: 'Mahjong Connect', status: 'live', href: '/mahjong/connect/', blurb: 'Link matching tiles with a line of up to two bends.' },
   { slug: 'hearts', name: 'Hearts', status: 'live', href: '/cards/hearts/', blurb: 'Four-player Hearts against three computer players.' },
   { slug: 'samurai-sudoku', name: 'Samurai Sudoku', status: 'live', href: '/sudoku/samurai/', blurb: 'Five overlapping Sudoku grids, Easy to Hard, one solution each.' },
   { slug: 'killer-sudoku', name: 'Killer Sudoku', status: 'live', href: '/sudoku/killer/', blurb: 'Sudoku with sum cages, Easy and Hard, every puzzle with one solution.' },

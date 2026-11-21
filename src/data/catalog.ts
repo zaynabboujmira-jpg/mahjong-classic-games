@@ -1,5 +1,5 @@
 /**
- * The 39 games of Free Play Classic, grouped for the portal. One source for
+ * The 40 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -17,7 +17,7 @@ export interface Category {
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
+  { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, Mahjong Connect, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
   { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, chess puzzles, Checkers, Chinese Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against the computer or a friend.' },
   { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku, Killer and Samurai Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
   { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
@@ -61,6 +61,23 @@ export const CATALOG: readonly CatalogGame[] = [
       goal: 'Remove all tiles by matching identical free pairs; a tile is free when nothing covers it and its left or right side is open',
       modes: 'Six layouts: Turtle, Dragon, Pyramid, Fortress, Butterfly and Fish (120-144 tiles); every deal is generated with a solution',
       controls: 'Tap or click two tiles; keyboard arrows and Enter; hint, undo and shuffle buttons',
+      players: '1',
+    },
+  },
+  {
+    id: 'mahjong-connect',
+    name: 'Mahjong Connect',
+    category: 'mahjong-cards',
+    play: '/mahjong/connect/',
+    hub: '/mahjong/',
+    hook: 'Link matching tiles with a line of up to two bends to clear the grid.',
+    badges: ['3 Board Sizes', 'Hints + Shuffles', 'Best Times'],
+    icon: `<rect x="2" y="5" width="6" height="8" rx="1" ${S}/><rect x="16" y="11" width="6" height="8" rx="1" ${S}/><path d="M5 13v5h14v-7" ${S}/>`,
+    facts: {
+      type: 'Tile-matching puzzle (tile link)',
+      goal: 'Clear the grid by removing pairs of matching Mahjong tiles that a line with at most two bends can join through empty space',
+      modes: 'Easy (48 tiles), Medium (96) and Hard (all 144 tiles); free reshuffle when no move is left, plus three shuffles of your own',
+      controls: 'Tap two matching tiles; Hint shows a connecting pair, Shuffle rearranges, Undo puts the last pair back',
       players: '1',
     },
   },
