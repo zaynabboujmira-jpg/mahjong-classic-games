@@ -19,13 +19,14 @@ const { entry, entries } = Astro.props;
 const { data } = entry;
 const { Content } = await render(entry);
 const levels = entries.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary }));
+const moreLevels = [...levels, { id: 'killer', name: 'Killer', summary: 'Sudoku with cages: each dashed group of cells must add up to its sum, with no digit repeated inside it.' }];
 ---
 
 <LevelPage
   game="Sudoku"
   base="/sudoku/"
   level={{ id: data.level, name: data.name, summary: data.summary }}
-  levels={levels}
+  levels={moreLevels}
   data={data}
   genre={['Puzzle', 'Logic puzzle', 'Sudoku']}
   imageAlt={`A ${data.name.toLowerCase()} Sudoku grid`}

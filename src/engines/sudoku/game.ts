@@ -63,13 +63,13 @@ export class SudokuGame {
     return left;
   }
 
-  private commit(change: Change) {
+  protected commit(change: Change) {
     if (!change.length) return;
     this.history.push(change);
     this.moves++;
   }
 
-  private snapshot(cells: Iterable<number>): Change {
+  protected snapshot(cells: Iterable<number>): Change {
     return [...cells].map((cell) => ({ cell, value: this.values[cell]!, notes: this.notes[cell]! }));
   }
 

@@ -151,6 +151,7 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'mini-crossword', name: 'Mini Crossword', status: 'live', href: '/puzzles/mini-crossword/', blurb: 'A daily 5×5 and 7×7 crossword plus unlimited puzzles.' },
   { slug: 'backgammon', name: 'Backgammon', status: 'live', href: '/board/backgammon/', blurb: 'Race fifteen checkers home against three computer levels or a friend.' },
   { slug: 'hearts', name: 'Hearts', status: 'live', href: '/cards/hearts/', blurb: 'Four-player Hearts against three computer players.' },
+  { slug: 'killer-sudoku', name: 'Killer Sudoku', status: 'live', href: '/sudoku/killer/', blurb: 'Sudoku with sum cages, Easy and Hard, every puzzle with one solution.' },
   { slug: 'spades', name: 'Spades', status: 'live', href: '/cards/spades/', blurb: 'Partnership Spades with bids, Nil and bags.' },
   { slug: 'cribbage', name: 'Cribbage', status: 'live', href: '/cards/cribbage/', blurb: 'Two-player Cribbage to 121 with a pegging board and full scoring.' },
   { slug: 'pyramid', name: 'Pyramid Solitaire', status: 'live', href: '/solitaire/pyramid/', blurb: 'Pair cards that add up to 13 to clear the pyramid.' },

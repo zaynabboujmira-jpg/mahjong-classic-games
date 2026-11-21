@@ -51,10 +51,17 @@ const EXPECTED: Record<string, string> = {
   'how-to-play-checkers-rules': 'checkers',
   'how-to-play-spades-rules': 'spades',
   'how-to-play-cribbage-rules-and-scoring': 'cribbage',
+  // Fifth batch (2026-11-21): seo-action-plan Batch 2 #9-13 and the Killer Sudoku guide (Batch 3 #3).
+  'how-many-cards-in-a-deck': 'hearts',
+  'mahjong-with-2-or-3-players': 'mahjong-4p',
+  'who-invented-chess-history': 'chess',
+  'chess-vs-checkers': 'checkers',
+  'backgammon-strategy-for-beginners': 'backgammon',
+  'killer-sudoku-rules-and-tips': 'killer-sudoku',
 };
 
 describe('strategy guides (/blog/)', () => {
-  it('has the 31 planned guides, each mapped to its game', () => {
+  it('has the 37 planned guides, each mapped to its game', () => {
     expect(posts.map((p) => p.slug).sort()).toEqual(Object.keys(EXPECTED).sort());
     for (const p of posts) expect(p.front.relatedGameId, p.slug).toBe(EXPECTED[p.slug]);
   });
@@ -112,6 +119,12 @@ describe('strategy guides (/blog/)', () => {
     expect(links('how-to-play-checkers-rules')).toContain('/board/checkers/');
     expect(links('how-to-play-spades-rules')).toContain('/cards/spades/');
     expect(links('how-to-play-cribbage-rules-and-scoring')).toContain('/cards/cribbage/');
+    expect(links('how-many-cards-in-a-deck')).toEqual(expect.arrayContaining(['/cards/hearts/', '/cards/spades/', '/solitaire/klondike/']));
+    expect(links('mahjong-with-2-or-3-players')).toContain('/mahjong/hong-kong/');
+    expect(links('who-invented-chess-history')).toContain('/board/chess/');
+    expect(links('chess-vs-checkers')).toEqual(expect.arrayContaining(['/board/chess/', '/board/checkers/']));
+    expect(links('backgammon-strategy-for-beginners')).toContain('/board/backgammon/');
+    expect(links('killer-sudoku-rules-and-tips')).toContain('/sudoku/killer/');
   });
 
   it('rules guides and deep-dives on the same game link to each other and do not share keywords', () => {
@@ -121,6 +134,11 @@ describe('strategy guides (/blog/)', () => {
       ['how-to-set-up-backgammon-board', 'how-to-play-backgammon-beginners'],
       ['how-to-play-checkers-rules', 'checkers-forced-jumps-and-endgame-tactics'],
       ['chess-pieces-names-and-moves', 'how-to-set-up-a-chess-board'],
+      ['backgammon-strategy-for-beginners', 'how-to-play-backgammon-beginners'],
+      ['mahjong-with-2-or-3-players', 'how-to-play-mahjong-beginners'],
+      ['killer-sudoku-rules-and-tips', 'how-to-play-sudoku-beginners'],
+      ['who-invented-chess-history', 'chess-pieces-names-and-moves'],
+      ['chess-vs-checkers', 'how-to-play-checkers-rules'],
     ]) {
       expect(post(a).body, a).toContain(`/blog/${b}/`);
       expect(post(b).body, b).toContain(`/blog/${a}/`);

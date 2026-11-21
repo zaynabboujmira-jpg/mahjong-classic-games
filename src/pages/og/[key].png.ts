@@ -4,6 +4,7 @@ import { getLayout } from '../../engines/mahjong/layouts';
 import { layoutPages } from '../../lib/mahjong-pages';
 import { Minesweeper, LEVELS, LEVEL_IDS } from '../../engines/minesweeper/game';
 import { DIFFICULTIES, generate } from '../../engines/sudoku/generator';
+import { generateKiller } from '../../engines/sudoku/killer';
 import { score } from '../../engines/word/game';
 
 /** Rows of a real solve, coloured by the game's own scoring. */
@@ -56,7 +57,7 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `35 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `36 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
     { params: { key: 'blog' }, props: { title: 'Strategy Guides', subtitle: 'Tactics for classic games · Free', art: guideArt('<path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>') } },
     { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong' }, props: { title: 'Mahjong Solitaire Layouts', subtitle: `${pages.length} layouts · Play free`, art: butterfly } },
@@ -137,6 +138,7 @@ export const getStaticPaths = (async () => {
       params: { key: `sudoku-${d}` },
       props: { title: `${SUDOKU_NAMES[d]} Sudoku`, subtitle: SUDOKU_SUBTITLES[d], art: sudokuArt(generate(d, 'og').givens) },
     })),
+    { params: { key: 'sudoku-killer' }, props: { title: 'Killer Sudoku', subtitle: 'Cage sums · Easy and Hard', art: sudokuArt(generateKiller('easy', 'og').givens) } },
     { params: { key: 'minesweeper' }, props: { title: 'Free Minesweeper', subtitle: 'Safe first click · 3 levels', art: minesArt(minesField()) } },
     ...LEVEL_IDS.map((id) => ({
       params: { key: `minesweeper-${id}` },

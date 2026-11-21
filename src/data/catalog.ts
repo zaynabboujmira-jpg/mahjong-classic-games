@@ -1,5 +1,5 @@
 /**
- * The 35 games of Free Play Classic, grouped for the portal. One source for
+ * The 36 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -19,7 +19,7 @@ export interface Category {
 export const CATEGORIES: readonly Category[] = [
   { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
   { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against computer opponents at several levels, or a friend.' },
-  { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
+  { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku and Killer Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
   { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
 
@@ -214,6 +214,23 @@ export const CATALOG: readonly CatalogGame[] = [
       goal: 'Fill the 9×9 grid so every row, column and 3×3 box holds the digits 1 to 9 once',
       modes: 'Easy, Medium, Hard and Expert, graded by the hardest solving technique needed; every puzzle has exactly one solution',
       controls: 'Tap a cell and a number, or type 1-9; notes mode, auto notes, mistake highlighting, hints, undo',
+      players: '1',
+    },
+  },
+  {
+    id: 'killer-sudoku',
+    name: 'Killer Sudoku',
+    category: 'puzzles',
+    play: '/sudoku/killer/',
+    hub: '/sudoku/',
+    hook: 'Sudoku with cages: make every dashed group add up to its sum.',
+    badges: ['Cage Sums', 'Easy + Hard', 'One Solution'],
+    icon: `<rect x="3" y="3" width="18" height="18" rx="2" ${S}/><path d="M6 6h7v5H6zM15 6h3v12h-3zM6 13h7v5H6z" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 1.6" fill="none"/>`,
+    facts: {
+      type: 'Sudoku variant with sum cages',
+      goal: 'Fill the 9×9 grid with 1 to 9 once per row, column and box, so each dashed cage adds up to its sum with no repeated digit',
+      modes: 'Easy (small cages, about a dozen starting digits) and Hard (cages up to five cells, a few starting digits); every puzzle has exactly one solution',
+      controls: 'Tap a cell and a number, or type 1-9; notes that respect cage sums, mistake and cage-error highlighting, hints, undo, autosave',
       players: '1',
     },
   },

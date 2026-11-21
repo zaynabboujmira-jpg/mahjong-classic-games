@@ -83,7 +83,7 @@ You do not need deep theory to play well. These five ideas cover most decisions:
 4. **Escape your back checkers.** The two checkers on your 24-point have the longest way home. Move them out early, before your opponent builds a wall.
 5. **Race when ahead.** If your checkers have passed all of your opponent's, stop fighting and run for home.
 
-Common good opening moves include 3-1 (make your 5-point: 8/5 and 6/5) and 6-1 (make your bar point: 13/7 and 8/7).
+Common good opening moves include 3-1 (make your 5-point: 8/5 and 6/5) and 6-1 (make your bar point: 13/7 and 8/7). [Backgammon Strategy for Beginners](/blog/backgammon-strategy-for-beginners/) covers the other opening rolls, primes, anchors and racing.
 
 ## Practise against the computer
 

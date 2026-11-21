@@ -92,4 +92,4 @@ At the start, rooks go in the corners, then knights, then bishops, with the quee
 
 ## Learn the moves by playing
 
-The [chess game on this site](/board/chess/) shows the legal moves of any piece you select as dots on the board, so you can learn each piece's pattern by trying it. Start against the Beginner level, then move up to Club and Tactician. When you are ready to plan beyond single moves, [Chess Strategies for Beginners](/blog/chess-strategies-for-beginners/) is the next step.
+The [chess game on this site](/board/chess/) shows the legal moves of any piece you select as dots on the board, so you can learn each piece's pattern by trying it. Start against the Beginner level, then move up to Club and Tactician. When you are ready to plan beyond single moves, [Chess Strategies for Beginners](/blog/chess-strategies-for-beginners/) is the next step. Curious where the pieces came from? [Who Invented Chess?](/blog/who-invented-chess-history/) traces them back to India.

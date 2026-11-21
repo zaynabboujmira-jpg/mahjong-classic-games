@@ -84,6 +84,8 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
   }
   const sudokuDone = ['easy', 'medium', 'hard', 'expert'].filter((d) => sudokuBest(d) !== null);
   add('sudoku', sudokuDone.length > 0 || keys.some((k) => k.startsWith('sudoku:')), sudokuDone.length ? `${time(minOf(sudokuDone.map(sudokuBest))!)} (${sudokuDone.join(', ')})` : null);
+  const killerDone = ['easy', 'hard'].filter((d) => num(`killer:best:${d}`) !== null);
+  add('killer-sudoku', killerDone.length > 0 || keys.some((k) => k.startsWith('killer:')), killerDone.length ? `${time(minOf(killerDone.map((d) => num(`killer:best:${d}`)))!)} (${killerDone.join(', ')})` : null);
   const minesDone = ['beginner', 'intermediate', 'expert'].filter((l) => minesBest(l) !== null);
   add('minesweeper', minesDone.length > 0 || keys.includes('mines:settings'), minesDone.length ? `${time(minOf(minesDone.map(minesBest))!)} (${minesDone.join(', ')})` : null);
   const wordPlayed = word.reduce((n, s) => n + s.played, 0);

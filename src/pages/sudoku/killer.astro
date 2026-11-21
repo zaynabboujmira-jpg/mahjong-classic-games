@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import LevelPage from '../../components/content/LevelPage.astro';
+import KillerSudokuGame from '../../components/game/KillerSudokuGame';
+import { KILLER } from '../../data/killer-sudoku';
+
+/** Killer Sudoku: the cage variant, with its own island and Easy/Hard levels. */
+const sudoku = (await getCollection('sudoku')).sort((a, b) => a.data.order - b.data.order);
+const levels = [
+  ...sudoku.map((e) => ({ id: e.data.level, name: e.data.name, summary: e.data.summary })),
+  { id: KILLER.level, name: KILLER.name, summary: KILLER.summary },
+];
+---
+
+<LevelPage
+  game="Sudoku"
+  base="/sudoku/"
+  level={{ id: KILLER.level, name: KILLER.name, summary: KILLER.summary }}
+  levels={levels}
+  data={KILLER}
+  genre={['Puzzle', 'Logic puzzle', 'Killer Sudoku']}
+  imageAlt="A Killer Sudoku grid with dashed cages and their sums"
+  imageKey="sudoku-killer"
+  qa="killer-sudoku"
+  levelsHeading="More Sudoku"
+  levelTitle={(name) => `${name} Sudoku`}
+  howToName="How to play Killer Sudoku"
+  more={{
+    heading: 'Prefer classic Sudoku?',
+    text: 'Four levels from Easy to Expert, every puzzle with one solution and solvable by logic alone.',
+    href: '/sudoku/',
+    label: 'Play Sudoku',
+  }}
+>
+  <KillerSudokuGame slot="game" client:load otherGame={{ name: 'Classic Sudoku', href: '/sudoku/' }} />
+  <h2>Sudoku with sums</h2>
+  <p>
+    Killer Sudoku keeps every rule of classic Sudoku: each row, column and 3×3 box holds the digits 1 to 9 once. What changes is the clues. Instead of a grid full of
+    starting digits, the grid is split into <strong>cages</strong>, groups of cells drawn with a dashed outline. The number in the corner of a cage is the total of its
+    digits, and no digit may repeat inside a cage.
+  </p>
+  <h2>Techniques that crack Killer Sudoku</h2>
+  <ul>
+    <li><strong>Unique sums.</strong> Some totals can be made only one way: two cells adding up to 3 are 1 and 2, three cells adding up to 24 are 7, 8 and 9.</li>
+    <li>
+      <strong>The 45 rule.</strong> Every row, column and box adds up to 45. Subtract the cages that sit wholly inside a box and what is left belongs to the cells that
+      stick out.
+    </li>
+    <li><strong>Cage notes.</strong> Fill notes lists only the digits that can still complete each cage, so impossible digits never clutter the grid.</li>
+    <li><strong>Normal Sudoku logic.</strong> Once a few digits are in, singles and pairs work exactly as in classic Sudoku.</li>
+  </ul>
+  <p>
+    New to the variant? <a href="/blog/killer-sudoku-rules-and-tips/">Killer Sudoku Rules and Tips: Cages, Sums and the 45 Rule</a> walks through a first puzzle step by
+    step. For the classic techniques, see <a href="/blog/how-to-play-sudoku-beginners/">How to Play Sudoku</a>.
+  </p>
+</LevelPage>

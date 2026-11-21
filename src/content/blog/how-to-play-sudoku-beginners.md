@@ -105,4 +105,4 @@ The Sudoku levels on this site are graded by the hardest technique a puzzle need
 | [Hard](/sudoku/hard/) | Locked candidates or pairs |
 | [Expert](/sudoku/expert/) | X-Wing, XY-Wing or Swordfish |
 
-Start on Easy, and move up when you can finish without a hint. The game marks mistakes if you want it to, fills in notes for you, and its hint names the technique for the next step, which is a quick way to learn. Prefer pencil and paper? [Print free Sudoku puzzles](/sudoku/printable/) at any level, with answer keys.
+Start on Easy, and move up when you can finish without a hint. The game marks mistakes if you want it to, fills in notes for you, and its hint names the technique for the next step, which is a quick way to learn. Prefer pencil and paper? [Print free Sudoku puzzles](/sudoku/printable/) at any level, with answer keys. Ready for a twist? [Killer Sudoku](/blog/killer-sudoku-rules-and-tips/) replaces the starting digits with cages that must add up to a sum.

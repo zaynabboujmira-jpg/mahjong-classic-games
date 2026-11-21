@@ -108,4 +108,4 @@ Scoring is where styles differ most:
 
 ## Start playing
 
-The easiest way to learn is to play. [Chinese Classic Mahjong](/mahjong/chinese/) on this site has no minimum score, so any four sets and a pair win, which makes it ideal for a first game. When you are comfortable, try [Hong Kong Mahjong](/mahjong/hong-kong/) with flowers and the 3-faan minimum, or [American Mahjong](/mahjong/american/) with jokers and the Charleston. You play against three computer players, and call buttons appear whenever a discard can be claimed.
+The easiest way to learn is to play. [Chinese Classic Mahjong](/mahjong/chinese/) on this site has no minimum score, so any four sets and a pair win, which makes it ideal for a first game. When you are comfortable, try [Hong Kong Mahjong](/mahjong/hong-kong/) with flowers and the 3-faan minimum, or [American Mahjong](/mahjong/american/) with jokers and the Charleston. You play against three computer players, and call buttons appear whenever a discard can be claimed. Only two or three of you at home? [How to Play Mahjong with 2 or 3 Players](/blog/mahjong-with-2-or-3-players/) explains the usual house rules.
