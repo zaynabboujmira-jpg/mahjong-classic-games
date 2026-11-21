@@ -106,7 +106,7 @@ const puzzles = defineCollection({
 /** Board games (/board/[game]/). */
 const board = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/board' }),
-  schema: levelPage(['chess', 'checkers', 'dominoes', 'four-in-a-row', 'backgammon', 'tic-tac-toe', 'chinese-checkers'] as const),
+  schema: levelPage(['chess', 'checkers', 'dominoes', 'four-in-a-row', 'backgammon', 'tic-tac-toe', 'chinese-checkers', 'chess-puzzles'] as const),
 });
 
 /** Multiplayer card games (/cards/[game]/). */

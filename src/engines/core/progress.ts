@@ -27,9 +27,9 @@ export function memoryKV(seed: Record<string, unknown> = {}): KV {
   };
 }
 
-export const DAILY_GAMES = ['word-guess', 'sudoku', 'killer-sudoku', 'klondike', 'mahjong'] as const;
+export const DAILY_GAMES = ['word-guess', 'sudoku', 'killer-sudoku', 'chess-puzzles', 'klondike', 'mahjong'] as const;
 export type DailyGame = (typeof DAILY_GAMES)[number];
-export const DAILY_NAMES: Record<DailyGame, string> = { 'word-guess': 'Word Guess', sudoku: 'Sudoku', 'killer-sudoku': 'Killer Sudoku', klondike: 'Klondike', mahjong: 'Mahjong' };
+export const DAILY_NAMES: Record<DailyGame, string> = { 'word-guess': 'Word Guess', sudoku: 'Sudoku', 'killer-sudoku': 'Killer Sudoku', 'chess-puzzles': 'Chess Puzzle', klondike: 'Klondike', mahjong: 'Mahjong' };
 
 /** The seed every player gets for a game on a given day. */
 export const dailySeed = (day: number) => `daily${day}`;
@@ -43,6 +43,8 @@ export function dailyLink(game: DailyGame, day: number): string {
       return `/sudoku/medium/?puzzle=${dailySeed(day)}`;
     case 'killer-sudoku':
       return `/sudoku/killer/?puzzle=${dailySeed(day)}&level=hard`;
+    case 'chess-puzzles':
+      return '/board/chess-puzzles/?mode=daily';
     case 'klondike':
       return `/solitaire/klondike/?seed=${dailySeed(day)}&draw=1`;
     case 'mahjong':

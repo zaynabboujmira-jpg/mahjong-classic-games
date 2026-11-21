@@ -1,5 +1,5 @@
 /**
- * The 37 games of Free Play Classic, grouped for the portal. One source for
+ * The 38 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -18,7 +18,7 @@ export interface Category {
 
 export const CATEGORIES: readonly Category[] = [
   { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
-  { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, Checkers, Chinese Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against computer opponents at several levels, or a friend.' },
+  { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, chess puzzles, Checkers, Chinese Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against the computer or a friend.' },
   { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku and Killer Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
   { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
 ];
@@ -402,6 +402,23 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'You against 1, 2, 3 or 5 computer players at Easy, Medium or Hard, or 2 players on one device; undo and autosave',
       controls: 'Tap a marble, then a highlighted hole; one tap plays a whole chain of hops; Tab and Enter work too',
       players: '1 against 1 to 5 computer players, or 2 on one device',
+    },
+  },
+  {
+    id: 'chess-puzzles',
+    name: 'Chess Puzzles',
+    category: 'board',
+    play: '/board/chess-puzzles/',
+    hub: '/board/',
+    hook: 'A daily mate in 2, plus hundreds of mate-in-1 and mate-in-2 puzzles.',
+    badges: ['Daily Puzzle', 'Mate in 1 + 2', 'One Solution'],
+    icon: `<rect x="3" y="3" width="18" height="18" rx="2" ${S}/><path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke="currentColor" stroke-width="1" opacity=".5"/><path d="M12 6.5l1.6 3.3 3.4.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4L7 10.3l3.4-.5z" fill="currentColor"/>`,
+    facts: {
+      type: 'Chess tactics puzzles (checkmate problems)',
+      goal: 'Find the checkmate: one move in a mate in 1, or the one key move and then the mate in a mate in 2',
+      modes: 'A daily mate in 2 for everyone, plus unlimited Mate in 1 and Mate in 2 sets; every puzzle has exactly one solution',
+      controls: 'Tap a piece, then a square; Hint shows the piece to move, a second press shows the solution; arrow keys and Enter',
+      players: '1',
     },
   },
   {

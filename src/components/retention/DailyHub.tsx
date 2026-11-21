@@ -6,6 +6,7 @@ const BLURB: Record<DailyGame, string> = {
   'word-guess': "Today's five-letter word, the same for everyone.",
   sudoku: "Today's Medium Sudoku: one solution, pure logic.",
   'killer-sudoku': "Today's Hard Killer Sudoku: cage sums, one solution.",
+  'chess-puzzles': "Today's chess puzzle: mate in 2, one solution.",
   klondike: "Today's Klondike deal, Draw 1.",
   mahjong: "Today's Turtle deal: every deal can be solved.",
 };
@@ -14,6 +15,7 @@ const FALLBACK: Record<DailyGame, string> = {
   'word-guess': '/word-guess/',
   sudoku: '/sudoku/medium/',
   'killer-sudoku': '/sudoku/killer/',
+  'chess-puzzles': '/board/chess-puzzles/',
   klondike: '/solitaire/klondike/',
   mahjong: '/mahjong/turtle/',
 };

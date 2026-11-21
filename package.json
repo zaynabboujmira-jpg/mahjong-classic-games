@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit",
     "test": "vitest run",
+    "puzzles:chess": "vitest run --config scripts/chess-puzzles/vitest.config.ts",
     "budget": "node scripts/js-budget.mjs",
     "verify": "npm run check && npm run test && npm run build && npm run budget && npm run audit",
     "audit": "node scripts/audit-seo.mjs"

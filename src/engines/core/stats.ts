@@ -84,6 +84,8 @@ export function summarize(kv: KV = browserKV, today: number): Summary {
   }
   const sudokuDone = ['easy', 'medium', 'hard', 'expert'].filter((d) => sudokuBest(d) !== null);
   add('sudoku', sudokuDone.length > 0 || keys.some((k) => k.startsWith('sudoku:')), sudokuDone.length ? `${time(minOf(sudokuDone.map(sudokuBest))!)} (${sudokuDone.join(', ')})` : null);
+  const puzzlesSolved = ['mate1', 'mate2'].reduce((n, m) => n + (kv.get<number[] | null>(`chesspz:solved:${m}`, null)?.length ?? 0), 0);
+  add('chess-puzzles', puzzlesSolved > 0 || keys.includes('chesspz:mode'), puzzlesSolved ? `${puzzlesSolved} puzzle${puzzlesSolved > 1 ? 's' : ''} solved` : null);
   const killerDone = ['easy', 'hard'].filter((d) => num(`killer:best:${d}`) !== null);
   add('killer-sudoku', killerDone.length > 0 || keys.some((k) => k.startsWith('killer:')), killerDone.length ? `${time(minOf(killerDone.map((d) => num(`killer:best:${d}`)))!)} (${killerDone.join(', ')})` : null);
   const minesDone = ['beginner', 'intermediate', 'expert'].filter((l) => minesBest(l) !== null);
