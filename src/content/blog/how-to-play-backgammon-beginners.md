@@ -1,12 +1,12 @@
 ---
 title: "How to Play Backgammon: Rules for Beginners"
-description: "Learn backgammon in one read: the board and setup, how checkers move, doubles, hitting and the bar, bearing off, gammons and a simple first strategy."
+description: "Learn backgammon in one read: the board, how checkers move, doubles, hitting and the bar, bearing off, gammons and backgammons, and a simple first strategy."
 pubDate: 2026-11-14
 updatedDate: 2026-11-21
 category: Rules
 relatedGameId: backgammon
 readingTime: 4
-keywords: [how to play backgammon, backgammon rules, backgammon set up, how to set up a backgammon board, backgammon for beginners, bearing off backgammon]
+keywords: [how to play backgammon, backgammon rules, backgammon for beginners, how does backgammon work, bearing off backgammon, backgammon doubles]
 takeaways:
   - "Each player has 15 checkers and races them around 24 points into their own home board, then removes them (bears off); the first to bear off all 15 wins."
   - "Roll two dice and move one checker by each number, or one checker by both; doubles are played four times."
@@ -14,8 +14,8 @@ takeaways:
   - "A checker on the bar must re-enter in the opponent's home board before any of that player's other checkers can move."
   - "Winning before the opponent bears off any checker is a gammon (double); winning while they still have a checker on the bar or in your home board is a backgammon (triple)."
 faqs:
-  - q: How do you set up a backgammon board?
-    a: Each player starts with two checkers on their 24-point, five on their 13-point, three on their 8-point and five on their 6-point, counting from their own home board. The two sides mirror each other.
+  - q: How do you win at backgammon?
+    a: Be the first to bear off all 15 of your checkers. Winning before your opponent has borne off any checker is a gammon, worth double, and winning while they still have a checker on the bar or in your home board is a backgammon, worth triple.
   - q: What happens when you roll doubles?
     a: You play the number four times. Rolling double 3s gives four moves of three, which you can split among checkers in any way.
   - q: Do you have to use both dice?
@@ -32,28 +32,9 @@ The board has **24 narrow triangles called points**, in four quarters of six. Ea
 
 A raised strip down the middle is called **the bar**. Checkers that are hit wait there.
 
-## How to set up a backgammon board
+## The starting position
 
-Each player has 15 checkers, placed like this (counting from your own side):
-
-| Point | Checkers |
-| --- | --- |
-| 24-point (opponent's home board) | 2 |
-| 13-point (opponent's outer board) | 5 |
-| 8-point (your outer board) | 3 |
-| 6-point (your home board) | 5 |
-
-The two players move in opposite directions, each from their 24-point toward their 1-point.
-
-### Setup checklist
-
-1. Put **2 checkers** on your 24-point, the deepest point of your opponent's home board.
-2. Put **5 checkers** on your 13-point, called the **midpoint**, at the outer edge of your opponent's outer board.
-3. Put **3 checkers** on your 8-point, the second point from the bar in your own outer board.
-4. Put **5 checkers** on your 6-point, the point in your home board next to the bar.
-5. Your opponent sets up the mirror image from their side, so the two armies face each other.
-
-An easy way to remember it is **2-5-3-5**: two at the back, five on the midpoint, three on the 8-point and five on the 6-point. Count to 15 before the first roll, because a missing checker is the most common setup mistake.
+Each player has 15 checkers, placed (counting from your own side) as **2 on the 24-point, 5 on the 13-point, 3 on the 8-point and 5 on the 6-point**, an easy pattern to remember as 2-5-3-5. The two sides mirror each other and move in opposite directions, each from their 24-point toward their 1-point. [How to Set Up a Backgammon Board](/blog/how-to-set-up-backgammon-board/) has a table, a step-by-step checklist and the most common setup mistakes.
 
 ## Moving
 

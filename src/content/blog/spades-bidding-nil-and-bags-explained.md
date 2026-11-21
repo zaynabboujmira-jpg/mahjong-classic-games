@@ -29,7 +29,7 @@ Spades is a partnership card game, and almost everything interesting about it ha
 
 Four players form two teams, with partners sitting opposite each other. Each player gets 13 cards. **Spades are always trumps**: a spade beats any card of another suit. You must follow the suit led if you can; if you cannot, you may play a spade (trump) or discard.
 
-Spades cannot be led until a spade has been played on an earlier trick (spades are "broken"), unless a player has only spades left.
+Spades cannot be led until a spade has been played on an earlier trick (spades are "broken"), unless a player has only spades left. New to the game? [How to Play Spades](/blog/how-to-play-spades-rules/) covers the deal, following suit and the variants for 2 or 3 players.
 
 ## How bidding works
 

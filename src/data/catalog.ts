@@ -1,5 +1,5 @@
 /**
- * The 34 games of Free Play Classic, grouped for the portal. One source for
+ * The 35 games of Free Play Classic, grouped for the portal. One source for
  * the homepage cards, the Quick Switch bar, the "Quick answer" blocks under
  * each game and the llms.txt / llms-full.txt summaries, so the facts never
  * drift apart. Facts must match what the engines actually do.
@@ -17,7 +17,7 @@ export interface Category {
 }
 
 export const CATEGORIES: readonly Category[] = [
-  { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts and Spades against computer players.' },
+  { id: 'mahjong-cards', name: 'Mahjong & Card Games', short: 'Mahjong & Cards', hub: '/cards/', blurb: 'Tile matching, four-player Mahjong, five solitaire games, and Hearts, Spades and Cribbage against computer players.' },
   { id: 'board', name: 'Board Games', short: 'Board', hub: '/board/', blurb: 'Chess, Checkers, Backgammon, Dominoes, Four in a Row and Tic Tac Toe against computer opponents at several levels, or a friend.' },
   { id: 'puzzles', name: 'Puzzles & Word Games', short: 'Puzzles & Word', hub: '/puzzles/', blurb: 'Sudoku, Minesweeper, word games, a daily mini crossword, number merging, picture logic and memory pairs.' },
   { id: 'arcade', name: 'Arcade', short: 'Arcade', hub: '/arcade/', blurb: 'Original takes on the arcade classics: quick to start, with touch controls on phones.' },
@@ -181,6 +181,23 @@ export const CATALOG: readonly CatalogGame[] = [
       modes: 'You and a computer partner against two computer opponents; Nil bids, bags (10 bags cost 100)',
       controls: 'Tap a number to bid, then tap cards to play; only legal cards are lit',
       players: '1 with a computer partner against 2 computer players',
+    },
+  },
+  {
+    id: 'cribbage',
+    name: 'Cribbage',
+    category: 'mahjong-cards',
+    play: '/cards/cribbage/',
+    hub: '/cards/',
+    hook: 'Peg your way round the board to 121 with fifteens, pairs and runs.',
+    badges: ['Pegging Board', 'Score Breakdown', 'Saved Games'],
+    icon: `<rect x="3" y="8" width="18" height="8" rx="2" ${S}/><circle cx="7" cy="11" r="1" fill="currentColor"/><circle cx="10" cy="11" r="1" fill="currentColor"/><circle cx="13" cy="11" r="1" fill="currentColor"/><circle cx="16" cy="13" r="1" fill="currentColor"/><circle cx="8" cy="13" r="1" fill="currentColor"/>`,
+    facts: {
+      type: 'Two-player card game with a pegging board',
+      goal: 'Be first to peg 121 points, scoring in play (15s, 31s, pairs, runs, goes) and in the show of each hand and the crib',
+      modes: 'You against the computer; the deal alternates; every hand and the crib are counted with a full breakdown; games in progress are saved',
+      controls: 'Tap two cards to send to the crib, then tap cards to play; only cards that keep the count at 31 or under are lit',
+      players: '1 against 1 computer player',
     },
   },
   {

@@ -45,10 +45,16 @@ const EXPECTED: Record<string, string> = {
   'chess-strategies-for-beginners': 'chess',
   'how-to-play-mahjong-beginners': 'mahjong-4p',
   'how-to-play-sudoku-beginners': 'sudoku',
+  // Fourth batch (2026-11-21): seo-action-plan Batch 2 #5-8 and the Cribbage guide (Batch 3 #1).
+  'chess-pieces-names-and-moves': 'chess',
+  'how-to-set-up-backgammon-board': 'backgammon',
+  'how-to-play-checkers-rules': 'checkers',
+  'how-to-play-spades-rules': 'spades',
+  'how-to-play-cribbage-rules-and-scoring': 'cribbage',
 };
 
 describe('strategy guides (/blog/)', () => {
-  it('has the 26 planned guides, each mapped to its game', () => {
+  it('has the 31 planned guides, each mapped to its game', () => {
     expect(posts.map((p) => p.slug).sort()).toEqual(Object.keys(EXPECTED).sort());
     for (const p of posts) expect(p.front.relatedGameId, p.slug).toBe(EXPECTED[p.slug]);
   });
@@ -101,6 +107,26 @@ describe('strategy guides (/blog/)', () => {
     expect(links('chess-strategies-for-beginners')).toContain('/board/chess/');
     expect(links('how-to-play-mahjong-beginners')).toContain('/mahjong/chinese/');
     expect(links('how-to-play-sudoku-beginners')).toContain('/sudoku/easy/');
+    expect(links('chess-pieces-names-and-moves')).toContain('/board/chess/');
+    expect(links('how-to-set-up-backgammon-board')).toContain('/board/backgammon/');
+    expect(links('how-to-play-checkers-rules')).toContain('/board/checkers/');
+    expect(links('how-to-play-spades-rules')).toContain('/cards/spades/');
+    expect(links('how-to-play-cribbage-rules-and-scoring')).toContain('/cards/cribbage/');
+  });
+
+  it('rules guides and deep-dives on the same game link to each other and do not share keywords', () => {
+    const post = (slug: string) => posts.find((p) => p.slug === slug)!;
+    for (const [a, b] of <[string, string][]>[
+      ['how-to-play-spades-rules', 'spades-bidding-nil-and-bags-explained'],
+      ['how-to-set-up-backgammon-board', 'how-to-play-backgammon-beginners'],
+      ['how-to-play-checkers-rules', 'checkers-forced-jumps-and-endgame-tactics'],
+      ['chess-pieces-names-and-moves', 'how-to-set-up-a-chess-board'],
+    ]) {
+      expect(post(a).body, a).toContain(`/blog/${b}/`);
+      expect(post(b).body, b).toContain(`/blog/${a}/`);
+      const shared = (post(a).front.keywords as string[]).filter((k) => (post(b).front.keywords as string[]).includes(k));
+      expect(shared, `${a} / ${b}`).toEqual([]);
+    }
   });
 
   it('titles and descriptions are unique', () => {

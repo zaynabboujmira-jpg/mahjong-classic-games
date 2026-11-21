@@ -85,7 +85,7 @@ The king and queen swap is by far the most common. It even changes which side ea
 
 ## How each piece moves, in one line each
 
-Once the board is set, here is a quick reminder of what each piece does:
+Once the board is set, here is a quick reminder of what each piece does. [Chess Pieces: Names, Moves and Values](/blog/chess-pieces-names-and-moves/) covers each one in full:
 
 - **Rook:** any number of squares in a straight line along a rank or file.
 - **Knight:** an L-shape, two squares one way and one square to the side. It is the only piece that can jump over others.

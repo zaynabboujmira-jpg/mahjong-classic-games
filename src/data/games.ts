@@ -152,6 +152,7 @@ export const GAMES: readonly GameEntry[] = [
   { slug: 'backgammon', name: 'Backgammon', status: 'live', href: '/board/backgammon/', blurb: 'Race fifteen checkers home against three computer levels or a friend.' },
   { slug: 'hearts', name: 'Hearts', status: 'live', href: '/cards/hearts/', blurb: 'Four-player Hearts against three computer players.' },
   { slug: 'spades', name: 'Spades', status: 'live', href: '/cards/spades/', blurb: 'Partnership Spades with bids, Nil and bags.' },
+  { slug: 'cribbage', name: 'Cribbage', status: 'live', href: '/cards/cribbage/', blurb: 'Two-player Cribbage to 121 with a pegging board and full scoring.' },
   { slug: 'pyramid', name: 'Pyramid Solitaire', status: 'live', href: '/solitaire/pyramid/', blurb: 'Pair cards that add up to 13 to clear the pyramid.' },
   { slug: 'tic-tac-toe', name: 'Tic Tac Toe', status: 'live', href: '/board/tic-tac-toe/', blurb: 'Noughts and crosses plus Five in a Row.' },
   { slug: 'word-builder', name: 'Word Builder', status: 'live', href: '/puzzles/word-builder/', blurb: 'Make words from a wheel of seven letters.' },

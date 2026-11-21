@@ -56,7 +56,7 @@ export const getStaticPaths = (async () => {
   const butterfly = layoutArt(getLayout('butterfly')!.slots);
   const pages = await layoutPages();
   return [
-    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `34 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
+    { params: { key: 'home' }, props: { title: 'Free Play Classic', subtitle: `35 classic games · ${FEATURES.ads ? 'Daily challenges' : 'No ads'} · No download`, art: turtle } },
     { params: { key: 'blog' }, props: { title: 'Strategy Guides', subtitle: 'Tactics for classic games · Free', art: guideArt('<path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>') } },
     { params: { key: 'daily' }, props: { title: 'Daily Challenges', subtitle: 'Word · Sudoku · Klondike · Mahjong', art: tileHandArt([{ dots: 1 }, { dots: 2 }, { dots: 3 }, { bamboo: 4 }, { bamboo: 4 }, { bamboo: 4 }, 'flower']) } },
     { params: { key: 'mahjong' }, props: { title: 'Mahjong Solitaire Layouts', subtitle: `${pages.length} layouts · Play free`, art: butterfly } },
@@ -113,9 +113,10 @@ export const getStaticPaths = (async () => {
     { params: { key: 'puzzles-number-merge' }, props: { title: 'Number Merge', subtitle: 'Slide & join to reach 2048', art: newGameArt('number-merge') } },
     { params: { key: 'puzzles-memory-match' }, props: { title: 'Memory Match', subtitle: 'Find every pair · 3 sizes', art: newGameArt('memory-match') } },
     { params: { key: 'puzzles-nonogram' }, props: { title: 'Nonogram', subtitle: 'Picture logic · 5×5 to 15×15', art: newGameArt('nonogram', nonogram(10, 'og').solution) } },
-    { params: { key: 'cards' }, props: { title: 'Mahjong & Card Games', subtitle: 'Mahjong · Solitaire · Hearts · Spades', art: newGameArt('hearts') } },
+    { params: { key: 'cards' }, props: { title: 'Mahjong & Card Games', subtitle: 'Mahjong · Solitaire · Hearts · Spades · Cribbage', art: newGameArt('hearts') } },
     { params: { key: 'cards-hearts' }, props: { title: 'Hearts', subtitle: '4 players · Shoot the moon', art: newGameArt('hearts') } },
     { params: { key: 'cards-spades' }, props: { title: 'Spades', subtitle: 'Partners · Bids · Nil', art: newGameArt('spades') } },
+    { params: { key: 'cards-cribbage' }, props: { title: 'Cribbage', subtitle: '2 players · Pegging board · 121', art: newGameArt('cribbage') } },
     { params: { key: 'solitaire-pyramid' }, props: { title: 'Pyramid Solitaire', subtitle: 'Pairs of 13 · Play free', art: newGameArt('pyramid') } },
     { params: { key: 'board-backgammon' }, props: { title: 'Backgammon', subtitle: '3 computer levels or a friend', art: newGameArt('backgammon') } },
     { params: { key: 'board-tic-tac-toe' }, props: { title: 'Tic Tac Toe', subtitle: 'Unbeatable AI · Five in a Row', art: newGameArt('tic-tac-toe') } },

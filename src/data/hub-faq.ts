@@ -25,8 +25,8 @@ export const HUB_FAQ = {
   ],
   cards: [
     {
-      q: 'Do I need other people to play Hearts or Spades?',
-      a: 'No. You play against computer players. In Hearts you face three opponents; in Spades a computer partner sits opposite you against two computer opponents.',
+      q: 'Do I need other people to play Hearts, Spades or Cribbage?',
+      a: 'No. You play against computer players. In Hearts you face three opponents; in Spades a computer partner sits opposite you against two computer opponents; Cribbage is you against one computer player.',
     },
     {
       q: 'Is Mahjong Solitaire the same as Mahjong?',
@@ -34,7 +34,7 @@ export const HUB_FAQ = {
     },
     {
       q: 'Which card game should I start with?',
-      a: 'Klondike if you want a quiet game on your own, Hearts if you want a quick trick-taking game, and Spades if you enjoy bidding with a partner.',
+      a: 'Klondike if you want a quiet game on your own, Hearts if you want a quick trick-taking game, Spades if you enjoy bidding with a partner, and Cribbage if you like counting points on a pegging board.',
     },
     {
       q: 'Are the card games free?',
@@ -94,7 +94,7 @@ export const HUB_FAQ = {
   games: [
     {
       q: 'What games can I play on Free Play Classic?',
-      a: '34 classic browser games in four groups: Mahjong and card games, board games, puzzles and word games, and arcade games.',
+      a: '35 classic browser games in four groups: Mahjong and card games, board games, puzzles and word games, and arcade games.',
     },
     {
       q: 'Do I need an account or a download?',

@@ -13,9 +13,9 @@ const games = CATALOG.filter((g) => g.category === 'mahjong-cards');
 const site = Astro.site!;
 const origin = new URL('/', site).href;
 const url = canonicalUrl(Astro.url.pathname, site);
-const title = 'Free Mahjong & Card Games – Solitaire, Hearts';
+const title = 'Free Mahjong & Card Games – Solitaire, Cribbage';
 const description =
-  'Free Mahjong and card games: Mahjong Solitaire, 4-player Mahjong, Klondike, Spider, FreeCell and Pyramid solitaire, plus Hearts and Spades against the computer.';
+  'Free Mahjong and card games: Mahjong Solitaire, 4-player Mahjong, Klondike, Spider, FreeCell, Pyramid, Hearts, Spades and Cribbage against the computer.';
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Card games', href: '/cards/' },
@@ -40,7 +40,7 @@ const jsonLd = graph(
     <Breadcrumbs items={crumbs} />
     <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">Mahjong &amp; card games</h1>
     <p class="text-muted mt-2 max-w-2xl">
-      Tile and card classics in one place: relaxing Mahjong Solitaire, four solitaire games, and Mahjong, Hearts and Spades against computer players. No sign-up, no
+      Tile and card classics in one place: relaxing Mahjong Solitaire, four solitaire games, and Mahjong, Hearts, Spades and Cribbage against computer players. No sign-up, no
       download.
     </p>
     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-6">

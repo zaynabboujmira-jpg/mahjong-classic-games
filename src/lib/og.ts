@@ -285,7 +285,7 @@ ${([['#a855f7', 300], ['#f97316', 360]] as const).map(([c, x]) => `<path d="M${x
 
 /** Art for the six newer games, each an original scene in a 460 × 300 frame. */
 export function newGameArt(
-  kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row' | 'chess' | 'checkers' | 'dominoes' | 'word-search' | 'mini-crossword' | 'bubble-shooter' | 'hearts' | 'spades' | 'pyramid' | 'backgammon' | 'tic-tac-toe' | 'word-builder',
+  kind: 'snake' | 'brick-breaker' | 'number-merge' | 'memory-match' | 'nonogram' | 'four-in-a-row' | 'chess' | 'checkers' | 'dominoes' | 'word-search' | 'mini-crossword' | 'bubble-shooter' | 'hearts' | 'spades' | 'cribbage' | 'pyramid' | 'backgammon' | 'tic-tac-toe' | 'word-builder',
   picture: readonly (readonly boolean[])[] = []): OgArt {
   const frame = (bg: string, inner: string) => `<g transform="translate(40 0)"><rect width="460" height="300" rx="16" fill="${bg}"/>${inner}</g>`;
   let svg = '';
@@ -491,6 +491,7 @@ export function newGameArt(
     }
     case 'hearts':
     case 'spades':
+    case 'cribbage':
     case 'pyramid': {
       const cardSvg = (x: number, y: number, rank: string, suit: string, red: boolean, rot = 0, w = 74) => {
         const h = w * 1.4;
@@ -507,6 +508,14 @@ export function newGameArt(
             out += cardSvg(230 + (i - r / 2) * 64, 50 + r * 50, ranks[k++ % ranks.length]!, red ? '♥' : '♠', red, 0, 58);
           }
       } else {
+        if (kind === 'cribbage') {
+          out += '<rect x="40" y="18" width="380" height="96" rx="14" fill="#8a5a2e" stroke="#5c3a1b" stroke-width="3"/>';
+          for (let r = 0; r < 4; r++) for (let i = 0; i < 30; i++) out += `<circle cx="${66 + i * 11.4 + Math.floor(i / 5) * 4}" cy="${38 + r * 18 + (r > 1 ? 4 : 0)}" r="2.6" fill="#3b2512"/>`;
+          out += '<circle cx="168" cy="38" r="6" fill="#fbbf24"/><circle cx="260" cy="96" r="6" fill="#7dd3fc"/>';
+          out += cardSvg(150, 200, '5', '♥', true, -10) + cardSvg(212, 206, '5', '♣', false, -2) + cardSvg(274, 206, 'J', '♦', true, 6) + cardSvg(336, 200, '5', '♠', false, 12);
+          svg = frame('#123f33', out);
+          break;
+        }
         out += back(80, 150, -8) + back(380, 150, 8) + back(230, 40, 0);
         if (kind === 'hearts') out += cardSvg(200, 165, 'Q', '♠', false, -10) + cardSvg(262, 172, 'A', '♥', true, 8) + cardSvg(232, 230, '10', '♥', true, 0);
         else out += cardSvg(200, 165, 'K', '♦', true, -10) + cardSvg(262, 172, '3', '♠', false, 8) + cardSvg(232, 230, 'A', '♦', true, 0);

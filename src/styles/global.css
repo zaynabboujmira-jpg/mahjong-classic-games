@@ -2539,6 +2539,181 @@
     text-align: left;
   }
 
+  /* Cribbage */
+  .cb {
+    --cw: clamp(2.4rem, 9vmin, 3.6rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 46rem;
+    margin: 0 auto;
+    gap: 0.35rem;
+    color: #f2f7f4;
+  }
+  .cb-board {
+    width: 100%;
+    height: auto;
+  }
+  .cb-wood {
+    fill: #8a5a2e;
+    stroke: #5c3a1b;
+    stroke-width: 2;
+  }
+  .cb-split {
+    stroke: #5c3a1b;
+    stroke-width: 1.5;
+  }
+  .cb-hole {
+    fill: #3b2512;
+  }
+  .cb-peg {
+    stroke: #1f1408;
+    stroke-width: 1;
+    transition:
+      cx 0.35s,
+      cy 0.35s;
+  }
+  .cb-peg0 {
+    fill: #fbbf24;
+  }
+  .cb-peg1 {
+    fill: #7dd3fc;
+  }
+  .cb-peg.is-back {
+    opacity: 0.75;
+  }
+  .cb-label {
+    fill: #fdf3e1;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .cb-opp {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+  .cb-cards,
+  .cb-row {
+    display: flex;
+    gap: 0.2rem;
+  }
+  .cb-mini .pc {
+    --cw: calc(var(--cw-mini, 1.9rem));
+  }
+  .cb-opp .pc-idx {
+    font-size: 0.6rem;
+  }
+  .cb-opp .pc-mid {
+    font-size: 0.8rem;
+  }
+  .cb-mid {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    min-height: calc(var(--cw) * 1.4 + 1.4rem);
+  }
+  .cb-pile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+  .cb-cap {
+    font-size: 0.7rem;
+    opacity: 0.85;
+  }
+  .cb-play {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .cb-seq .cb-laid + .cb-laid {
+    margin-left: calc(var(--cw) * -0.45);
+  }
+  .cb-laid {
+    animation: tt-in 0.2s ease-out;
+  }
+  .cb-laid.is-cpu .pc {
+    box-shadow:
+      0 0 0 2px #7dd3fc,
+      0 2px 4px rgb(0 0 0 / 0.3);
+  }
+  .cb-count {
+    font-weight: 800;
+    font-size: 0.95rem;
+  }
+  .cb-show {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .cb-show .pc {
+    --cw: calc(var(--cw-show, 2.3rem));
+  }
+  .cb-items {
+    margin: 0;
+    padding: 0.3rem 0.6rem;
+    list-style: none;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    background: rgb(0 0 0 / 0.25);
+    border-radius: 0.5rem;
+    min-width: 11rem;
+  }
+  .cb-items li {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .cb-items b {
+    margin-left: auto;
+  }
+  .cb-ic {
+    opacity: 0.85;
+  }
+  .cb-total {
+    border-top: 1px solid rgb(255 255 255 / 0.3);
+    font-weight: 800;
+  }
+  .cb-msg {
+    margin: 0;
+    text-align: center;
+  }
+  .cb-log {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+  .cb-log li + li {
+    opacity: 0.65;
+  }
+  .cb-actions {
+    min-height: 2.75rem;
+  }
+  .cb-hand {
+    --cw: clamp(2.9rem, calc((100vw - 1.5rem) / 6.6), 4.4rem);
+    width: 100%;
+  }
+  .cb-hand.is-idle .tt-card .pc {
+    filter: none;
+  }
+  .tt-card.is-hint .pc {
+    box-shadow:
+      0 0 0 3px #14b8a6,
+      0 4px 10px rgb(0 0 0 / 0.4);
+  }
+
   /* Backgammon */
   .bg-area {
     flex-direction: column;

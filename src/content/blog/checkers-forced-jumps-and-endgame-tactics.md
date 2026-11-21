@@ -34,7 +34,7 @@ In American checkers (also called English draughts) on an 8×8 board:
 - **Captures are mandatory**, and a piece must keep jumping if it can.
 - A piece reaching the far row becomes a king and can move and capture backwards too.
 
-The game on this site follows these rules: compulsory jumps, multi-jump chains, and kings that move both ways.
+The game on this site follows these rules: compulsory jumps, multi-jump chains, and kings that move both ways. For the setup and every rule in full, see [How to Play Checkers](/blog/how-to-play-checkers-rules/).
 
 ## 1. Use forced jumps to set up multi-jumps
 
