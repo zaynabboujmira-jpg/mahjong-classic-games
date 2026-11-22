@@ -23,7 +23,7 @@ faqs:
   - q: "Is Mahjong with 3 players faster?"
     a: "Usually, yes. With fewer tiles in play and no chows, hands are shorter and wins with high-scoring patterns, such as all one suit, come up more often."
   - q: "Can I play four-player Mahjong alone?"
-    a: "Yes. The Mahjong games on this site seat you against three computer players, in Hong Kong, Chinese Classic and American rules, so you always have a full table."
+    a: "Yes. The Mahjong games on this site seat you against three computer players, in Hong Kong, Chinese Classic, American and Riichi rules, so you always have a full table."
 ---
 
 Mahjong is a game for four, but you will not always have four players. The good news is that Mahjong adapts well to three or even two. The changes are house rules rather than one official standard, so this guide explains the common ways to do it and why each change helps. If you are new to the game, start with [How to Play Mahjong: Rules for Beginners](/blog/how-to-play-mahjong-beginners/).
